@@ -1,7 +1,7 @@
-import { useState } from "react";
+import useCount from './store'
 
 export const Button = () => {
-    const [count, setCount] = useState(0);
+    const [count, setCount] = useCount(0);
 
     return (
         <button onClick={() => setCount(count + 1)}>

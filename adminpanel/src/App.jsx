@@ -4,9 +4,10 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 import Button from 'storefrontApp/Button'
+import useStore from 'storefrontApp/store'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useStore()
 
   return (
     <>

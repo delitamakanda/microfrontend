@@ -11,8 +11,9 @@ export default defineConfig({
     filename:'storefrontEntry.js',
     exposes: {
       './Button': './src/Button',
+      './store': './src/store',
     },
-    shared: ['react','react-dom'],
+    shared: ['react','react-dom', 'jotai'],
   })],
   build: {
     modulePreload: false,
