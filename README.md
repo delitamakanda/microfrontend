@@ -21,3 +21,8 @@ pnpm run dev
 ```bash
 pnpm add @originjs/vite-plugin-federation -D
 ```
+
+## Bonus: add create module-federation-app
+```bash
+npx create-mf-app
+```
