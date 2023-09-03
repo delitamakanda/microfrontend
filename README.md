@@ -26,3 +26,7 @@ pnpm add @originjs/vite-plugin-federation -D
 ```bash
 npx create-mf-app
 ```
+
+
+
+[TODO](https://feixie1980.medium.com/fixing-node-js-modules-pollyfill-in-webpack-5-9e7979125aac)

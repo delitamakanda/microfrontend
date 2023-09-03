@@ -71,5 +71,5 @@ module.exports = (_, argv) => ({
       inject: false
     }),
   ],
-  target: 'web'
+  target: 'web',
 });

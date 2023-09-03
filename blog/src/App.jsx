@@ -1,20 +1,37 @@
 import React from "react";
 import { createRoot } from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import "./index.scss";
-import ButtonModule from 'storefrontApp/Button'
-const Button = ButtonModule.default
-import useStore from 'storefrontApp/store'
+import Root from "./routes/root";
+import ErrorPage from "./error-page";
+import Posts from "./routes/posts";
+import Post from "./routes/post";
+import Authors from "./routes/authors";
 
-const App = () => (
-  <div className="mt-10 text-3xl mx-auto max-w-6xl">
-    <div>Name: blog</div>
-    <div>Framework: react</div>
-    <div>Language: JavaScript</div>
-    <div>CSS: Tailwind</div>
-    <Button />
-  </div>
-);
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Root />,
+    errorElement: <ErrorPage />
+  },
+  {
+    path: '/posts',
+    element: <Root><Posts /></Root>,
+  },
+  {
+    path: '/posts/:permalink',
+    element: <Root><Post /></Root>
+  },
+  {
+    path: '/authors',
+    element: <Root><Authors /></Root>,
+  }
+]);
 
 const root = createRoot(document.getElementById('app'));
-root.render(<App />);
+root.render(
+  <React.StrictMode>
+  <RouterProvider router={router} />
+  </React.StrictMode>
+);
