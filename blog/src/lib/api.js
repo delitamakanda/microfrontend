@@ -1,21 +1,28 @@
+import matter from 'gray-matter';
+
 
 export function getAllPosts() {
-    console.log('getting all posts');
+    const context = require.context('../_posts', false, /\.md$/);
+    const posts = [];
 
-    // const postsDirectory = 
-    // const postsDirectory = path.join(process.cwd(), '_posts');
-    // const filenames = fs.readFileSync(postsDirectory);
+    context.keys().forEach((filename) => {
+        const slug = filename.split('./')[1].replace(/\.md$/, '');
+        const fileContents = context(filename).default;
+        const { data } = matter(fileContents);
+        
+        posts.push({
+            ...data,
+            slug,
+            permalink: `/posts/${slug}`,
+        });
+    });
+    return posts;
 
-    // return filenames.map((filename) => {
-    //     const file = fs.readFileSync(path.join(process.cwd(), '_posts', filename), 'utf-8');
+}
 
-    //     const { data } = matter(file);
-    //     const slug = filename.replace('/\.md$/', '');
-    //     return {
-    //         ...data,
-    //         slug,
-    //         permalink: `/posts/${slug}/`,
-    //     }
-    // });
-
+export function getPostBySlug(slug) {
+    const context = require.context('../_posts', false, /\.md$/);
+    const fileContents = context(`./${slug}.md`).default;
+    const { data, content } = matter(fileContents);
+    return { data, content };
 }

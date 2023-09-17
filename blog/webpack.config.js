@@ -1,5 +1,6 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 const deps = require("./package.json").dependencies;
 module.exports = (_, argv) => ({
@@ -9,6 +10,12 @@ module.exports = (_, argv) => ({
 
   resolve: {
     extensions: [".tsx", ".ts", ".jsx", ".js", ".json"],
+    fallback: {
+      fs: require.resolve("browserify-fs"),
+    },
+    alias: {
+      process: 'process/browser'
+    }
   },
 
   devServer: {
@@ -37,6 +44,29 @@ module.exports = (_, argv) => ({
           loader: "babel-loader",
         },
       },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]",
+            },
+          },
+        ]
+      },
+      {
+        test: /\.(json)$/,
+        use: [
+          {
+            loader: "json-loader",
+          }
+        ]
+      },
+      {
+        test: /\.md$/,
+        use: 'raw-loader'
+      }
     ],
   },
 
@@ -70,6 +100,7 @@ module.exports = (_, argv) => ({
       template: "./index.ejs",
       inject: false
     }),
+    new NodePolyfillPlugin()
   ],
   target: 'web',
 });

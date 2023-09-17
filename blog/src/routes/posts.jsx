@@ -22,7 +22,7 @@ const Posts = () => {
     return (
         <div>
             <h1>Posts</h1>
-            {POSTS.map((post) => {
+            {posts.map((post) => {
                 const prettyDate = new Date(post.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
