@@ -8,6 +8,7 @@ import ErrorPage from "./error-page";
 import Posts from "./routes/posts";
 import Post from "./routes/post";
 import Authors from "./routes/authors";
+import Author from "./routes/author";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: '/authors',
     element: <Root><Authors /></Root>,
+  },
+  {
+    path: '/authors/:permalink',
+    element: <Root><Author /></Root>,
   }
 ]);
 
