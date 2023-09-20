@@ -4,7 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 const Author = () => {
     const { permalink } = useParams();
     const author = getAuthorBySlug(permalink);
-    const posts = getAllPosts().filter((post) => post.author === author.slug);
+    const posts = getAllPosts().filter((post) => post.authors.includes(author.slug));
     return (
         <div>
             <h1>{author?.name}</h1>

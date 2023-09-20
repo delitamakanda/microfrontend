@@ -23,7 +23,6 @@ const Posts = () => {
         <div>
             <h1>Posts</h1>
             {posts.map((post) => {
-                const author = getAuthorBySlug(post.author);
                 const prettyDate = new Date(post.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
@@ -37,13 +36,20 @@ const Posts = () => {
                             </Link>
                         </h2>
                         <time dateTime={post.createdAt}>{prettyDate}</time>
-                        <div>
+                        {post.authors.map((a, idx) => {
+                            const author = getAuthorBySlug(a);
+                            return (
+                                <div key={idx}>
                             <img src={author?.profilePictureUrl} alt={author?.name} height="40" width="40" />
 
                             <Link to={author?.permalink}>
                                 {author?.name}
                             </Link>
-                        </div>
+                            </div>
+                            )
+                        }
+                        
+                        )}
                         <p>{post.excerpt}</p>
                         <Link to={post.permalink}>
                             Read more

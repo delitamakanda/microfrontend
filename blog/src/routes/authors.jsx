@@ -8,7 +8,7 @@ const Authors = () => {
         <div>
             <h1>Authors</h1>
             {authors.map(author => {
-                const posts = getAllPosts().filter(post => post.author === author.slug);
+                const posts = getAllPosts().filter(post => post.authors.includes(author.slug));
                 return (
                     <div key={author.slug}>
                         <h2>
