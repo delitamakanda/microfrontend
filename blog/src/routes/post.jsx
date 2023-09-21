@@ -1,12 +1,15 @@
 import { useParams } from 'react-router-dom';
-import { getPostBySlug, getAuthorBySlug, getAllPosts } from '../lib/api';
+import { getPostBySlug, getAuthorBySlug } from '../lib/api';
 import { useRemarkSync } from 'react-remark';
 import { Link } from'react-router-dom';
 
 const Post = () => {
     const { permalink } = useParams();
     const { data, content } = getPostBySlug(permalink);
-    const reviewer = getAuthorBySlug(data?.reviewer)
+    let reviewer;
+    if (data.reviewer) {
+        reviewer = getAuthorBySlug(data?.reviewer);
+    }
     return (
         <div>
             <h1>{data?.title}</h1>
@@ -29,7 +32,7 @@ const Post = () => {
             {useRemarkSync(content)}
 
             {
-                reviewer ? (
+                reviewer && reviewer !== undefined ? (
                     <div>
                         <h5>Reviewser</h5>
                         <img src={reviewer?.profilePictureUrl} alt={reviewer?.name} height="40" width="40" />
