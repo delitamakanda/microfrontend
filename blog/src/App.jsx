@@ -16,24 +16,26 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Root />,
-    errorElement: <ErrorPage />
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: '/posts',
+        element: <Posts />,
+      },
+      {
+        path: '/posts/:permalink',
+        element: <Post />
+      },
+      {
+        path: '/authors',
+        element: <Authors />,
+      },
+      {
+        path: '/authors/:permalink',
+        element: <Author />,
+      }
+    ]
   },
-  {
-    path: '/posts',
-    element: <Root><Posts /></Root>,
-  },
-  {
-    path: '/posts/:permalink',
-    element: <Root><Post /></Root>
-  },
-  {
-    path: '/authors',
-    element: <Root><Authors /></Root>,
-  },
-  {
-    path: '/authors/:permalink',
-    element: <Root><Author /></Root>,
-  }
 ]);
 
 const root = createRoot(document.getElementById('app'));

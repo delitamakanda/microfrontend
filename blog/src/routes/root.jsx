@@ -1,8 +1,8 @@
 import ButtonModule from 'storefrontApp/Button'
 const Button = ButtonModule.default
-import { Link } from'react-router-dom'
+import { Link, Outlet } from'react-router-dom'
 
-const Root = ({ children }) => (
+const Root = () => (
   <>
   <header>
     <nav className="">
@@ -20,7 +20,7 @@ const Root = ({ children }) => (
     </nav>
   </header>
   <main>
-    {children}
+  <Outlet />
   </main>
     <div className="mt-10 text-xs mx-auto max-w-6xl">
       <div>Name: blog</div>
