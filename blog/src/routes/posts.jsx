@@ -17,6 +17,10 @@ const POSTS = [
     }
 ];
 
+// https://github.com/timlrx/tailwind-nextjs-starter-blog/blob/main/app/blog/page.tsx
+// https://www.tailwindawesome.com/resources/tailwind-nextjs-starter-blog
+
+
 const Posts = () => {
     const posts = getAllPosts();
     return (
