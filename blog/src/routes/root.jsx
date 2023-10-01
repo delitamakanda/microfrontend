@@ -1,35 +1,18 @@
-import ButtonModule from 'storefrontApp/Button'
-const Button = ButtonModule.default
-import { Link, Outlet } from'react-router-dom'
+import { Outlet } from'react-router-dom'
+import Footer from '../components/Footer';
+import Header from '../components/Header';
+import SectionContainer from '../components/SectionContainer';
 
 const Root = () => (
-  <>
-  <header>
-    <nav className="">
-        <ul>
-            <li className="">
-                <Link to="/" className="">Home</Link>
-            </li>
-            <li className="">
-                <Link to="/posts" className="">Posts</Link>
-            </li>
-            <li className="">
-                <Link to="/authors" className="">Authors</Link>
-            </li>
-        </ul>
-    </nav>
-  </header>
-  <main>
-  <Outlet />
-  </main>
-    <div className="mt-10 text-xs mx-auto max-w-6xl">
-      <div>Name: blog</div>
-      <div>Framework: react</div>
-      <div>Language: JavaScript</div>
-      <div>CSS: Tailwind</div>
-      <Button />
-    </div>
-  </>
+  <SectionContainer>
+      <div className='flex h-screen flex-col justify-between font-sans'>
+      <Header />
+      <main className='mb-auto'>
+        <Outlet />
+      </main>
+      <Footer />
+      </div>
+  </SectionContainer>
 );
 
 export default Root;

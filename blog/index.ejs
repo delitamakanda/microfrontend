@@ -1,5 +1,11 @@
-<html>
+<!DOCTYPE html>
+<html lang="fr">
     <head>
+        <meta charset="UTF-8">
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>blog</title>
         <% for (key in htmlWebpackPlugin.files.js) { %>
             <script type="module" src="<%= htmlWebpackPlugin.files.js[key] %>"></script>
         <% } %>
