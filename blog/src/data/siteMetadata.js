@@ -2,7 +2,7 @@ const siteMetadata = {
     title: 'Le Blog',
     author: 'Dearest',
     headerTitle: 'Blog',
-    description: 'A blog created with React and Tailwind.css',
+    description: 'Announcements and news from Dearest.',
     language: 'fr-fr',
     theme: 'system', // system, dark or light
     siteUrl: 'https://tailwind-nextjs-starter-blog.vercel.app',
