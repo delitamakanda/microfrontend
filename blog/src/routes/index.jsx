@@ -23,6 +23,11 @@ export default function Index() {
           {!posts.length && 'No posts found.'}
           {posts.slice(0, MAX_DISPLAY).map((post) => {
             const { slug, createdAt, title, excerpt, permalink } = post
+            const prettyDate = new Date(createdAt).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: '2-digit',
+          });
             return (
               <li key={slug} className="py-12">
                 <article>
@@ -30,7 +35,7 @@ export default function Index() {
                     <dl>
                       <dt className="sr-only">Published on</dt>
                       <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
-                        <time dateTime={createdAt}>{createdAt}</time>
+                        <time dateTime={createdAt}>{prettyDate}</time>
                       </dd>
                     </dl>
                     <div className="space-y-5 xl:col-span-3">

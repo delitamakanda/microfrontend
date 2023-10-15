@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 
 export const usePersistedState = (defaultValue, localStoreKey) => {
-    const [storedValue, setStoredValue] = useState(() => {
-        const localStoreItem = window.localStorage.getItem(localStoreKey);
-        if (localStoreItem) {
-            return JSON.parse(localStoreItem);
+    const [value, setValue] = useState(() => {
+        const localStoreItem = localStorage.getItem(localStoreKey);
+        if (localStoreItem === null) {
+            return defaultValue;
         }
         try {
             return JSON.parse(localStoreItem);
@@ -14,8 +14,8 @@ export const usePersistedState = (defaultValue, localStoreKey) => {
     });
 
     useEffect(() => {
-        window.localStorage.setItem(localStoreKey, JSON.stringify(storedValue));
-    }, [localStoreKey, storedValue]);
+        localStorage.setItem(localStoreKey, JSON.stringify(value));
+    }, [value]);
 
-    return [storedValue, setStoredValue];
+    return [value, setValue];
 }

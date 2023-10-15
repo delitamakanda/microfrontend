@@ -11,6 +11,7 @@ export default defineConfig({
     filename:'storefrontEntry.js',
     exposes: {
       './Button': './src/Button',
+      './localstore': './src/hooks/localstore',
       './store': './src/store',
     },
     shared: ['react','react-dom', 'jotai'],

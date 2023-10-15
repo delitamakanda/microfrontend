@@ -12,3 +12,4 @@ const articleData = atom(async () => {
 export const useArticleData = () => useAtom(articleData);
 
 export default useCount;
+
