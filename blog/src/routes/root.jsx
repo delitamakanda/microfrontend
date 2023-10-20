@@ -13,7 +13,7 @@ const Root = () => {
         <span id="progress-bar" style={{transform: `translateX(${completion - 100}%)`}} className='absolute bottom-0 w-full transition-transform duration-150 h-1 bg-pink-400'></span>
       </nav>
     <SectionContainer>
-        <div className='h-screen flex-col justify-between font-sans'>
+        <div className='h-full w-full flex-col justify-between font-sans'>
         <Header />
         <main className='mb-auto'>
           <Outlet />
