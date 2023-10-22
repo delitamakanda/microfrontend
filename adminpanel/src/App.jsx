@@ -1,34 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
 import Button from 'storefrontApp/Button'
-import useStore from 'storefrontApp/store'
+import { useArticleData } from 'storefrontApp/store'
 
 function App() {
-  const [count, setCount] = useStore()
+  const [ data ] = useArticleData();
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
       <h1>admin panel</h1>
       <div className="card">
         <Button />
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      {data && data?.results.map(article => (
+        <div key={article.id}>
+          <h2>{article.name}</h2>
+          <img src={article.image_url} alt={article.name} />
+          <p>{article.price}</p>
+        </div>
+      ))}
     </>
   )
 }
