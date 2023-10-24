@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { usePersistedState } from '../../../storefront/src/hooks/localstore';
+import { usePersistedState } from 'storefrontApp/localstore';
 
 const ThemeSwitch = () => {
     const [mounted, setMounted] = useState(false);
