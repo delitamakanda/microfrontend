@@ -1,4 +1,4 @@
-import { KpiCard } from '../../components/dashboard/kpiCard'
+import { KpiCard, ChartView } from '../../components/dashboard'
 import daysjs from 'dayjs'
 
 const query = {
@@ -17,7 +17,10 @@ export const Dashboard = () => {
                 <KpiCard title="Weekly Orders" color="orange-300" total={25} trend={12} icon="pi-shopping-cart" />
             </div>
             <div className='col-12 lg:col-6 xl:col-4'>
-                <KpiCard title="New Customers" color="green-300" total={34} trend={2} icon="pi-users" />
+                <KpiCard title="New Customers" color="green-300" total={1} trend={2} icon="pi-users" />
+            </div>
+            <div className='col-12'>
+                <ChartView revenue={[]} orders={[]} customers={[]} />
             </div>
         </div>
     )
