@@ -1,6 +1,6 @@
 
 
-const categoryShow = () => {
+export const CategoryShow = () => {
 
     return (
         <div>
@@ -8,5 +8,3 @@ const categoryShow = () => {
         </div>
     )
 }
-
-export default categoryShow;

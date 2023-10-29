@@ -1,6 +1,6 @@
 
 
-const productList = () => {
+export const ProductList = () => {
 
     return (
         <div>
@@ -8,5 +8,3 @@ const productList = () => {
         </div>
     )
 }
-
-export default productList;

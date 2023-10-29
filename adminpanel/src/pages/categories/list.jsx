@@ -1,6 +1,6 @@
 
 
-const categoryList = () => {
+export const CategoryList = () => {
 
     return (
         <div>
@@ -8,5 +8,3 @@ const categoryList = () => {
         </div>
     )
 }
-
-export default categoryList;

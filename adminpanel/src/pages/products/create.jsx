@@ -1,6 +1,6 @@
 
 
-const productCreate = () => {
+export const ProductCreate = () => {
 
     return (
         <div>
@@ -8,5 +8,3 @@ const productCreate = () => {
         </div>
     )
 }
-
-export default productCreate;

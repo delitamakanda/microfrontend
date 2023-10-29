@@ -1,6 +1,6 @@
 
 
-const productCreate = () => {
+export const ProductEdit = () => {
 
     return (
         <div>
@@ -9,4 +9,3 @@ const productCreate = () => {
     )
 }
 
-export default productCreate;

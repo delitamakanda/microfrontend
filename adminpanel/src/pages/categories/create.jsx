@@ -1,6 +1,6 @@
 
 
-const categoryCreate = () => {
+export const CategoryCreate = () => {
 
     return (
         <div>
@@ -9,4 +9,3 @@ const categoryCreate = () => {
     )
 }
 
-export default categoryCreate;

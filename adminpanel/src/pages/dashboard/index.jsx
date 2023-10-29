@@ -1,4 +1,4 @@
-import { KpiCard, ChartView } from '../../components/dashboard'
+import { KpiCard, ChartView, RecentSales } from '../../components/dashboard'
 import daysjs from 'dayjs'
 
 const query = {
@@ -21,6 +21,9 @@ export const Dashboard = () => {
             </div>
             <div className='col-12'>
                 <ChartView revenue={[]} orders={[]} customers={[]} />
+            </div>
+            <div className='col-12'>
+                <RecentSales />
             </div>
         </div>
     )

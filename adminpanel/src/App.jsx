@@ -1,27 +1,49 @@
 import { ErrorComponent } from './components/core';
 import { DocumentTitleHandler, UnsavedChangesNotifier } from './components/kbar';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Layout } from './components/layout';
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import { Dashboard } from './pages/dashboard';
+import { CategoryList, CategoryEdit, CategoryShow, CategoryCreate } from './pages/categories'
+import { ProductList, ProductEdit, ProductShow, ProductCreate } from './pages/products'
 // import Button from 'storefrontApp/Button'
 // import { useArticleData } from 'storefrontApp/store'
-import './App.css'
+import { ConfirmDialog } from 'primereact/confirmdialog';
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.css";
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
+import './App.css'
 
 function App() {
 
   return (
     <BrowserRouter>
     <Routes>
+      <Route element={<Layout>
+        <Outlet />
+      </Layout>}>
+
       <Route path="/">
         <Route index element={<Dashboard />} />
       </Route>
+      <Route path="/products">
+        <Route index element={<ProductList />} />
+        <Route path='create' element={<ProductCreate />} />
+        <Route path='edit/:id' element={<ProductEdit />} />
+        <Route path='show/:id' element={<ProductShow />} />
+      </Route>
+      <Route path="/categories">
+        <Route index element={<CategoryList />} />
+        <Route path='create' element={<CategoryCreate />} />
+        <Route path='edit/:id' element={<CategoryEdit />} />
+        <Route path='show/:id' element={<CategoryShow />} />
+      </Route>
       <Route path="*" element={<ErrorComponent />} />
+      </Route>
     </Routes>
     <DocumentTitleHandler />
     <UnsavedChangesNotifier />
+    <ConfirmDialog />
     </BrowserRouter>
   )
 }
