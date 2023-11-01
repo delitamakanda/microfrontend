@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom'
 import { TabMenu } from "primereact/tabmenu";
+import { useAuth } from '../../hooks/auth/useAuth'
 
 export const Menu = () => {
+    const { logout } = useAuth();
     const items = [
         {
             label: 'Dashboards',
@@ -22,6 +24,7 @@ export const Menu = () => {
         label: menuItem.label,
         icon: menuItem.icon,
         template: (item, options) => {
+            
             return (
                 <div onClick={options.onClick}>
                     <Link to={menuItem.to} className={options.className}>

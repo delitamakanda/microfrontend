@@ -11,6 +11,7 @@ export default defineConfig({
     filename:'storefrontEntry.js',
     exposes: {
       './Button': './src/Button',
+      './useLocalStorage': './src/hooks/useLocalStorage',
       './localstore': './src/hooks/localstore',
       './store': './src/store',
     },
