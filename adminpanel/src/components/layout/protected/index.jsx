@@ -12,9 +12,10 @@ export const Layout = () => {
      }
     return (
         <div className="min-h-screen surface-ground">
-            <Menu /><Button onClick={() => logout()}>Logout</Button>
+            <Menu />
             <div className="p-3">
                 <Breadcrumb />
+                {/* <Button size='small' outlined  onClick={() => logout()}>Logout</Button> */}
                {outlet}
             </div>
         </div>

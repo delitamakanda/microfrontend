@@ -27,17 +27,19 @@ function App() {
       </Route>
 
       <Route element={<Layout />}>
-        <Route index path="/products" element={<ProductList />} />
+        <Route path="/products" element={<ProductList />}>
         <Route path='create' element={<ProductCreate />} />
         <Route path='edit/:id' element={<ProductEdit />} />
         <Route path='show/:id' element={<ProductShow />} />
+        </Route>
       </Route>
 
       <Route element={<Layout />}>
-        <Route index path="/categories" element={<CategoryList />} />
+        <Route path="/categories" element={<CategoryList />}>
         <Route path='create' element={<CategoryCreate />} />
         <Route path='edit/:id' element={<CategoryEdit />} />
         <Route path='show/:id' element={<CategoryShow />} />
+        </Route>
       </Route>
       
       <Route path="*" element={<ErrorComponent />} />
