@@ -9,7 +9,7 @@ import { ProductList, ProductEdit, ProductShow, ProductCreate } from './pages/pr
 // import Button from 'storefrontApp/Button'
 // import { useArticleData } from 'storefrontApp/store'
 import { ConfirmDialog } from 'primereact/confirmdialog';
-import "primereact/resources/themes/saga-blue/theme.css";
+import "primereact/resources/themes/vela-blue/theme.css";
 import "primereact/resources/primereact.css";
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
@@ -27,18 +27,20 @@ function App() {
       </Route>
 
       <Route element={<Layout />}>
-        <Route path="/products" element={<ProductList />}>
-        <Route path='create' element={<ProductCreate />} />
-        <Route path='edit/:id' element={<ProductEdit />} />
-        <Route path='show/:id' element={<ProductShow />} />
+        <Route path="/products" >
+          <Route index element={<ProductList />} />
+          <Route path='create' element={<ProductCreate />} />
+          <Route path='edit/:id' element={<ProductEdit />} />
+          <Route path='show/:id' element={<ProductShow />} />
         </Route>
       </Route>
 
       <Route element={<Layout />}>
-        <Route path="/categories" element={<CategoryList />}>
-        <Route path='create' element={<CategoryCreate />} />
-        <Route path='edit/:id' element={<CategoryEdit />} />
-        <Route path='show/:id' element={<CategoryShow />} />
+        <Route path="/categories">
+          <Route index element={<CategoryList />} />
+          <Route path='create' element={<CategoryCreate />} />
+          <Route path='edit/:id' element={<CategoryEdit />} />
+          <Route path='show/:id' element={<CategoryShow />} />
         </Route>
       </Route>
       

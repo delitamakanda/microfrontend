@@ -14,6 +14,7 @@ export default defineConfig({
       './useLocalStorage': './src/hooks/useLocalStorage',
       './localstore': './src/hooks/localstore',
       './store': './src/store',
+      './constants': './src/constants'
     },
     shared: ['react','react-dom', 'jotai'],
   })],

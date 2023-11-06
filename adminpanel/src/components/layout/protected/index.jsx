@@ -15,9 +15,9 @@ export const Layout = () => {
             <Menu />
             <div className="p-3">
                 <Breadcrumb />
-                {/* <Button size='small' outlined  onClick={() => logout()}>Logout</Button> */}
                {outlet}
             </div>
+            <Button size='small' outlined  onClick={() => logout()}>Logout</Button>
         </div>
     )
 }

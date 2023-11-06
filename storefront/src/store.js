@@ -5,7 +5,7 @@ import { BASE_URL } from './constants';
 const useCount = () => useAtom(counterAtom);
 
 const articleData = atom(async () => {
-    const response = await fetch(`${BASE_URL}store/product/`);
+    const response = await fetch(`${BASE_URL}store/product/?ordering=-created_at`);
     const data = await response.json();
     return data;
 });
