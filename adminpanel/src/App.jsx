@@ -9,7 +9,7 @@ import { ProductList, ProductEdit, ProductShow, ProductCreate } from './pages/pr
 // import Button from 'storefrontApp/Button'
 // import { useArticleData } from 'storefrontApp/store'
 import { ConfirmDialog } from 'primereact/confirmdialog';
-import "primereact/resources/themes/vela-blue/theme.css";
+import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.css";
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";

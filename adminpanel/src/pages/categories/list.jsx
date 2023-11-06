@@ -35,7 +35,7 @@ export const CategoryList = () => {
             setTimeout(() => {
                 setLoading(false)
                 setCategories(data)
-            }, 500)
+            }, 0)
         }
         fetchData()
     }, [])
