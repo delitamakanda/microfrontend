@@ -17,8 +17,6 @@ export const CategoryList = () => {
     const [ current, setCurrent ] = useState(1);
     const [ pageSize, setPageSize ] = useState(10);
     const [ search, setSearch ] = useState('');
-    const [ sortField, setSortField ] = useState([]);
-    const [ sortOrder, setSortOrder ] = useState([]);
     const [categories, setCategories] = useState([]);
     const [isLoading, setLoading ] = useState(false)
 
@@ -90,14 +88,15 @@ export const CategoryList = () => {
                 label="Clear"
                 outlined
                 onClick={() => {
-                    setCurrent(1)                    
+                    setCurrent(1)
+                    setSearch('')
                 }}
             />
             <span className="p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText
                     value={search}
-                    onInput={(e) => setSearch(e.target.value)}
+                    onChange={(e) => setSearch(e.target.value)}
                     placeholder="Keyword Search"
                 />
             </span>
@@ -120,12 +119,21 @@ export const CategoryList = () => {
             }
         >
             <DataTable
-                value={categories}
+                value={categories.filter(c => {
+                    return c.name.toLowerCase().includes(search.toLowerCase())
+                })}
                 showGridlines
-                lazy
+                dataKey="uuid"
                 paginator
-                rows={10}
+                rows={pageSize}
                 rowsPerPageOptions={[5, 10, 25, 50]}
+                first={current * pageSize - pageSize}
+                totalRecords={pageCount * pageSize}
+                onPage={(page) => {
+                    setPageCount(Math.ceil(categories.length / page.rows))
+                    setPageSize(page.rows)
+                    setCurrent((page.page ?? 0) + 1);
+                }}
                 header={header}
                 loading={isLoading}
             >
