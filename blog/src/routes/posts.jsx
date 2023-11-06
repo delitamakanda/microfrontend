@@ -18,10 +18,6 @@ const POSTS = [
     }
 ];
 
-// https://github.com/timlrx/tailwind-nextjs-starter-blog/blob/main/app/blog/page.tsx
-// https://www.tailwindawesome.com/resources/tailwind-nextjs-starter-blog
-
-
 const Posts = () => {
     const posts = getAllPosts();
     const [searchValue, setSearchValue] = useState('');
@@ -65,7 +61,7 @@ const Posts = () => {
                 </div>
             </div>
             {!filteredPosts && 'No posts found.'}
-            {filteredPosts.map((post) => {
+            {filteredPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((post) => {
                 const prettyDate = new Date(post.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
