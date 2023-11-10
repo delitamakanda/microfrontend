@@ -6,12 +6,10 @@ import { InputText } from "primereact/inputtext";
 import { confirmDialog } from "primereact/confirmdialog";
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from "react";
-import { useAuth } from '../../hooks/auth/useAuth'
-import { BASE_URL } from 'storefrontApp/constants'
+import axiosInstance from 'storefrontApp/api';
 
 export const CategoryList = () => {
     const navigate = useNavigate();
-    const {token} = useAuth();
 
     const [ pageCount, setPageCount ] = useState(1);
     const [ current, setCurrent ] = useState(1);
@@ -23,18 +21,10 @@ export const CategoryList = () => {
     useEffect(() => {
         async function fetchData() {
             setLoading(true)
-            const response = await fetch(`${BASE_URL}store/category/`, {
-                method: 'GET',
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${token}`
-                },
-                includeCredentials: true,
-            });
-            const data = await response.json()
+            const response = await axiosInstance.get(`store/category-list/`);
             setTimeout(() => {
                 setLoading(false)
-                setCategories(data)
+                setCategories(response.data)
             }, 0)
         }
         fetchData()

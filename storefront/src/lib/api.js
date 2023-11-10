@@ -6,12 +6,13 @@ const axiosInstance = axios.create({
     timeout: 5000,
     headers: {
         'Content-Type': 'application/json',
-    }
+    },
+    includeCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
+        const token  = JSON.parse(window.localStorage.getItem('token')) || null;
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -32,12 +33,12 @@ axiosInstance.interceptors.response.use(
                 originalConfig._retry = true;
 
                 try {
-                    const response = await axiosInstance.post(`${BASE_URL}auth/refresh/`, {
-                        refresh: localStorage.getItem('refresh')
+                    const response = await axiosInstance.post(`auth/token/refresh/`, {
+                        refresh: JSON.parse(window.localStorage.getItem('refresh')),
                     }) 
 
                     const {access} = response.data;
-                    localStorage.setItem('token', access);
+                    window.localStorage.setItem('token', JSON.stringify(access));
                     return axiosInstance(originalConfig);
                 } catch (error) {
                     return Promise.reject(error);

@@ -21,7 +21,7 @@ export const Login = () => {
 
         setTimeout(async() => {
             setLoading(false);
-            const data = await login(username, password);
+            const {data} = await login(username, password);
             if (data && data.user && !data.user.is_staff) {
                 setError('You are not admin')
             } else {

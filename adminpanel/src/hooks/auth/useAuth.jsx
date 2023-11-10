@@ -1,60 +1,46 @@
 import { createContext, useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from 'storefrontApp/useLocalStorage';
-import { BASE_URL } from 'storefrontApp/constants'
+import axiosInstance from 'storefrontApp/api';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [token, setToken] = useLocalStorage("token", null);
+    const [refresh, setRefresh] = useLocalStorage("refresh", null);
     const navigate = useNavigate();
     
     
     const login = async (username, password) => {
-        const response = await fetch(`${BASE_URL}auth/login/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            includeCredentials: true,
-            body: JSON.stringify({
-                username,
-                password,
-            }),
-        });
+        // login
+        const response = await axiosInstance.post(`auth/login/`, { username, password });
+        const { access, refresh } = response.data;
 
-        const data = await response.json()
-
-        if (response.status === 200 && data.user.is_staff) {
-            setToken(data.access)
+        if (response.status === 200 && response.data.user.is_staff) {
+            setToken(access);
+            setRefresh(refresh);
             navigate("/", { replace: true });
         }
-        return data;
+        return response;
     };
 
     const logout = async () => {
-        const response = await fetch(`${BASE_URL}auth/logout/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            includeCredentials: true,
-        });
-        
-        await response.json()
+        const response = await axiosInstance.post(`auth/logout/`);
 
         if (response.status === 200) {
             setToken(null)
+            setRefresh(null)
             navigate("/login", { replace: true });
         }
     };
     const value = useMemo(
         () => ({
             token,
+            refresh,
             login,
             logout
         }),
-        [token]
+        [token, refresh]
     );
 
     return (

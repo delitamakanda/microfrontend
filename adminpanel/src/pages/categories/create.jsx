@@ -5,13 +5,10 @@ import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { BASE_URL } from 'storefrontApp/constants'
-import { useAuth } from '../../hooks/auth/useAuth'
-
+import axiosInstance from 'storefrontApp/api';
 
 export const CategoryCreate = () => {
     const navigate = useNavigate()
-    const {token} = useAuth();
     const [loading, setLoading] = useState(false)
 
     const { control, handleSubmit, formState: { errors } } = useForm({
@@ -22,17 +19,7 @@ export const CategoryCreate = () => {
     const onSubmit = async (data) => {
         setLoading(true)
 
-        const response = await fetch(`${BASE_URL}store/category/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': `Bearer ${token}`
-            },
-            includeCredentials: true,
-            body: JSON.stringify(data),
-        });
-
-        await response.json()
+        const response = await axiosInstance.post(`store/category/`, data);
 
         if (response.status === 201) {
             setLoading(false)
