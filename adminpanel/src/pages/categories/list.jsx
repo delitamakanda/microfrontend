@@ -143,7 +143,7 @@ export const CategoryList = () => {
                     body={actionBodyTemplate}
                     header="Actions"
                     align="center"
-                    style={{ minWidth: "10rem", width: "10rem" }}
+                    style={{ minWidth: "15rem", width: "15rem" }}
                 />
             </DataTable>
         </Card>

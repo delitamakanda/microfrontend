@@ -26,15 +26,16 @@ export const ProductList = () => {
     const [ search, setSearch ] = useState('');
     const [products, setProductList] = useState([]);
     const [isLoading, setLoading ] = useState(false)
-    const [currentPage, setCurrentPage] = useState('store/product/')
+    const [nextUrl, setNextUrl] = useState('store/product/?ordering=-created_at')
 
     useEffect(() => {
         async function fetchData() {
             setLoading(true)
-            const response = await axiosInstance.get(currentPage);
+            const response = await axiosInstance.get(nextUrl);
+            // setNextUrl(response.next)
+            setProductList(response.data.results)
             setTimeout(() => {
                 setLoading(false)
-                setProductList(response.data)
             }, 0)
         }
         fetchData()
@@ -96,18 +97,18 @@ export const ProductList = () => {
     };
 
     const statusBodyTemplate = (product) => {
-        return <Tag value={product.stock_quantity} severity={getSeverity(product)}></Tag>;
+        return <Tag value={product.status} severity={getSeverity(product)}></Tag>;
     };
 
     const getSeverity = (product) => {
-        switch (product.stock_quantity) {
-            case 'INSTOCK' || 4 < 1000:
+        switch (product.status) {
+            case 'INSTOCK':
                 return 'success';
 
-            case 'LOWSTOCK' || 0 > 4:
+            case 'LOWSTOCK':
                 return 'warning';
 
-            case 'OUTOFSTOCK' || 0:
+            case 'OUTOFSTOCK':
                 return 'danger';
 
             default:
@@ -153,7 +154,9 @@ export const ProductList = () => {
         }
     >
         <DataTable
-            value={products.results}
+            value={products.filter(p => {
+                return p.name.toLowerCase().includes(search.toLowerCase()) || p.description.toLowerCase().includes(search.toLowerCase())
+            })}
             showGridlines
             dataKey="uuid"
             paginator
@@ -162,7 +165,7 @@ export const ProductList = () => {
             first={current * pageSize - pageSize}
             totalRecords={pageCount * pageSize}
             onPage={(page) => {
-                setPageCount(Math.ceil(products.results.length / page.rows))
+                setPageCount(Math.ceil(products.length / page.rows))
                 setPageSize(page.rows)
                 setCurrent((page.page ?? 0) + 1);
             }}
@@ -192,19 +195,21 @@ export const ProductList = () => {
                 field="price"
                 header="Price"
                 body={amountBodyTemplate}
+                style={{ minWidth: "1rem", width: "10rem" }}
                 sortable
             />
             <Column
-                field="stock_quantity"
+                field="status"
                 header="Status"
                 body={statusBodyTemplate}
+                style={{ minWidth: "1rem", width: "10rem" }}
                 sortable
             />
             <Column
                 body={actionBodyTemplate}
                 header="Actions"
                 align="center"
-                style={{ minWidth: "10rem", width: "10rem" }}
+                style={{ minWidth: "15rem", width: "15rem" }}
             />
         </DataTable>
     </Card>
