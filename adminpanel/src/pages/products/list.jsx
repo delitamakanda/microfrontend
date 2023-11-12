@@ -26,20 +26,21 @@ export const ProductList = () => {
     const [ search, setSearch ] = useState('');
     const [products, setProductList] = useState([]);
     const [isLoading, setLoading ] = useState(false)
-    const [nextUrl, setNextUrl] = useState('store/product/?ordering=-created_at')
 
     useEffect(() => {
-        async function fetchData() {
-            setLoading(true)
-            const response = await axiosInstance.get(nextUrl);
-            // setNextUrl(response.next)
-            setProductList(response.data.results)
-            setTimeout(() => {
-                setLoading(false)
-            }, 0)
-        }
-        fetchData()
+        fetchLazyData();
     }, [])
+
+    const fetchLazyData = (search = '') => {
+        setLoading(true);
+        axiosInstance.get(`store/product/?q=${search}&ordering=-created_at`)
+          .then(response => {
+                setProductList(response.data.results)
+                setTimeout(() => {
+                    setLoading(false)
+                }, 0)
+            })
+    }
 
     const confirmDeleteProduct = (uuid) => {
         confirmDialog({
@@ -126,13 +127,17 @@ export const ProductList = () => {
                 onClick={() => {
                     setCurrent(1)
                     setSearch('')
+                    fetchLazyData()
                 }}
             />
             <span className="p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={(e) => {
+                        setSearch(e.target.value);
+                        fetchLazyData(e.target.value);
+                    }}
                     placeholder="Keyword Search"
                 />
             </span>
@@ -154,12 +159,11 @@ export const ProductList = () => {
         }
     >
         <DataTable
-            value={products.filter(p => {
-                return p.name.toLowerCase().includes(search.toLowerCase()) || p.description.toLowerCase().includes(search.toLowerCase())
-            })}
+            value={products}
             showGridlines
             dataKey="uuid"
             paginator
+            virtualScrollerOptions={{ itemSize: 10}}
             rows={pageSize}
             rowsPerPageOptions={[5, 10, 25, 50]}
             first={current * pageSize - pageSize}
