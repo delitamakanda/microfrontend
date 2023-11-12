@@ -38,6 +38,10 @@ export const CategoryList = () => {
             acceptClassName: "p-button-danger",
             accept: () => {
                 // todo delete category
+                axiosInstance.delete(`store/category/${uuid}/delete/`)
+                    .then(() => {
+                        setCategories(categories.filter(category => category.uuid!== uuid))
+                    })
             },
         });
     };

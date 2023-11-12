@@ -21,38 +21,46 @@ export const ProductList = () => {
     const navigate = useNavigate();
 
     const [ pageCount, setPageCount ] = useState(1);
-    const [ current, setCurrent ] = useState(1);
-    const [ pageSize, setPageSize ] = useState(10);
     const [ search, setSearch ] = useState('');
-    const [products, setProductList] = useState([]);
+    const [ debounceSearch, setDebounceSearch ] = useState('');
+    const [data, setData] = useState([]);
     const [isLoading, setLoading ] = useState(false)
+    const [lazyState, setLazyState] = useState({
+        first: 0,
+        rows: 10,
+        total: 0,
+        page: 1,
+    })
+
+    let networkTimeout = null;
 
     useEffect(() => {
         fetchLazyData();
-    }, [])
+        const timeout = setTimeout(() => {
+            setDebounceSearch(search);
+        }, 500);
+        return () => clearTimeout(timeout);
+    }, [lazyState, search, 500])
 
-    const fetchLazyData = (search = '') => {
+    const fetchLazyData = () => {
         setLoading(true);
-        axiosInstance.get(`store/product/?q=${search}&ordering=-created_at`)
-          .then(response => {
-                setProductList(response.data.results)
-                setTimeout(() => {
-                    setLoading(false)
-                }, 0)
-            })
+        if (networkTimeout) {
+            clearTimeout(networkTimeout);
+        }
+
+        networkTimeout = setTimeout(() => {
+            axiosInstance.get(`store/product/?q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=-created_at`)
+              .then(response => {
+                    setPageCount(response.data.count)
+                    setData(response.data)
+                    setTimeout(() => {
+                        setLoading(false)
+                    }, 0)
+                })
+        }, 1000);
+        
     }
 
-    const confirmDeleteProduct = (uuid) => {
-        confirmDialog({
-            message: "Do you want to delete this record?",
-            header: "Delete Confirmation",
-            icon: "pi pi-exclamation-triangle",
-            acceptClassName: "p-button-danger",
-            accept: () => {
-                // todo delete product
-            },
-        })
-    };
 
     const amountBodyTemplate = (rowData) => {
         return formatCurrency(+rowData.price);
@@ -86,13 +94,6 @@ export const ProductList = () => {
                     severity="secondary"
                     onClick={() => navigate(`/products/show/${rowData.uuid}`)}
                 />
-                <Button
-                    icon="pi pi-trash"
-                    rounded
-                    text
-                    severity="danger"
-                    onClick={() => confirmDeleteProduct(rowData.uuid)}
-                />
             </>
         );
     };
@@ -125,9 +126,13 @@ export const ProductList = () => {
                 label="Clear"
                 outlined
                 onClick={() => {
-                    setCurrent(1)
                     setSearch('')
-                    fetchLazyData()
+                    setLazyState({
+                        first: 0,
+                        rows: 10,
+                        total: 0,
+                        page: 1,
+                    })
                 }}
             />
             <span className="p-input-icon-left">
@@ -136,13 +141,28 @@ export const ProductList = () => {
                     value={search}
                     onChange={(e) => {
                         setSearch(e.target.value);
-                        fetchLazyData(e.target.value);
+                        setLazyState({
+                            first: 0,
+                            rows: 10,
+                            total: 0,
+                            page: 1,
+                        })
                     }}
                     placeholder="Keyword Search"
                 />
             </span>
         </div>
     );
+
+    const onPage = (event) => {
+        setLazyState(event)
+    };
+
+    const onSort = (event) => {
+        setLazyState(event)
+    };
+
+
 
     return (
         <Card
@@ -159,27 +179,27 @@ export const ProductList = () => {
         }
     >
         <DataTable
-            value={products}
+            value={data && data.results}
+            lazy={true}
             showGridlines
             dataKey="uuid"
             paginator
-            virtualScrollerOptions={{ itemSize: 10}}
-            rows={pageSize}
+            rows={lazyState.rows}
+            filterDisplay="row"
             rowsPerPageOptions={[5, 10, 25, 50]}
-            first={current * pageSize - pageSize}
-            totalRecords={pageCount * pageSize}
-            onPage={(page) => {
-                setPageCount(Math.ceil(products.length / page.rows))
-                setPageSize(page.rows)
-                setCurrent((page.page ?? 0) + 1);
-            }}
+            onPage={onPage}
+            onSort={onSort}
+            sortField={lazyState.sortField}
+            sortOrder={lazyState.sortOrder}
+            first={lazyState.first}
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport" currentPageReportTemplate={"total " + ":" + pageCount + " entries"}
+            totalRecords={pageCount}
             header={header}
             loading={isLoading}
         >
             <Column
                 field="uuid"
                 header="Uuid"
-                sortable
                 style={{ minWidth: "1rem", width: "10rem" }}
             />
             <Column
@@ -187,33 +207,29 @@ export const ProductList = () => {
                 header="Image"
                 style={{ minWidth: "1rem", width: "10rem" }}
                 body={imageBodyTemplate}
-                sortable
             />
             <Column
                 field="name"
                 header="Name"
                 style={{ minWidth: "12rem" }}
-                sortable
             />
             <Column
                 field="price"
                 header="Price"
                 body={amountBodyTemplate}
                 style={{ minWidth: "1rem", width: "10rem" }}
-                sortable
             />
             <Column
                 field="status"
                 header="Status"
                 body={statusBodyTemplate}
                 style={{ minWidth: "1rem", width: "10rem" }}
-                sortable
             />
             <Column
                 body={actionBodyTemplate}
                 header="Actions"
                 align="center"
-                style={{ minWidth: "15rem", width: "15rem" }}
+                style={{ minWidth: "12rem", width: "12rem" }}
             />
         </DataTable>
     </Card>
