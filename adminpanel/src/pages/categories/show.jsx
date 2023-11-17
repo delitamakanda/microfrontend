@@ -1,10 +1,35 @@
-
+import { useNavigate, useLocation } from "react-router-dom";
+import { Card } from "primereact/card";
+import { Button } from "primereact/button";
 
 export const CategoryShow = () => {
+    const navigate = useNavigate();
+    const { state: { category } } = useLocation();
+
+    const goBack = () => {
+        navigate(-1)
+    };
 
     return (
-        <div>
-            <h1>Show Category</h1>
-        </div>
+        <Card
+            className="shadow-1"
+            title={
+                <div className="flex align-items-center">
+                    <Button
+                        onClick={goBack}
+                        icon="pi pi-arrow-left"
+                        className="mr-1"
+                        text
+                        severity="secondary"
+                    />
+                    <span>Category Details</span>
+                </div>
+            }
+        >
+            <h3>Id</h3>
+            <span>{category?.uuid}</span>
+            <h3>Name</h3>
+            <span>{category?.name}</span>
+        </Card>
     )
 }

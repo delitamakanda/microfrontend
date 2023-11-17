@@ -13,7 +13,7 @@ export const CategoryList = () => {
 
     const [ pageCount, setPageCount ] = useState(1);
     const [ current, setCurrent ] = useState(1);
-    const [ pageSize, setPageSize ] = useState(10);
+    const [ pageSize, setPageSize ] = useState(5);
     const [ search, setSearch ] = useState('');
     const [categories, setCategories] = useState([]);
     const [isLoading, setLoading ] = useState(false)
@@ -54,14 +54,14 @@ export const CategoryList = () => {
                     rounded
                     text
                     severity="secondary"
-                    onClick={() => navigate(`/categories/edit/${rowData.uuid}`)}
+                    onClick={() => navigate(`/categories/edit/${rowData.uuid}`, { state: { category: rowData } })}
                 />
                 <Button
                     icon="pi pi-eye"
                     rounded
                     text
                     severity="secondary"
-                    onClick={() => navigate(`/categories/show/${rowData.uuid}`)}
+                    onClick={() => navigate(`/categories/show/${rowData.uuid}`, { state: { category: rowData } })}
                 />
                 <Button
                     icon="pi pi-trash"
