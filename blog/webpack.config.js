@@ -81,7 +81,7 @@ module.exports = (_, argv) => ({
       library: { type: "module" },
       filename: "storefrontEntry.js",
       remotes: {
-        storefrontApp: 'http://localhost:3000/assets/storefrontEntry.js'
+        storefrontApp: process.env.NODE_ENV === 'production' ? 'https://main--resplendent-strudel-83725d.netlify.app/assets/storefrontEntry.js' : 'http://localhost:3000/assets/storefrontEntry.js'
       },
       exposes: {},
       shared: {

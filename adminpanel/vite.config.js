@@ -10,7 +10,7 @@ export default defineConfig({
     federation({
       name: 'app',
       remotes: {
-        storefrontApp: process.env.NODE_ENV === 'production' ? '/': 'http://localhost:3000/assets/storefrontEntry.js'
+        storefrontApp: process.env.NODE_ENV === 'production' ? 'https://main--resplendent-strudel-83725d.netlify.app/assets/storefrontEntry.js' : 'http://localhost:3000/assets/storefrontEntry.js'
       },
       shared: ['react','react-dom']
     })
