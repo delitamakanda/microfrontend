@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import federation from '@originjs/vite-plugin-federation'
+import process from 'process'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,7 +10,7 @@ export default defineConfig({
     federation({
       name: 'app',
       remotes: {
-        storefrontApp: 'http://localhost:3000/assets/storefrontEntry.js'
+        storefrontApp: process.env.NODE_ENV === 'production' ? '/': 'http://localhost:3000/assets/storefrontEntry.js'
       },
       shared: ['react','react-dom']
     })
