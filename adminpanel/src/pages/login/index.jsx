@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Controller, useForm } from "react-hook-form";
 import {Navigate} from 'react-router-dom'
 import { Loading} from '../../components/core'
@@ -7,11 +7,13 @@ import { InputText} from 'primereact/inputtext'
 import { Button } from 'primereact/button'
 import { classNames } from "primereact/utils";
 import bg from '../../assets/bg.jpg'
+import { Toast } from 'primereact/toast';
 
 export const Login = () => {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const {token, login} = useAuth();
+    const toast = useRef(null);
+
     if (token) {
         return <Navigate to="/" replace />
      }
@@ -26,17 +28,15 @@ export const Login = () => {
      const onSubmit = async({username, password}) => {
         setLoading(true);
 
-        setTimeout(async() => {
-            setLoading(false);
-            const { data } = await login(username, password);
-            if (data && data.user && !data.user.is_staff) {
-                setError('You are not admin')
-            } else if (data && data.user && data.user.is_staff) {
-                setError(null)
-            } else {
-                setError('Invalid username or password')
-            }
-        }, 500);
+        const { data } = await login(username, password);
+        if (data && data.user && !data.user.is_staff) {
+            toast.current.show({ severity: 'info', summary: 'Info', detail: 'You are not admin' });
+        } else if (data && data.user && data.user.is_staff) {
+            toast.current.show({ severity: 'success', summary: 'Success', detail: 'You are connected' });
+        } else {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Invalid username or password' });
+        }
+        setLoading(false);
     }
 
     const getFormErrorMessage = (name) => {
@@ -104,7 +104,7 @@ export const Login = () => {
                         </div>
                         </form>
                         {loading && <Loading />}
-                        { error && <p className="text-danger">{error}</p> }
+                        <Toast ref={toast} />
                     </div>
                 </div>
             </div>
