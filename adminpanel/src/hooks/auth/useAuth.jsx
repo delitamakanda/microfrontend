@@ -13,15 +13,20 @@ export const AuthProvider = ({ children }) => {
     
     const login = async (username, password) => {
         // login
-        const response = await axiosInstance.post(`auth/login/`, { username, password });
-        const { access, refresh } = response.data;
-
-        if (response.status === 200 && response.data.user.is_staff) {
-            setToken(access);
-            setRefresh(refresh);
-            navigate("/", { replace: true });
+        try {
+            const response = await axiosInstance.post(`auth/login/`, { username, password });
+            const { access, refresh } = response.data;
+    
+            if (response.status === 200 && response.data.user.is_staff) {
+                setToken(access);
+                setRefresh(refresh);
+                navigate("/", { replace: true });
+            }
+            return response;
+        } catch (error) {
+            console.error(error);
+            return error;
         }
-        return response;
     };
 
     const logout = async () => {

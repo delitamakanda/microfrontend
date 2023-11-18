@@ -3,7 +3,6 @@ import { Column } from "primereact/column";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { confirmDialog } from "primereact/confirmdialog";
 import { Image } from 'primereact/image';
 import { Tag } from 'primereact/tag';
 import { useNavigate } from 'react-router-dom'

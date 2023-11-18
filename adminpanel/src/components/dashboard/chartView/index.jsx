@@ -28,19 +28,19 @@ export const ChartView = ({ revenue, orders, customers }) => {
         return formatDate.format(new Date(item.date))
     })
 
-    const dailyRevenueData = revenue.map((item) => +item.value);
+    const dailyRevenueData = revenue.map((item) => Number(item.count));
 
     const dailyOrdersLabels = orders.map((item) => {
         return formatDate.format(new Date(item.date))
     })
 
-    const dailyOrdersData = orders.map((item) => +item.value);
+    const dailyOrdersData = orders.map((item) => Number(item.count));
 
     const dailyCustomersLabels = customers.map((item) => {
         return formatDate.format(new Date(item.date))
     })
 
-    const dailyCustomersData = customers.map((item) => +item.value);
+    const dailyCustomersData = customers.map((item) => Number(item.count));
 
     const documentStyle = getComputedStyle(document.documentElement);
 

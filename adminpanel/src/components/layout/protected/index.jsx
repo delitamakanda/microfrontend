@@ -16,8 +16,10 @@ export const Layout = () => {
             <div className="p-3">
                 <Breadcrumb />
                {outlet}
+            <div className='flex flex-row-reverse'>
+                <Button size='small' outlined  onClick={() => logout()}>Logout</Button>
             </div>
-            <Button size='small' outlined  onClick={() => logout()}>Logout</Button>
+            </div>
         </div>
     )
 }
