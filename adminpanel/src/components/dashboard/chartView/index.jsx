@@ -93,7 +93,7 @@ export const ChartView = ({ revenue, orders, customers }) => {
                 <TabPanel header="Daily Orders">
                     <Chart type="bar" data={ordersBarData} options={commonLineOptions} style={{ height: '400px'}} />
                 </TabPanel>
-                <TabPanel header="Daily Revenue">
+                <TabPanel header="New Customers">
                     <Chart type="line" data={newCustomersLineData} options={commonLineOptions} style={{ height: '400px'}} />
                 </TabPanel>
             </TabView>
