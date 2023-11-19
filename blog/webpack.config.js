@@ -5,7 +5,7 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const deps = require("./package.json").dependencies;
 module.exports = (_, argv) => ({
   output: {
-    publicPath: process.env.NODE_ENV === 'production' ? "/" : "http://localhost:8080/",
+    publicPath: process.env.NODE_ENV === 'production' ? "/dist/" : "http://localhost:8080/",
   },
 
   resolve: {
@@ -81,7 +81,7 @@ module.exports = (_, argv) => ({
       library: { type: "module" },
       filename: "storefrontEntry.js",
       remotes: {
-        storefrontApp: process.env.NODE_ENV === 'production' ? 'https://main--resplendent-strudel-83725d.netlify.app/assets/storefrontEntry.js' : 'http://localhost:3000/assets/storefrontEntry.js'
+        storefrontApp: process.env.NODE_ENV === 'production' ? 'https://resplendent-strudel-83725d.netlify.app/assets/storefrontEntry.js' : 'http://localhost:3000/assets/storefrontEntry.js'
       },
       exposes: {},
       shared: {
