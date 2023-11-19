@@ -2,12 +2,13 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const deps = require("./package.json").dependencies;
+const path = require('path');
 module.exports = (_, argv) => ({
-  mode: process.env.NODE_ENV === "production" ? "production" : "development",
-  devtool: process.env.NODE_ENV === "production" ? "source-map" : "inline-source-map",
   output: {
-    filename: 'main.ejs',
+    path: path.resolve(__dirname, './dist'),
+    filename: '[name].js',
     publicPath: "http://localhost:8080/",
+    assetModuleFilename: "[path][name][ext]",
   },
 
   resolve: {
@@ -99,8 +100,11 @@ module.exports = (_, argv) => ({
       },
     }),
     new HtmlWebPackPlugin({
-      template: "./index.ejs",
+      filename: "index.html",
+      template: path.join(__dirname, "./index.ejs"),
       inject: false,
+      minify: false,
+      hash: false
     }),
     new NodePolyfillPlugin()
   ],

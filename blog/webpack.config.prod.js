@@ -4,10 +4,8 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const deps = require("./package.json").dependencies;
 const path = require('path');
 module.exports = (_, argv) => ({
-  mode: "production",
-  devtool: "source-map",
   output: {
-      path: path.resolve(__dirname, './dist'),
+    path: path.resolve(__dirname, './dist'),
     filename: '[name].js',
     publicPath: "/",
     assetModuleFilename: "[path][name][ext]",
@@ -102,7 +100,7 @@ module.exports = (_, argv) => ({
       },
     }),
     new HtmlWebPackPlugin({
-        filename: "index.html",
+      filename: "index.html",
       template: path.join(__dirname, "./index.ejs"),
       inject: false,
       minify: false,
