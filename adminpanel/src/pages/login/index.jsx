@@ -6,7 +6,6 @@ import { useAuth } from '../../hooks/auth/useAuth'
 import { InputText} from 'primereact/inputtext'
 import { Button } from 'primereact/button'
 import { classNames } from "primereact/utils";
-import bg from '../../assets/bg.jpg'
 import { Toast } from 'primereact/toast';
 
 export const Login = () => {
@@ -47,10 +46,10 @@ export const Login = () => {
         );
     }
     return (
-        <div className="bg-primary-reverse bg-primary-50" style={{ backgroundImage: `url(${bg})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}>
+        <div className="bg-primary-reverse bg-primary-50">
             <div className="flex justify-content-center">
                 <div className="w-full lg:w-5 h-screen text-center flex justify-content-center align-items-start">
-                    <div className="z-5 w-full lg:w-8 px-6 text-center mt-8" style={{maxWidth: '400px', backgroundColor: 'rgba(255,255,255,0.75)'}}>
+                    <div className="z-5 w-full lg:w-8 px-6 text-center mt-8" style={{maxWidth: '400px'}}>
                         <h1 className="text-4xl font-light mt-4 text-primary-500">Sign in to Admin Panel</h1>
                         <p>Welcome, please use the form to sign-in Admin Panel</p>
                         <form onSubmit={handleSubmit(onSubmit)}>
