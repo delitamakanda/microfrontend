@@ -3,6 +3,8 @@ const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPl
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const deps = require("./package.json").dependencies;
 module.exports = (_, argv) => ({
+  mode: process.env.NODE_ENV === "production" ? "production" : "development",
+  devtool: process.env.NODE_ENV === "production" ? "source-map" : "inline-source-map",
   output: {
     filename: 'main.ejs',
     publicPath: process.env.NODE_ENV === 'production' ? "https://mellifluous-cocada-015edf.netlify.app/" : "http://localhost:8080/",
@@ -81,7 +83,7 @@ module.exports = (_, argv) => ({
       library: { type: "module" },
       filename: "storefrontEntry.js",
       remotes: {
-        storefrontApp: process.env.NODE_ENV === 'production' ? 'https://resplendent-strudel-83725d.netlify.app/assets/storefrontEntry.js' : 'http://localhost:3000/assets/storefrontEntry.js'
+        storefrontApp: process.env.NODE_ENV === "production" ? 'https://resplendent-strudel-83725d.netlify.app/assets/storefrontEntry.js' : 'http://localhost:3000/assets/storefrontEntry.js',
       },
       exposes: {},
       shared: {
@@ -98,8 +100,7 @@ module.exports = (_, argv) => ({
     }),
     new HtmlWebPackPlugin({
       template: "./index.ejs",
-      inject: true,
-      filename: "./index.html",
+      inject: false,
     }),
     new NodePolyfillPlugin()
   ],
