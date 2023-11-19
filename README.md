@@ -27,3 +27,9 @@ pnpm add @originjs/vite-plugin-federation -D
 npx create-mf-app
 ```
 
+## Demo
+1. Blog
+[App 1](https://mellifluous-cocada-015edf.netlify.app/)
+
+2. Admin panel
+[App 2](https://astonishing-dieffenbachia-7f20d2.netlify.app/)
