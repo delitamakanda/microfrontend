@@ -100,7 +100,9 @@ module.exports = (_, argv) => ({
     }),
     new HtmlWebPackPlugin({
       template: "./index.ejs",
-      inject: false,
+      inject: true,
+      minify: true,
+      hash: false
     }),
     new NodePolyfillPlugin()
   ],
