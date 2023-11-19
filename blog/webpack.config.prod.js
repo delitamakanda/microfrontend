@@ -100,7 +100,7 @@ module.exports = (_, argv) => ({
     }),
     new HtmlWebPackPlugin({
       template: "./index.ejs",
-      inject: true,
+      inject: false,
       minify: true,
       hash: false
     }),
