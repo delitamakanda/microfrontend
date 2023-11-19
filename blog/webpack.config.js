@@ -1,10 +1,12 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
-
+const path = require('path');
 const deps = require("./package.json").dependencies;
 module.exports = (_, argv) => ({
   output: {
+    filename: 'main.ejs',
+    path: path.resolve(__dirname, 'dist'),
     publicPath: process.env.NODE_ENV === 'production' ? "/dist/" : "http://localhost:8080/",
   },
 
