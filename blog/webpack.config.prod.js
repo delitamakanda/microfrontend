@@ -7,7 +7,7 @@ module.exports = (_, argv) => ({
   devtool: process.env.NODE_ENV === "production" ? "source-map" : "inline-source-map",
   output: {
     filename: 'main.ejs',
-    publicPath: "http://localhost:8080/",
+    publicPath: "https://mellifluous-cocada-015edf.netlify.app/",
   },
 
   resolve: {
@@ -83,7 +83,7 @@ module.exports = (_, argv) => ({
       library: { type: "module" },
       filename: "storefrontEntry.js",
       remotes: {
-        storefrontApp: 'http://localhost:3000/assets/storefrontEntry.js',
+        storefrontApp: 'https://resplendent-strudel-83725d.netlify.app/assets/storefrontEntry.js',
       },
       exposes: {},
       shared: {
