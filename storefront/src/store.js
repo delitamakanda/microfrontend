@@ -11,5 +11,12 @@ const articleData = atom(async () => {
 
 export const useArticleData = () => useAtom(articleData);
 
+export const cartAtom = atom([]);
+
+export const cartItemsQuantityAtom = atom(get => {
+    const cartItems = get(cartAtom);
+    return cartItems.reduce((total, item) => total + parseInt(item.quantity), 0);
+});
+
 export default useCount;
 
