@@ -7,7 +7,7 @@ module.exports = (_, argv) => ({
   devtool: process.env.NODE_ENV === "production" ? "source-map" : "inline-source-map",
   output: {
     filename: 'main.ejs',
-    publicPath: "https://mellifluous-cocada-015edf.netlify.app/" ?? "http://localhost:8080/",
+    publicPath: "https://mellifluous-cocada-015edf.netlify.app/",
   },
 
   resolve: {
