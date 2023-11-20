@@ -1,5 +1,7 @@
 import { useAtom } from "jotai";
 import { cartAtom } from "../store";
+import { Button } from 'primereact/button';
+import { Image } from 'primereact/image';
 
 export const ProductCart = ({ product }) => {
     const [ cartItems, setCartItems] = useAtom(cartAtom);
@@ -22,14 +24,21 @@ export const ProductCart = ({ product }) => {
         }
         setCartItems(prevValue => [...prevValue, {product, quantity: 1}]);
     }
+
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        }).format(price);
+    };
     return (
-        <li className="list-group-item d-flex justify-content-between align-items-start">
-            <div className="ms-2 me-auto">
-                <img src={product.image_url} alt={product.name} width="250" height="auto" />
-                <div className="fw-bold">{product.name}</div>
-                <small className="text-muted">{product.price}</small>
+        <div className="group">
+            <div className=" w-full overflow-hidden rounded-lg">
+                <Image src={product.image_url} alt={product.name} width="100%" height="100%" className="h-full w-full object-cover object-center group-hover:opacity-75" />
             </div>
-            <button className="btn btn-outline-primary" onClick={addToCart}>Add to cart</button>
-        </li>
+            <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
+            <p className="mt-1 text-lg font-medium text-gray-900">{formatPrice(product.price)}</p>
+            <Button onClick={addToCart}>Add to cart</Button>
+        </div>
     )
 }

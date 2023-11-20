@@ -5,8 +5,9 @@ export const Layout = ({ children }) => {
     const cartItemsQuantity = useAtomValue(cartItemsQuantityAtom);
     console.log({cartItemsQuantity});
     return (
-        <div className="container">
+        <div className="p-5">
             x {cartItemsQuantity} item(s)
+            <div className="my-5" />
             {children}
         </div>
     )
