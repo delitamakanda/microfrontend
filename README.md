@@ -33,3 +33,6 @@ npx create-mf-app
 
 2. Admin panel
 [App 2](https://astonishing-dieffenbachia-7f20d2.netlify.app/)
+
+3. Storefront (WIP)
+[App 3](https://resplendent-strudel-83725d.netlify.app/)
