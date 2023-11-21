@@ -8,7 +8,7 @@ import { CategoryList, CategoryEdit, CategoryShow, CategoryCreate } from './page
 import { ProductList, ProductEdit, ProductShow, ProductCreate } from './pages/products'
 // import Button from 'storefrontApp/Button'
 // import { useArticleData } from 'storefrontApp/store'
-import "primereact/resources/themes/lara-dark-blue/theme.css";
+import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.css";
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";

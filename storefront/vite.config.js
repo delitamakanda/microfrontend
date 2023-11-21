@@ -24,5 +24,8 @@ export default defineConfig({
     target: 'esnext',
     minify: false,
     cssCodeSplit: false,
+  },
+  optimizeDeps: {
+    exclude: ['/node_modules/'],
   }
 })

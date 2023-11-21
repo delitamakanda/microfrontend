@@ -1,34 +1,31 @@
-import Button from './Button'
-import { useArticleData } from './store';
-import { Provider as JotaiProvider } from 'jotai'
 import { Layout } from './components/Layout';
-import { ProductCart } from './components/ProductCart';
-/*
-import "primereact/resources/themes/tailwind-light/theme.css";
-import "primereact/resources/primereact.css";
-import "primeflex/primeflex.css";
-import "primeicons/primeicons.css";
-*/
+import { Routes, Route } from "react-router-dom";
+import { ProductList, ProductDetail } from './pages/products';
+import { Cart } from './pages/cart';
+import { Suspense } from 'react';
+
 import './App.css'
 
 function App() {
-  const [ data ] = useArticleData();
-
   return (
-    <JotaiProvider>
-      <Layout>
-      <h1>store front</h1>
-      <div className="card">
-        <Button />
-      </div>
-      <div className="my-5" />
-      <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-        {data?.results?.map((article, idx) => (
-          <ProductCart key={idx} product={article} />
-        ))}
-      </div>
-      </Layout>
-    </JotaiProvider>
+      <>
+      <Suspense fallback={<>Loading...</>}>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route path="/">
+                <Route index element={<ProductList />} />
+                <Route path=":id" element={<ProductDetail />} />
+              </Route>
+            </Route>
+
+            <Route element={<Layout />}>
+              <Route path="/cart" element={<Cart />} />
+            </Route>
+
+            <Route path="*" element={<>Error</>} />
+          </Routes>
+      </Suspense>
+      </>
   )
 }
 

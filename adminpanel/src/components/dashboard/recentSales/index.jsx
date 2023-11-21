@@ -19,6 +19,8 @@ export const RecentSales = () => {
         rows: 10,
         total: 0,
         page: 1,
+        sortField: null,
+        sortOrder: null
     })
 
     let networkTimeout = null;
@@ -38,7 +40,7 @@ export const RecentSales = () => {
         }
 
         networkTimeout = setTimeout(() => {
-            axiosInstance.get(`store/order/?q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=-order_date`)
+            axiosInstance.get(`store/order/?q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=${lazyState.sortField}`)
               .then(response => {
                     setPageCount(response.data.count)
                     setData(response.data)
@@ -114,7 +116,17 @@ export const RecentSales = () => {
     };
 
     const onSort = (event) => {
-        setLazyState(event)
+        if (event.sortOrder === 1) {
+            setLazyState({
+             ...lazyState,
+                sortField: event.sortField,
+            })
+        } else {
+            setLazyState({
+            ...lazyState,
+                sortField: `-${event.sortField}`,
+            })
+        }
     };
     return (
         <Card className='shadow-l' title="Recent Sales">
@@ -138,9 +150,9 @@ export const RecentSales = () => {
             >
                 <Column field="uuid" header="uuid" sortable style={{minWidth: '2rem'}} />
                 <Column field="total_amount" header="Amount" body={amountBodyTemplate} sortable />
-                <Column field="user.email" header="Ordered By" style={{minWidth: '10rem'}} sortable />
-                <Column field="user.profile.gender" header="Gender" sortable />
-                <Column field="user.profile.phone_number" header="Phone number" style={{minWidth: '12rem'}} sortable />
+                <Column field="user.email" header="Ordered By" style={{minWidth: '10rem'}} />
+                <Column field="user.profile.gender" header="Gender" />
+                <Column field="user.profile.phone_number" header="Phone number" style={{minWidth: '12rem'}} />
                 <Column field="shipping_address" header="Delivery Address" style={{minWidth: '16rem'}} sortable />
                 <Column field="status" header="Delivery Status" align="center" body={statusBodyTemplate} style={{minWidth: '10rem'}} sortable />
                 <Column field="order_date" header="Created at" body={dateBodyTemplate} style={{minWidth: '12rem'}} sortable />

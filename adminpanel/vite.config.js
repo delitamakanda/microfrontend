@@ -26,6 +26,8 @@ export default defineConfig(({ mode }) => {
       minify: false,
       cssCodeSplit: false,
     },
-    optimizeDeps: {}
+    optimizeDeps: {
+      exclude: ['/node_modules/'],
+    }
   }
 })

@@ -29,6 +29,8 @@ export const ProductList = () => {
         rows: 10,
         total: 0,
         page: 1,
+        sortField: null,
+        sortOrder: null
     })
 
     let networkTimeout = null;
@@ -48,7 +50,7 @@ export const ProductList = () => {
         }
 
         networkTimeout = setTimeout(() => {
-            axiosInstance.get(`store/product/?q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=-created_at`)
+            axiosInstance.get(`store/product/?q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=${lazyState.sortField}`)
               .then(response => {
                     setPageCount(response.data.count)
                     setData(response.data)
@@ -158,7 +160,17 @@ export const ProductList = () => {
     };
 
     const onSort = (event) => {
-        setLazyState(event)
+        if (event.sortOrder === 1) {
+            setLazyState({
+              ...lazyState,
+                sortField: event.sortField,
+            })
+        } else {
+            setLazyState({
+              ...lazyState,
+                sortField: `-${event.sortField}`,
+            })
+        }
     };
 
 
@@ -200,6 +212,7 @@ export const ProductList = () => {
                 field="uuid"
                 header="Uuid"
                 style={{ minWidth: "1rem", width: "10rem" }}
+                sortable
             />
             <Column
                 field="image_url"
@@ -211,18 +224,21 @@ export const ProductList = () => {
                 field="name"
                 header="Name"
                 style={{ minWidth: "12rem" }}
+                sortable
             />
             <Column
                 field="price"
                 header="Price"
                 body={amountBodyTemplate}
                 style={{ minWidth: "1rem", width: "10rem" }}
+                sortable
             />
             <Column
                 field="status"
                 header="Status"
                 body={statusBodyTemplate}
                 style={{ minWidth: "1rem", width: "10rem" }}
+                sortable
             />
             <Column
                 body={actionBodyTemplate}

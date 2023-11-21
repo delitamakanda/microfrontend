@@ -14,7 +14,8 @@ export const ProductCart = ({ product }) => {
                 if (item.product.uuid === product.uuid) {
                     return {
                       ...item,
-                        quantity: item.quantity + 1
+                        quantity: item.quantity + 1,
+                        total: item.total + parseFloat(product.price)
                     }
                 }
                 return item;
@@ -22,7 +23,7 @@ export const ProductCart = ({ product }) => {
             setCartItems(updatedCartItem);
             return
         }
-        setCartItems(prevValue => [...prevValue, {product, quantity: 1}]);
+        setCartItems(prevValue => [...prevValue, {product, quantity: 1, total: parseFloat(product.price)}]);
     }
 
     const formatPrice = (price) => {
@@ -34,7 +35,7 @@ export const ProductCart = ({ product }) => {
     return (
         <div className="group">
             <div className=" w-full overflow-hidden rounded-lg">
-                <Image src={product.image_url} alt={product.name} width="100%" height="100%" className="h-full w-full object-cover object-center group-hover:opacity-75" />
+                <Image src={product.image_url} alt={product.name} width="250" height="100%" className="h-full w-full object-cover object-center group-hover:opacity-75" />
             </div>
             <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
             <p className="mt-1 text-lg font-medium text-gray-900">{formatPrice(product.price)}</p>
