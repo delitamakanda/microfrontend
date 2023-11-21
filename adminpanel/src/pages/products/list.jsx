@@ -234,7 +234,7 @@ export const ProductList = () => {
                 sortable
             />
             <Column
-                field="status"
+                field="stock_quantity"
                 header="Status"
                 body={statusBodyTemplate}
                 style={{ minWidth: "1rem", width: "10rem" }}
