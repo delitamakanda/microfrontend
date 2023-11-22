@@ -16,6 +16,10 @@ const formatCurrency = (value) => {
     })
 }
 
+const formatDateTime = (value) => {
+    return value.toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' });
+};
+
 export const ProductList = () => {
     const navigate = useNavigate();
 
@@ -65,6 +69,10 @@ export const ProductList = () => {
 
     const amountBodyTemplate = (rowData) => {
         return formatCurrency(+rowData.price);
+    };
+
+    const dateBodyTemplate = (rowData) => {
+        return formatDateTime(new Date(rowData.created_at));
     };
 
     const imageBodyTemplate = (rowData) => {
@@ -230,6 +238,7 @@ export const ProductList = () => {
                 style={{ minWidth: "1rem", width: "10rem" }}
                 sortable
             />
+            <Column field="created_at" header="Created at" body={dateBodyTemplate} style={{minWidth: '12rem'}} sortable />
             <Column
                 body={actionBodyTemplate}
                 header="Actions"
