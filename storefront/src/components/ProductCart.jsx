@@ -2,6 +2,7 @@ import { useAtom } from "jotai";
 import { cartAtom } from "../store";
 import { Button } from 'primereact/button';
 import { Image } from 'primereact/image';
+import { Link } from "react-router-dom";
 
 export const ProductCart = ({ product }) => {
     const [ cartItems, setCartItems] = useAtom(cartAtom);
@@ -37,7 +38,9 @@ export const ProductCart = ({ product }) => {
             <div className=" w-full overflow-hidden rounded-lg">
                 <Image src={product.image_url} alt={product.name} width="250" height="100%" className="h-full w-full object-cover object-center group-hover:opacity-75" />
             </div>
-            <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
+            <Link to={`/${product.uuid}`}>
+            <h3 className="mt-4 text-sm text-gray-700 word-wrap">{product.name}</h3>
+            </Link>
             <p className="mt-1 text-lg font-medium text-gray-900">{formatPrice(product.price)}</p>
             <Button onClick={addToCart}>Add to cart</Button>
         </div>

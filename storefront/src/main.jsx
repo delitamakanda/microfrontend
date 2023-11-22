@@ -7,7 +7,7 @@ import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-      <PrimeReactProvider value={{ unstyled: true }}>
+      <PrimeReactProvider value={{ unstyled: false }}>
           <BrowserRouter>
             <App />
           </BrowserRouter>
