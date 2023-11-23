@@ -33,8 +33,8 @@ export const ProductList = () => {
         rows: 10,
         total: 0,
         page: 1,
-        sortField: null,
-        sortOrder: null
+        sortField: 'created_at',
+        sortOrder: '-'
     })
 
     let networkTimeout = null;
