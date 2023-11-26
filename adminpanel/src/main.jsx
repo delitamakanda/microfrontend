@@ -12,11 +12,11 @@ import './index.css'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <PrimeReactProvider value={{ unstyled: true, pt: Tailwind }}>
-      <BrowserRouter>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-      </BrowserRouter>
+        <BrowserRouter>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+        </BrowserRouter>
     </PrimeReactProvider>
   </React.StrictMode>,
 )

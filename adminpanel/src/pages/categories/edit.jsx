@@ -6,6 +6,7 @@ import { classNames } from "primereact/utils";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import axiosInstance from 'storefrontApp/api';
+import { Helmet } from 'react-helmet-async';
 
 export const CategoryEdit = () => {
     const navigate = useNavigate();
@@ -71,6 +72,9 @@ export const CategoryEdit = () => {
                 </div>
             }
         >
+            <Helmet>
+                <title>Dearest. | {`Edit ${name}`}</title>
+            </Helmet>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="p-fluid">
                     <Controller

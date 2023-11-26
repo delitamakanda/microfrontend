@@ -6,6 +6,7 @@ import { classNames } from "primereact/utils";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from 'storefrontApp/api';
+import { Helmet } from 'react-helmet-async';
 
 export const CategoryCreate = () => {
     const navigate = useNavigate()
@@ -54,6 +55,9 @@ export const CategoryCreate = () => {
                 </div>
             }
         >
+            <Helmet>
+                <title>Dearest. | Create category</title>
+            </Helmet>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="p-fluid">
                     {<Controller

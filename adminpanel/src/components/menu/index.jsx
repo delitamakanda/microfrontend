@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { TabMenu } from "primereact/tabmenu";
-import { useAuth } from '../../hooks/auth/useAuth'
+import { useAuth } from '../../hooks/auth/useAuth';
 
 export const Menu = () => {
     const { logout } = useAuth();
@@ -36,8 +36,10 @@ export const Menu = () => {
         }
     }))
     return (
-        <div className="sticky top-0 z-5">
+        <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
+            <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <TabMenu model={items} />
-        </div>
+            </div>
+        </nav>
     )
 }

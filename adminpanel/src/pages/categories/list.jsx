@@ -7,6 +7,7 @@ import { confirmDialog } from "primereact/confirmdialog";
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from "react";
 import axiosInstance from 'storefrontApp/api';
+import { Helmet } from 'react-helmet-async';
 
 export const CategoryList = () => {
     const navigate = useNavigate();
@@ -112,6 +113,9 @@ export const CategoryList = () => {
                 </div>
             }
         >
+            <Helmet>
+                <title>Dearest. | Categories</title>
+            </Helmet>
             <DataTable
                 value={categories.filter(c => {
                     return c.name.toLowerCase().includes(search.toLowerCase())

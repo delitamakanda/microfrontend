@@ -16,11 +16,11 @@ export const RecentSales = () => {
     const [isLoading, setLoading ] = useState(false)
     const [lazyState, setLazyState] = useState({
         first: 0,
-        rows: 10,
+        rows: 5,
         total: 0,
         page: 1,
-        sortField: null,
-        sortOrder: null
+        sortField: 'order_date',
+        sortOrder: -1
     })
 
     let networkTimeout = null;
@@ -40,7 +40,7 @@ export const RecentSales = () => {
         }
 
         networkTimeout = setTimeout(() => {
-            axiosInstance.get(`store/order/?q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=${lazyState.sortOrder}${lazyState.sortField}`)
+            axiosInstance.get(`store/order/?q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=${lazyState.sortOrder === -1 ? '-' : ''}${lazyState.sortField}`)
               .then(response => {
                     setPageCount(response.data.count)
                     setData(response.data)
@@ -116,7 +116,7 @@ export const RecentSales = () => {
     };
 
     const onSort = (event) => {
-        event.sortOrder === 1 ? setLazyState({...lazyState, sortField: event.sortField, sortOrder: '' }) : setLazyState({...lazyState, sortField: event.sortField, sortOrder:  '-' })
+       setLazyState(event)
     };
     return (
         <Card className='shadow-l' title="Recent Sales">

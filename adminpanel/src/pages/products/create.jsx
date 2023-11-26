@@ -9,6 +9,7 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from 'storefrontApp/api';
 import { useState, useEffect } from "react";
+import { Helmet } from 'react-helmet-async';
 
 export const ProductCreate = () => {
     const navigate = useNavigate();
@@ -78,6 +79,9 @@ export const ProductCreate = () => {
                 </div>
             }
         >
+            <Helmet>
+                <title>Dearest. | Create product</title>
+            </Helmet>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="p-fluid">
                     <Controller
