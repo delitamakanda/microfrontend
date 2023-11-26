@@ -2,8 +2,9 @@ import { ProductCart } from '../../components/ProductCart';
 import Button from '../../Button'
 import { Paginator } from 'primereact/paginator';
 import { InputText } from 'primereact/inputtext';
+import { Checkbox} from 'primereact/checkbox';
 import axiosInstance from '../../lib/api';
-import { useState, useEffect } from'react';
+import { useState, useEffect, useMemo } from'react';
 
 
 export const ProductList = () => {
@@ -17,10 +18,14 @@ export const ProductList = () => {
     total: 0,
     page: 1,
     sortField: 'created_at',
-    sortOrder: '-'
+    sortOrder: -1
   });
+  const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState(null);
+
 
   useEffect(() => {
+    setLoading(true);
     fetchLazyData();
     const timeout = setTimeout(() => {
       setDebounceSearch(search);
@@ -29,8 +34,7 @@ export const ProductList = () => {
   }, [lazyState, debounceSearch]);
 
   const fetchLazyData = () => {
-    setLoading(true);
-    axiosInstance.get(`store/product/?q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=${lazyState.sortOrder}${lazyState.sortField}`)
+    axiosInstance.get(`store/product/?q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=${lazyState.sortOrder === -1 ? '-': ''}${lazyState.sortField}`)
     .then(response => {
         setData(response.data)
         setTimeout(() => {
@@ -39,18 +43,64 @@ export const ProductList = () => {
       })
   };
 
+  const fetchCategories = () => {
+    axiosInstance.get('store/category-list/')
+      .then((response) => {
+        setCategories(response.data)
+        setSelectedCategories([response.data[1]])
+        setLoading(false)
+      })
+  }
+
+  useMemo(() => {
+    fetchCategories();
+  }, [])
+
   const onPageChange = (e) => {
     setLazyState(e);
   }
+
+  const onCategoryChange = (e) => {
+    let _selectedCategories = [...selectedCategories];
+
+    if (e.checked)
+        _selectedCategories.push(e.value);
+    else
+        _selectedCategories = _selectedCategories.filter(category => category.uuid !== e.value.uuid);
+
+    setSelectedCategories(_selectedCategories);
+};
     
   return (
       <>
       <Button />
-      <h1>List products</h1>
+      <h2 className="sr-only">Products</h2>
+      {!isLoading && <div>
+        {categories?.map((c) => (
+          <div key={c.uuid}>
+            <h3 className="sr-only">{c.name}</h3>
+            <div className="ui-group">
+              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+              </div>
+              <div key={c.uuid} className="flex align-items-center">
+                <Checkbox inputId={c.uuid} name="category" value={c} onChange={onCategoryChange} checked={selectedCategories.some((item) => item.uuid === c.uuid)}/>
+                <label htmlFor={c.uuid} className="ml-2">{c?.name}</label>
+            </div>
+              <h3 className="mt-4 text-sm text-gray-700">{c?.name}</h3>
+            </div>
+          </div>
+        ))}
+        </div>}
+        {selectedCategories && selectedCategories.length > 0 && <div className="ui-group">
+        {selectedCategories.map((category) => (
+          <div key={category.uuid}>{category.name}</div>
+        ))}  
+        </div>}
       <div className="card">
         <InputText value={search} onChange={(e) => {
                         setSearch(e.target.value);
                         setLazyState({
+                          ...lazyState,
                             first: 0,
                             rows: 10,
                             total: 0,
