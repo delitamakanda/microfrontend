@@ -15,7 +15,8 @@ export default defineConfig({
       './localstore': './src/hooks/localstore',
       './store': './src/store',
       './constants': './src/constants',
-      './api': './src/lib/api'
+      './api': './src/lib/api',
+      './ThemeSwitcher': './src/components/ThemeSwitcher',
     },
     shared: ['react','react-dom', 'jotai'],
   })],

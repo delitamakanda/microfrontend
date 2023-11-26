@@ -1,7 +1,7 @@
 import siteMetadata from "../data/siteMetadata";
 import headerNavLinks from "../data/headerNavLinks";
 import { Link } from'react-router-dom';
-import ThemeSwitch from '../components/ThemeSwitch';
+import ThemeSwitcher from 'storefrontApp/ThemeSwitcher';
 import MobileNav from '../components/MobileNav';
 
 const Header = () => (
@@ -32,7 +32,7 @@ const Header = () => (
             </Link>
           ))}
       </div>
-      <ThemeSwitch />
+      <ThemeSwitcher />
       <MobileNav />
     </header>
 )

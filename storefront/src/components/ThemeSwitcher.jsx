@@ -1,25 +1,27 @@
-import { useEffect, useState } from "react";
-import { usePersistedState } from 'storefrontApp/localstore';
+import { useState, useEffect } from "react";
+import { usePersistedState } from '../hooks/localstore'
 
-const ThemeSwitch = () => {
+const ThemeSwitcher = () => {
     const [mounted, setMounted] = useState(false);
-    const [value, setValue] = usePersistedState('light', 'theme')
-    
+    const [value, setValue] = usePersistedState('light', 'theme');
+
     const toggleTheme = () => {
+        const root = document.getElementsByTagName('html')[0];
+
         setValue(value === 'dark'? 'light' : 'dark', 'theme');
-        document.getElementById('themeId').className = `bg-white text-black antialiased dark:bg-gray-950 dark:text-white ${value}`;
+        root.className = `${value}`;
     };
 
-    
-    useEffect(() => {
+    useEffect(()=> {
         setMounted(true);
-        document.getElementById('themeId').className = `bg-white text-black antialiased dark:bg-gray-950 dark:text-white ${value}`;
-        
+        const root = document.getElementsByTagName('html')[0];
+        root.className = `${value}`;
     }, [value]);
 
     if (!mounted) {
         return null;
     }
+
     return (
         <button aria-label="Toggle Dark Mode" onClick={toggleTheme}>
             <svg
@@ -42,4 +44,4 @@ const ThemeSwitch = () => {
     )
 }
 
-export default ThemeSwitch;
+export default ThemeSwitcher;
