@@ -2,7 +2,7 @@ import { Card } from 'primereact/card';
 
 export const KpiCard = ({ title, color, total, trend, icon, formatTotal = (value) => value }) => {
     const renderTrends = () => {
-        const calc = Math.round((trend /total ) * 100);
+        const calc = (total !== 0 && !isNaN(trend) && !isNaN(total)) ? Math.round((trend / total) * 100) : 0;
         if (total < trend) {
             return (
                 <div className='text-green-500'>

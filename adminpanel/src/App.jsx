@@ -5,10 +5,13 @@ import { Dashboard } from './pages/dashboard';
 import { Login } from './pages/login';
 import { CategoryList, CategoryEdit, CategoryShow, CategoryCreate } from './pages/categories'
 import { ProductList, ProductEdit, ProductShow, ProductCreate } from './pages/products'
-import ThemeSwitcher from 'storefrontApp/ThemeSwitcher'
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import './App.css'
+import "primereact/resources/themes/lara-light-blue/theme.css";
+import "primereact/resources/primereact.css";
+import "primeflex/primeflex.css";
+import "primeicons/primeicons.css";
 
 function App() {
 
@@ -46,7 +49,6 @@ function App() {
         <Route path="*" element={<ErrorComponent />} />
       </Routes>
       <ConfirmDialog />
-      <ThemeSwitcher />
     </HelmetProvider>
     </>
   )

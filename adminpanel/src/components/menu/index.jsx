@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { TabMenu } from "primereact/tabmenu";
 import { useAuth } from '../../hooks/auth/useAuth';
+import { Button } from 'primereact/button';
 
 export const Menu = () => {
     const { logout } = useAuth();
@@ -19,12 +20,27 @@ export const Menu = () => {
             label: 'Categories',
             icon: 'pi pi-tags',
             to: '/categories'
-        }
+        },
+        {
+            label: 'Logout',
+            icon: 'pi pi-sign-out',
+        },
     ].map(menuItem => ({
         label: menuItem.label,
         icon: menuItem.icon,
         template: (item, options) => {
-            
+            if (item.label === 'Logout') {
+                return (
+                    <Button
+                        label="Logout"
+                        icon="pi pi-sign-out"
+                        className="p-menuitem-link"
+                        text
+                        severity="secondary"
+                        onClick={() => logout()}
+                    />
+                )
+            }
             return (
                 <div onClick={options.onClick}>
                     <Link to={menuItem.to} className={options.className}>
@@ -36,10 +52,8 @@ export const Menu = () => {
         }
     }))
     return (
-        <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
-            <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <div className="sticky top-0 z-5">
             <TabMenu model={items} />
-            </div>
-        </nav>
+        </div>
     )
 }

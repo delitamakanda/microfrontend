@@ -22,10 +22,12 @@ export const Dashboard = () => {
             axiosInstance.get('store/dailyOrders/'),
             axiosInstance.get('store/newCustomers/'),
         ]).then(([dailyRevenues, dailyOrders, newCustomers]) => {
-            setLoading(false);
-            setDailyRevenues(dailyRevenues?.data);
-            setDailyOrders(dailyOrders?.data);
-            setNewCustomers(newCustomers?.data);
+            if (dailyRevenues && dailyOrders && newCustomers) {
+                setLoading(false);
+                setDailyRevenues(dailyRevenues?.data);
+                setDailyOrders(dailyOrders?.data);
+                setNewCustomers(newCustomers?.data);
+            }
         })
     }, []);
 
