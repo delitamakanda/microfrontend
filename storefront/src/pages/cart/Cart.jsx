@@ -5,12 +5,12 @@ import { CartItem } from '../../components/CartItem';
 
 export const Cart = () => {
     const [ cartItems ] = useAtom(cartAtom);
-    console.log({ cartItems })
+    // console.log({ cartItems })
 
     return (
         <>
         Cart
-        <Link to='/'>Continue shopping</Link>
+        <Link to='/products'>Continue shopping</Link>
         <ul className="list-group">
             {cartItems.map(item => (
                 <CartItem key={item.product.uuid} product={item.product} quantity={item.quantity} total={item.total} />

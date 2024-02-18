@@ -29,6 +29,7 @@
     "@originjs/vite-plugin-federation": "^1.2.2",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
+    "@unlazy/react": "^0.11.0",
     "@vitejs/plugin-react": "^4.0.0",
     "eslint": "^8.38.0",
     "eslint-plugin-jsx-a11y": "^6.7.1",

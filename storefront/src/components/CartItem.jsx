@@ -1,10 +1,11 @@
 import { useAtom } from 'jotai';
 import { cartAtom } from '../store';
-import { Image } from 'primereact/image';
 import { Button } from 'primereact/button';
 import { Link } from 'react-router-dom';
 import { Dropdown } from 'primereact/dropdown';
-import { useState } from 'react';
+import { ROUTES } from '../constants';
+import { UnLazyImage } from '@unlazy/react'
+
 
 export const CartItem = ({ product, quantity, total }) => {
     const [ cartItems, setCartItems ] = useAtom(cartAtom);
@@ -39,8 +40,8 @@ export const CartItem = ({ product, quantity, total }) => {
     return (
         <li className="list-group-item d-flex justify-content-between align-items-start">
             <div className="ms-2 me-auto">
-                <Image src={product.image_url} alt={product.name} width="200" height="100%" className="h-10 w-10 rounded-full" />
-                <Link to={`/${product.uuid}`} className="text-decoration-none">
+                <UnLazyImage src={product.image_url} alt={product.name} width="200" height="auto" blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH" autoSizes />
+                <Link to={`${ROUTES.PRODUCTS}/${product.uuid}`} className="text-decoration-none">
                     <div className="fw-bold">{product.name}</div>
                 </Link>
                 <div className="text-muted">{formatPrice(product.price)}</div>

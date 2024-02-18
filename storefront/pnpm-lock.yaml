@@ -51,6 +51,9 @@ devDependencies:
   '@types/react-dom':
     specifier: ^18.0.11
     version: 18.0.11
+  '@unlazy/react':
+    specifier: ^0.11.0
+    version: 0.11.0
   '@vitejs/plugin-react':
     specifier: ^4.0.0
     version: 4.0.0(vite@4.3.2)
@@ -656,6 +659,16 @@ packages:
 
   /@types/scheduler@0.16.3:
     resolution: {integrity: sha512-5cJ8CB4yAx7BH1oMvdU0Jh9lrEXyPkar6F9G/ERswkCuvP4KQZfZkSjcMbAICCpQTN4OuZn8tz0HiKv9TGZgrQ==}
+
+  /@unlazy/core@0.11.0:
+    resolution: {integrity: sha512-uKfwDE0gFqau7TD/9jj62H2FBP/43DEoTTfi1pH4DXOBkEx8ll2Wg5mG6l4CLDziNbYVKl3otwkqcMFnHYtbGA==}
+    dev: true
+
+  /@unlazy/react@0.11.0:
+    resolution: {integrity: sha512-LknzH0JmhnJOKotVwReS3fLQzNC7sOgfWjz6KSyaBYhjIlnqdLQbw0qzqMYtwuKVWHwWYqnefvCPMwACwSbgQg==}
+    dependencies:
+      unlazy: 0.11.0
+    dev: true
 
   /@vitejs/plugin-react@4.0.0(vite@4.3.2):
     resolution: {integrity: sha512-HX0XzMjL3hhOYm+0s95pb0Z7F8O81G7joUHgfDd/9J/ZZf5k4xX6QAMFkKsHFxaHlf6X7GD7+XuaZ66ULiJuhQ==}
@@ -2549,6 +2562,12 @@ packages:
       has-bigints: 1.0.2
       has-symbols: 1.0.3
       which-boxed-primitive: 1.0.2
+    dev: true
+
+  /unlazy@0.11.0:
+    resolution: {integrity: sha512-zP3jcJzWDYHR345pCzc4XOX3sD4kpv58XbARu9AbQuCCLRvmMnkhgqMbHCTCQ0NVFNzsG/C40YxSboepixMYtA==}
+    dependencies:
+      '@unlazy/core': 0.11.0
     dev: true
 
   /update-browserslist-db@1.0.13(browserslist@4.22.1):

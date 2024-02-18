@@ -18,7 +18,8 @@ export const ProductList = () => {
     total: 0,
     page: 1,
     sortField: 'created_at',
-    sortOrder: -1
+    sortOrder: -1,
+    query: '',
   });
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState(null);
@@ -35,7 +36,7 @@ export const ProductList = () => {
 
   const fetchLazyData = () => {
     setLoading(true);
-    axiosInstance.get(`store/product/?q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=${lazyState.sortOrder === -1 ? '-': ''}${lazyState.sortField}`)
+    axiosInstance.get(`store/product/?category_name_in=${lazyState.query}&q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=${lazyState.sortOrder === -1 ? '-': ''}${lazyState.sortField}`)
     .then(response => {
         setData(response.data)
         setTimeout(() => {
@@ -47,9 +48,12 @@ export const ProductList = () => {
   const fetchCategories = () => {
     axiosInstance.get('store/category-list/')
       .then((response) => {
-        setCategories(response.data)
-        setSelectedCategories([response.data[1]])
-        setLoading(false)
+        if (response.data) {
+          response.data.unshift({uuid: '00000000-0000-0000-0000-000000000000', name: 'All'});
+          setCategories(response.data)
+          setSelectedCategories([response.data[0]])
+          setLoading(false)
+        }
       })
   }
 
@@ -58,7 +62,15 @@ export const ProductList = () => {
   }, [])
 
   const onPageChange = (e) => {
-    setLazyState(e);
+    setLazyState({
+      first: e.first,
+      rows: e.rows,
+      total: e.total,
+      page: e.page,
+      sortField: lazyState.sortField,
+      sortOrder: lazyState.sortOrder,
+      query: lazyState.query,
+    });
   }
 
   const onCategoryChange = (e) => {
@@ -68,8 +80,11 @@ export const ProductList = () => {
         _selectedCategories.push(e.value);
     else
         _selectedCategories = _selectedCategories.filter(category => category.uuid !== e.value.uuid);
-
     setSelectedCategories(_selectedCategories);
+    setLazyState({
+      ...lazyState,
+      query: _selectedCategories.filter(c => c.name !== 'All').map(category => category.name).join(','),
+    })
 };
     
   return (
@@ -102,15 +117,9 @@ export const ProductList = () => {
                 <Checkbox inputId={c.uuid} name="category" value={c} onChange={onCategoryChange} checked={selectedCategories.some((item) => item.uuid === c.uuid)}/>
                 <label htmlFor={c.uuid} className="ml-2">{c?.name}</label>
             </div>
-              <h3 className="mt-4 text-sm text-gray-700">{c?.name}</h3>
             </div>
           </div>
         ))}
-        </div>}
-        {selectedCategories && selectedCategories.length > 0 && <div className="ui-group">
-        {selectedCategories.map((category) => (
-          <div key={category.uuid}>{category.name}</div>
-        ))}  
         </div>}
       </div>
       <div className="w-full lg:w-8/12">
