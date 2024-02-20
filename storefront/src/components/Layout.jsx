@@ -7,12 +7,45 @@ import ThemeSwitcher from './ThemeSwitcher';
 import { TabMenu } from 'primereact/tabmenu';
 import { Button } from 'primereact/button';
 import { ROUTES } from '../constants';
+import axiosInstance from '../lib/api';
+import { BASE_URL, SITE_TITLE } from '../constants';
+import { useMemo, useState } from 'react';
 
+export const parseXml = (html) => {
+    const parser = new DOMParser();
+    return parser.parseFromString(html, "text/xml");
+}
 
 export const Layout = () => {
     const outlet = useOutlet();
     const cartItemsQuantity = useAtomValue(cartItemsQuantityAtom);
+    const [staticPages, setStaticPages] = useState([]);
     // console.log({cartItemsQuantity});
+
+    useMemo(()=> {
+        axiosInstance.get(`${BASE_URL}sitemap.xml`, {
+            responseType: 'text',
+            headers: {
+                'Accept': 'application/json',
+            },
+        }).then((res) => {
+            const xml = parseXml(res.data).querySelectorAll('loc');
+            console.log(Array.from(xml).map((item) => {
+                return {
+                    title: item.textContent.split('.com/')[1].replace(/\//g, '').toUpperCase(),
+                    url: item.textContent,
+                }
+            }));
+            setStaticPages(Array.from(xml).map((item) => {
+                return {
+                    slug: item.textContent.split('.com/')[1].replace(/\//g, '').toLowerCase(),
+                    title: item.textContent.split('.com/')[1].replace(/\//g, '').toUpperCase(),
+                    url: item.textContent,
+                }
+            }));
+        })
+    },[])
+    
     const items = [
         {
             label: 'Home',
@@ -29,21 +62,6 @@ export const Layout = () => {
             icon: 'pi pi-tags',
             to: ROUTES.CATEGORIES
         },
-        {
-            label: 'Help',
-            icon: 'pi pi-question',
-            to: ROUTES.HELP
-        },
-        {
-            label: 'Shipping',
-            icon: 'pi pi-truck',
-            to: ROUTES.SHIPPING
-        },
-        {
-            label: 'About',
-            icon: 'pi pi-info',
-            to: ROUTES.ABOUT
-        }
     ].map(menuItem => ({
         label: menuItem.label,
         icon: menuItem.icon,
@@ -74,6 +92,19 @@ export const Layout = () => {
     }}  />
             <div className="my-5" />
             {outlet}
+            <div className="my-5" />
+            <footer>
+            {staticPages.map((item, index) => {
+    return (
+        <Link to={`${ROUTES.FLATPAGE}/${item.slug}`} key={index} state={item}>
+            <h1 className="text-3xl font-extrabold leading-9 tracking-tight 
+text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl 
+md:leading-14">{item.title}</h1>
+        </Link>
+    )
+})}
+{new Date().getFullYear() + ` ${SITE_TITLE} All rights reserved.`}
+            </footer>
         </div>
     )
 };

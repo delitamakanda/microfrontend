@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { BASE_URL } from '../constants'
+import { API_URL } from '../constants'
 
 const axiosInstance = axios.create({
-    baseURL: BASE_URL,
+    baseURL: API_URL,
     timeout: 5000,
     headers: {
         'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ axiosInstance.interceptors.response.use(
         return response;
     }, async(error) => {
         const originalConfig = error.config;
-        if (originalConfig.url !== `${BASE_URL}auth/login/` && error.response) {
+        if (originalConfig.url !== `${API_URL}auth/login/` && error.response) {
             if (error.response.status === 401 && !originalConfig._retry) {
                 originalConfig._retry = true;
 

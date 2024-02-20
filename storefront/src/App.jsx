@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { ProductList, ProductDetail } from './pages/products';
 import { Cart, CheckoutPage } from './pages/cart';
 import { HomePage } from './pages/home';
-import { FaqPage, AboutPage, ShippingPage } from './pages/help';
+import { FlatPage } from './pages/help';
 import { CategoriesPage } from './pages/categories';
 import { SigninPage, RegisterPage, ForgotPassword } from './pages/auth';
 import { OrderPage, OrderPageDetail } from './pages/account';
@@ -21,9 +21,9 @@ function App() {
             <Route element={<Layout />}>
               <Route path={ROUTES.HOME} element={<HomePage />} />
               <Route path={ROUTES.CATEGORIES} element={<CategoriesPage />} />
-              <Route path={ROUTES.HELP} element={<FaqPage />} />
-              <Route path={ROUTES.SHIPPING} element={<ShippingPage />} />
-              <Route path={ROUTES.ABOUT} element={<AboutPage />} />
+              <Route path={ROUTES.FLATPAGE}>
+                <Route path={`${ROUTES.FLATPAGE}/:slug`} element={<FlatPage />} />
+              </Route>
               <Route path={ROUTES.PRODUCTS}>
                 <Route index element={<ProductList />} />
                 <Route path={ROUTES.PRODUCT_DETAIL} element={<ProductDetail />} />
