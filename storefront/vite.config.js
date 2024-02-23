@@ -17,6 +17,7 @@ export default defineConfig({
       './constants': './src/constants',
       './api': './src/lib/api',
       './ThemeSwitcher': './src/components/ThemeSwitcher',
+      './SplashScreen': './src/components/SplashScreen',
     },
     shared: ['react','react-dom', 'jotai'],
   })],

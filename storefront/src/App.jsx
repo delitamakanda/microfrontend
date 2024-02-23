@@ -1,4 +1,5 @@
-import { Layout } from './components/Layout';
+import { useEffect, useState } from 'react';
+import { Layout } from './components';
 import { Routes, Route } from "react-router-dom";
 import { ProductList, ProductDetail } from './pages/products';
 import { Cart, CheckoutPage } from './pages/cart';
@@ -10,13 +11,23 @@ import { OrderPage, OrderPageDetail } from './pages/account';
 import { Suspense } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { ROUTES } from './constants';
+import SplashScreen from './components/SplashScreen';
 
 import './App.css'
 
-function App() {
+const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
+  
   return (
       <>
-      <Suspense fallback={<ProgressSpinner />}>
+      {isLoading && <SplashScreen />}
+      {!isLoading && (<Suspense fallback={<ProgressSpinner />}>
           <Routes>
             <Route element={<Layout />}>
               <Route path={ROUTES.HOME} element={<HomePage />} />
@@ -40,7 +51,7 @@ function App() {
             <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
             <Route path="*" element={<>Error</>} />
           </Routes>
-      </Suspense>
+      </Suspense>)}
       </>
   )
 }

@@ -8,7 +8,7 @@ import { TabMenu } from 'primereact/tabmenu';
 import { Button } from 'primereact/button';
 import { ROUTES } from '../constants';
 import axiosInstance from '../lib/api';
-import { BASE_URL, SITE_TITLE } from '../constants';
+import { BASE_URL, SITE_TITLE, BLOG_URL } from '../constants';
 import { useMemo, useState } from 'react';
 
 export const parseXml = (html) => {
@@ -103,6 +103,7 @@ md:leading-14">{item.title}</h1>
         </Link>
     )
 })}
+<a href={BLOG_URL} target="_blank" rel="noopener noreferrer" className='text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14'>Blog</a>
 {new Date().getFullYear() + ` ${SITE_TITLE} All rights reserved.`}
             </footer>
         </div>

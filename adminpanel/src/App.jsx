@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react"
 import { ErrorComponent } from './components/core';
 import { Layout } from './components/layout';
 import { Routes, Route } from 'react-router-dom';
@@ -12,12 +13,21 @@ import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.css";
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
+import SplashScreen from 'storefrontApp/SplashScreen';
 
-function App() {
+const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, [])
 
   return (
     <>
-    <HelmetProvider>
+    {isLoading && <SplashScreen />}
+    {!isLoading && (<HelmetProvider>
       <Helmet>
             <title>Dearest. | Admin panel</title>
       </Helmet>
@@ -49,7 +59,7 @@ function App() {
         <Route path="*" element={<ErrorComponent />} />
       </Routes>
       <ConfirmDialog />
-    </HelmetProvider>
+    </HelmetProvider>)}
     </>
   )
 }
