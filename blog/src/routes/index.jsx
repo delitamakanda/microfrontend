@@ -1,16 +1,27 @@
 //import ButtonModule from 'storefrontApp/Button'
 // const Button = ButtonModule.default
+import { useState, useEffect }from 'react';
+import Loader from '../components/Loader';
+
 import siteMetadata from '../data/siteMetadata'
 import { getAllPosts } from '../lib/api';
 import { Link } from 'react-router-dom'
 
 const MAX_DISPLAY = 2
 
-export default function Index() {
+const Index = () => {
     const posts = getAllPosts();
+    const [isLoading, setLoading ] = useState(true);
+
+    useEffect(() => {}, [
+      setTimeout(() => {
+        setLoading(false);
+      }, 7000)
+    ]);
     return (
       <>
-      <div className="divide-y divide-gray-200 dark:divide-gray-700">
+      {isLoading && <Loader />}
+      {!isLoading && (<div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div className="space-y-2 pb-8 pt-6 md:space-y-5">
           <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
             Latest
@@ -77,7 +88,9 @@ export default function Index() {
         <div>CSS: Tailwind</div>
         <Button />
       </div> */}
-      </div>
+      </div>)}
       </>
     );
-  }
+}
+
+export default Index;
