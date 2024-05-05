@@ -1,0 +1,19 @@
+.category {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(28ch, 1fr));
+    grid-template-rows: auto;
+    gap: 1rem;
+}
+
+.category--name {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.category--name h1 {
+    border-bottom: solid 2px;
+}

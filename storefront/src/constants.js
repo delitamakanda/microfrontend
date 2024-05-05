@@ -24,3 +24,16 @@ export const ROUTES = {
 };
 
 export const BLOG_URL = 'https://mellifluous-cocada-015edf.netlify.app/';
+
+export const randomColors = [
+    '#f4d1f1',
+    '#d2fbff',
+    '#fdbc5a',
+    '#8e8fff',
+    '#f883ef',
+    '#8ef1a4',
+    '#ebdbf6',
+    '#f9ff81',
+    '#ff88ee',
+    '#ee8899'
+]
