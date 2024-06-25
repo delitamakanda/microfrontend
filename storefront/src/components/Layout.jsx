@@ -10,6 +10,8 @@ import { ROUTES } from '../constants';
 import axiosInstance from '../lib/api';
 import { BASE_URL, SITE_TITLE, BLOG_URL } from '../constants';
 import { useMemo, useState } from 'react';
+import { capitalizeFirstLetter } from '../helpers/formatters';
+import { Divider } from 'primereact/divider';
 
 export const parseXml = (html) => {
     const parser = new DOMParser();
@@ -30,16 +32,10 @@ export const Layout = () => {
             },
         }).then((res) => {
             const xml = parseXml(res.data).querySelectorAll('loc');
-            console.log(Array.from(xml).map((item) => {
-                return {
-                    title: item.textContent.split('.com/')[1].replace(/\//g, '').toUpperCase(),
-                    url: item.textContent,
-                }
-            }));
             setStaticPages(Array.from(xml).map((item) => {
                 return {
                     slug: item.textContent.split('.com/')[1].replace(/\//g, '').toLowerCase(),
-                    title: item.textContent.split('.com/')[1].replace(/\//g, '').toUpperCase(),
+                    title: capitalizeFirstLetter(item.textContent.split('.com/')[1].replace(/\//g, '')),
                     url: item.textContent,
                 }
             }));
@@ -93,18 +89,23 @@ export const Layout = () => {
             <div className="my-5" />
             {outlet}
             <div className="my-5" />
-            <footer>
+            <Divider />
+            <footer className='md:flex'>
+                <div className='grow'>
+                
             {staticPages.map((item, index) => {
-    return (
-        <Link to={`${ROUTES.FLATPAGE}/${item.slug}`} key={index} state={item}>
-            <h1 className="text-3xl font-extrabold leading-9 tracking-tight 
-text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl 
-md:leading-14">{item.title}</h1>
+                return (
+                    <Link className='mr-4' to={`${ROUTES.FLATPAGE}/${item.slug}`} key={index} state={item}>
+            {item.title}
         </Link>
     )
 })}
-<a href={BLOG_URL} target="_blank" rel="noopener noreferrer" className='text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14'>Blog</a>
+<a href={BLOG_URL} target="_blank" rel="noopener noreferrer" className='text-gray-900 dark:text-gray-100'>Blog</a>
+</div>
+<div className='flex-none '>
+
 {new Date().getFullYear() + ` ${SITE_TITLE} All rights reserved.`}
+</div>
             </footer>
         </div>
     )

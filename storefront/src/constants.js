@@ -35,5 +35,8 @@ export const randomColors = [
     '#ebdbf6',
     '#f9ff81',
     '#ff88ee',
-    '#ee8899'
+    '#ee8899',
+    '#88ee99',
+    '#8899ee',
+    '#88eeff',
 ]

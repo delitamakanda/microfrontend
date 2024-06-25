@@ -14,6 +14,14 @@
     font-weight: 600;
 }
 
+.category--box {
+    height: 28ch;
+    width: 28ch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .category--name h1 {
     border-bottom: solid 2px;
 }

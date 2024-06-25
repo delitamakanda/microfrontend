@@ -30,7 +30,9 @@ export const CategoriesPage = () => {
             {!loading && categories?.map((cat) => (
                 <Link key={cat.uuid} to={'/products'}>
                     <div className="category--name" style={{ backgroundColor: cat.color }}>
+                        <div className='category--box'>
                         <h1>{cat.name}</h1>
+                        </div>
                     </div>
                 </Link>
             ))}

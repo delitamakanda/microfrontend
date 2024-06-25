@@ -4,6 +4,7 @@ import { Button } from 'primereact/button';
 import { Link } from "react-router-dom";
 import { ROUTES } from '../constants';
 import { UnLazyImage } from '@unlazy/react'
+import { formatPrice } from '../helpers/formatters';
 
 
 export const ProductCart = ({ product }) => {
@@ -29,12 +30,6 @@ export const ProductCart = ({ product }) => {
         setCartItems(prevValue => [...prevValue, {product, quantity: 1, total: parseFloat(product.price)}]);
     }
 
-    const formatPrice = (price) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-        }).format(price);
-    };
     return (
         <div className="ui-group">
             <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
