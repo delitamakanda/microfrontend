@@ -1,27 +1,27 @@
 .category {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(28ch, 1fr));
-    grid-template-rows: auto;
-    gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(36ch, 1fr));
+  grid-template-rows: auto;
+  gap: 1rem;
 }
 
 .category--name {
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
 }
 
 .category--box {
-    height: 28ch;
-    width: 28ch;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  height: 28ch;
+  width: 28ch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .category--name h1 {
-    border-bottom: solid 2px;
+  border-bottom: solid 2px;
 }
