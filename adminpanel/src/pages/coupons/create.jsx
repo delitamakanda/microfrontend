@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
@@ -7,11 +7,13 @@ import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
 import { InputNumber } from "primereact/inputnumber";
 import { InputSwitch } from "primereact/inputswitch";
+import { Toast } from "primereact/toast";
 import axiosInstance from "storefrontApp/api";
 import { Helmet } from "react-helmet-async";
 
 export const CouponCreate = () => {
   const navigate = useNavigate();
+  const toast = useRef(null);
 
   const goBack = () => {
     navigate(-1);
@@ -44,20 +46,31 @@ export const CouponCreate = () => {
   const onSubmit = async (data) => {
     setLoading(true);
 
-    const response = await axiosInstance.post(
-      `store/coupon/create/`,
-      JSON.stringify({
-        code: data.code,
-        discount: data.discount,
-        valid_to: data.valid_to,
-        valid_from: data.valid_from,
-        active: data.active,
-      })
-    );
-
-    if (response.status === 201) {
-      setLoading(false);
-    }
+    await axiosInstance
+      .post(
+        `store/coupon/create/`,
+        JSON.stringify({
+          code: data.code,
+          discount: data.discount,
+          valid_from: data.valid_from,
+          valid_to: data.valid_to,
+          active: data.active,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(() => {
+        setLoading(false);
+        toast.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Coupon created successfully",
+        });
+        navigate(`/coupons`);
+      });
   };
 
   return (
@@ -193,6 +206,7 @@ export const CouponCreate = () => {
           </div>
         </div>
       </form>
+      <Toast ref={toast} />
     </Card>
   );
 };

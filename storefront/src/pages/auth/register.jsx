@@ -3,6 +3,7 @@ import axiosInstance from "../../lib/api";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "primereact/button";
 import { classNames } from "primereact/utils";
+import { InputText } from "primereact/inputtext";
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export const RegisterPage = () => {
           render={({ field, fieldState }) => (
             <div className="mb-1">
               <label htmlFor={field.name}>Username</label>
-              <input
+              <InputText
                 id={field.name}
                 value={field.value}
                 onChange={(e) => field.onChange(e.target.value)}
@@ -72,7 +73,7 @@ export const RegisterPage = () => {
           render={({ field, fieldState }) => (
             <div className="mb-1">
               <label htmlFor={field.name}>Email</label>
-              <input
+              <InputText
                 id={field.name}
                 value={field.value}
                 onChange={(e) => field.onChange(e.target.value)}
@@ -91,14 +92,14 @@ export const RegisterPage = () => {
           render={({ field, fieldState }) => (
             <div className="mb-1">
               <label htmlFor={field.name}>Password</label>
-              <input
+              <InputText
+                type="password"
                 id={field.name}
                 value={field.value}
                 onChange={(e) => field.onChange(e.target.value)}
                 className={classNames("mb-1 mt-1", {
                   "p-invalid": fieldState.error,
                 })}
-                type="password"
               />
               {getFormErrorMessage(field.name)}
             </div>
@@ -114,7 +115,7 @@ export const RegisterPage = () => {
           render={({ field, fieldState }) => (
             <div className="mb-1">
               <label htmlFor={field.name}>Confirm Password</label>
-              <input
+              <InputText
                 id={field.name}
                 value={field.value}
                 onChange={(e) => field.onChange(e.target.value)}

@@ -8,6 +8,7 @@ import axiosInstance from "storefrontApp/api";
 import { useState } from "react";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { Image } from "primereact/image";
 
 export const DealList = () => {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ export const DealList = () => {
   };
 
   const confirmDeleteDeal = (uuid) => {
-    // TODO delete deal
+    // todo: implement actual deletion logic
   };
 
   const actionBodyTemplate = (rowData) => {
@@ -75,6 +76,25 @@ export const DealList = () => {
           onClick={() => confirmDeleteDeal(rowData.uuid)}
         />
       </div>
+    );
+  };
+
+  const startDateBodyTemplate = (rowData) => {
+    return new Date(rowData.start_date).toLocaleString();
+  };
+
+  const endDateBodyTemplate = (rowData) => {
+    return new Date(rowData.end_date).toLocaleString();
+  };
+
+  const imageBodyTemplate = (rowData) => {
+    return (
+      <Image
+        src={rowData.image_url}
+        alt={rowData.name}
+        width="50%"
+        height="50%"
+      />
     );
   };
 
@@ -120,7 +140,6 @@ export const DealList = () => {
             type="button"
             icon="pi pi-plus"
             label="Create"
-            outlined
             className="btn btn-primary"
             onClick={() => navigate("/deals/create")}
           />
@@ -131,11 +150,9 @@ export const DealList = () => {
         <title>Dearest. | Deals</title>
       </Helmet>
       <DataTable
-        value={deals.filter((d) => {
-          return d.code.toLowerCase().includes(search.toLowerCase());
-        })}
+        value={deals}
         showGridlines
-        dataKey="uuid"
+        dataKey="title"
         lazy={true}
         paginator
         rowsPerPageOptions={[5, 10, 25, 50]}
@@ -149,9 +166,19 @@ export const DealList = () => {
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport"
         currentPageReportTemplate={"total " + ":" + pageCount + " entries"}
       >
-        <Column field="code" header="Code" sortable />
-        <Column field="discount" header="Discount" />
-        <Column field="active" header="Is active" />
+        <Column field="title" header="Title" sortable />
+        <Column field="description" header="Description" />
+        <Column
+          field="start_date"
+          header="Start date"
+          body={startDateBodyTemplate}
+        />
+        <Column
+          field="start_end"
+          header="End date"
+          body={endDateBodyTemplate}
+        />
+        <Column field="image_url" header="Image" body={imageBodyTemplate} />
         <Column
           body={actionBodyTemplate}
           header="Actions"

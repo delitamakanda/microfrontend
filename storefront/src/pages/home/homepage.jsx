@@ -27,22 +27,17 @@ export const HomePage = () => {
         console.log(error);
       });
 
-    setLastNews([
-      {
-        title: "New Product Release",
-        slug: "new-product-release",
-        description: "Introducing the latest product in our store.",
-        date: new Date(),
-        image_url: "https://via.placeholder.com/1000x400",
-      },
-      {
-        title: "Best Selling Product",
-        slug: "best-selling-product",
-        description: "We've received high praise for this product.",
-        date: new Date(),
-        image_url: "https://via.placeholder.com/1000x400",
-      },
-    ]);
+    axiosInstance.get("store/deals/").then((response) => {
+      if (response.data) {
+        setLastNews(
+          response.data.results.filter(
+            (deal) =>
+              new Date(deal.start_date) <= new Date() &&
+              new Date() <= new Date(deal.end_date)
+          )
+        );
+      }
+    });
   }, []);
 
   const offerTemplate = (news) => {
@@ -58,10 +53,6 @@ export const HomePage = () => {
         <Link to={`${ROUTES.PRODUCTS}/${news.slug}`}>
           <h2>{news.title}</h2>
           <h2>{news.description}</h2>
-          <small>
-            {new Date(news.date).toLocaleDateString()} at{" "}
-            {new Date(news.date).toLocaleTimeString()}
-          </small>
         </Link>
       </div>
     );
