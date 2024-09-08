@@ -60,14 +60,17 @@ export const HomePage = () => {
 
   return (
     <>
-      <Carousel
-        value={lastNews}
-        numScroll={1}
-        numVisible={1}
-        showNavigators={true}
-        showIndicators={false}
-        itemTemplate={offerTemplate}
-      />
+      {lastNews && (
+        <Carousel
+          value={lastNews}
+          numScroll={1}
+          numVisible={1}
+          showNavigators={true}
+          showIndicators={false}
+          itemTemplate={offerTemplate}
+        />
+      )}
+      <h2 className="text-center text-2xl mt-5 mb-5">Latest Products</h2>
       <div className="carousel overflow-hidden" ref={carouselRef}>
         <div className="carousel-container flex">
           {lastProducts &&
