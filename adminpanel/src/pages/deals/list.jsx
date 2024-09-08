@@ -65,7 +65,7 @@ export const DealList = () => {
           text
           severity="secondary"
           className="btn btn-sm btn-primary"
-          onClick={() => navigate(`/deals/edit/${rowData.uuid}`)}
+          onClick={() => navigate(`/deals/edit/${rowData.slug}`)}
         />
         <Button
           type="button"
@@ -73,7 +73,7 @@ export const DealList = () => {
           icon="pi pi-trash"
           text
           className="btn btn-sm btn-danger"
-          onClick={() => confirmDeleteDeal(rowData.uuid)}
+          onClick={() => confirmDeleteDeal(rowData.slug)}
         />
       </div>
     );

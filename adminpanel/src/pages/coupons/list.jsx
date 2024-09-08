@@ -79,7 +79,7 @@ export const CouponList = () => {
           icon="pi pi-pencil"
           text
           className="btn btn-sm btn-primary"
-          onClick={() => navigate(`/coupons/edit/${rowData.id}`)}
+          onClick={() => navigate(`/coupons/edit/${rowData.code}`)}
         />
         <Button
           type="button"

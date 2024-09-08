@@ -73,7 +73,7 @@ const App = () => {
               <Route path="/deals">
                 <Route index element={<DealList />} />
                 <Route path="create" element={<DealCreate />} />
-                <Route path="edit/:id" element={<DealEdit />} />
+                <Route path="edit/:slug" element={<DealEdit />} />
               </Route>
             </Route>
 
@@ -81,7 +81,7 @@ const App = () => {
               <Route path="/coupons">
                 <Route index element={<CouponList />} />
                 <Route path="create" element={<CouponCreate />} />
-                <Route path="edit/:id" element={<CouponEdit />} />
+                <Route path="edit/:code" element={<CouponEdit />} />
               </Route>
             </Route>
 
