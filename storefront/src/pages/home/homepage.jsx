@@ -50,7 +50,7 @@ export const HomePage = () => {
           alt={news.title}
           style={{ backgroundColor: "#33ccee" }}
         />
-        <Link to={`${ROUTES.PRODUCTS}/${news.slug}`}>
+        <Link to={`${ROUTES.DEAL}/${news.slug}`}>
           <h2>{news.title}</h2>
           <h2>{news.description}</h2>
         </Link>
