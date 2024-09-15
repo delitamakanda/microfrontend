@@ -16,7 +16,6 @@ export const ROUTES = {
     CART: '/cart',
     ORDER: '/order',
     ORDER_DETAIL: ':id',
-    ACCOUNT: '/account',
     CATEGORIES: '/categories',
     FLATPAGE: '/pages',
     FORGOT_PASSWORD: '/forgot-password',

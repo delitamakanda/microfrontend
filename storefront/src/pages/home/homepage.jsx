@@ -60,7 +60,7 @@ export const HomePage = () => {
 
   return (
     <>
-      {lastNews && (
+      {lastNews && lastNews.length >= 1 && (
         <Carousel
           value={lastNews}
           numScroll={1}

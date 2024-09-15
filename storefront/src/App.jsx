@@ -50,6 +50,9 @@ const App = () => {
                   element={<ProductDetail />}
                 />
               </Route>
+              <Route path={ROUTES.CART} element={<Cart />} />
+            </Route>
+            <Route element={<Layout canAuth={true} />}>
               <Route path={ROUTES.ORDER}>
                 <Route index element={<OrderPage />} />
                 <Route
@@ -57,13 +60,17 @@ const App = () => {
                   element={<OrderPageDetail />}
                 />
               </Route>
-              <Route path={ROUTES.CART} element={<Cart />} />
               <Route path={ROUTES.CHECKOUT} element={<CheckoutPage />} />
             </Route>
-            <Route path={ROUTES.LOGIN} element={<SigninPage />} />
-            <Route path={ROUTES.SIGNUP} element={<RegisterPage />} />
-            <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
-            <Route path="*" element={<>Error</>} />
+            <Route element={<Layout />}>
+              <Route path={ROUTES.LOGIN} element={<SigninPage />} />
+              <Route path={ROUTES.SIGNUP} element={<RegisterPage />} />
+              <Route
+                path={ROUTES.FORGOT_PASSWORD}
+                element={<ForgotPassword />}
+              />
+              <Route path="*" element={<>Error</>} />
+            </Route>
           </Routes>
         </Suspense>
       )}
