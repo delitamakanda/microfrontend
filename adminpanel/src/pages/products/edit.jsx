@@ -56,6 +56,13 @@ export const ProductEdit = () => {
       defaultValues.price = productDetail?.data?.price;
       defaultValues.stock_quantity = productDetail?.data?.stock_quantity;
       defaultValues.image_url = productDetail?.data?.image_url;
+      const selectedKeys = productDetail?.data?.category;
+      setSelectedCategories(
+        selectedKeys.map((key) => ({
+          key: key,
+          name: categoryList.data.find((cat) => cat.uuid === key)?.name,
+        }))
+      );
       defaultValues.category = productDetail?.data?.category;
       reset(defaultValues);
     });
