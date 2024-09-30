@@ -36,7 +36,7 @@ export const ProductList = () => {
 
   const fetchLazyData = () => {
     setLoading(true);
-    axiosInstance.get(`store/product/?category_name_in=${lazyState.query}&q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=${lazyState.sortOrder === -1 ? '-': ''}${lazyState.sortField}`)
+    axiosInstance.get(`store/product/?category_name_in=${encodeURIComponent(lazyState.query)}&q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=${lazyState.sortOrder === -1 ? '-': ''}${lazyState.sortField}`)
     .then(response => {
         setData(response.data)
         setTimeout(() => {
