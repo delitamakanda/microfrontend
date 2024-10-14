@@ -21,7 +21,7 @@ export const ProductShow = () => {
             axiosInstance.get(`store/category-list/`),
         ]).then(([product, category]) => {
             setProduct(product.data)
-            setCategory(category.data.find(c => c.uuid === product.data.category))
+            setCategory(category.data.filter(c => product.data.category.includes(c.uuid)))
             setLoading(false)
         })
     }, []);
