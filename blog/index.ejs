@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
-        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dearest. | blog</title>
-        <% for (key in htmlWebpackPlugin.files.js) { %>
-            <script type="module" src="<%= htmlWebpackPlugin.files.js[key] %>"></script>
-        <% } %>
-    </head>
-    <body style="display: block;">
-        <div id="app"></div>
-    </body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: light)"
+      content="#fff"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dearest. | blog</title>
+    <% for (key in htmlWebpackPlugin.files.js) { %>
+    <script type="module" src="<%= htmlWebpackPlugin.files.js[key] %>"></script>
+    <% } %>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
 </html>

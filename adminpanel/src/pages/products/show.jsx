@@ -25,7 +25,6 @@ export const ProductShow = () => {
       const categoryNames = product.data.category.map(
         (uuid) => category.data.find((cat) => cat.uuid === uuid)?.name
       );
-      console.log(categoryNames); // ["Electronics", "Clothing",...]
       setProduct(product.data);
       setCategory(categoryNames);
       setLoading(false);
