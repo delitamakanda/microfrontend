@@ -7,9 +7,18 @@ import process from 'node:process';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
 
-  const isProduction = `${env.NODE_ENV ?? 'production'}`;
-
+  const isProduction = env.VITE_USER_NODE_ENV === 'development' ? 'development' : 'production';
   return {
+    resolve: {
+      alias: {
+        '@': './src',
+        '~': './src/components',
+        '@assets': './src/assets',
+        '@constants': './src/constants',
+        '@hooks': './src/hooks',
+        '@pages': './src/pages',
+      },
+    },
     plugins: [
       react(),
       federation({
@@ -17,7 +26,7 @@ export default defineConfig(({ mode }) => {
         remotes: {
           storefrontApp: isProduction === 'production' ? 'https://resplendent-strudel-83725d.netlify.app/assets/storefrontEntry.js' : 'http://localhost:3000/assets/storefrontEntry.js'
         },
-        shared: ['react','react-dom']
+        shared: ['react', 'react-dom']
       })
     ],
     build: {

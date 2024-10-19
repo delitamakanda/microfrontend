@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { ErrorComponent } from "./components/core";
 import { Layout } from "./components/layout";
 import { Routes, Route } from "react-router-dom";
@@ -18,6 +18,7 @@ import {
 } from "./pages/products";
 import { DealList, DealEdit, DealCreate } from "./pages/deals";
 import { CouponList, CouponEdit, CouponCreate } from "./pages/coupons";
+import { FlatPageCreate, FlatPageList, FlatPageUpdate } from "./pages/static";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import "./App.css";
@@ -33,7 +34,7 @@ const App = () => {
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 400);
   }, []);
 
   return (
@@ -82,6 +83,14 @@ const App = () => {
                 <Route index element={<CouponList />} />
                 <Route path="create" element={<CouponCreate />} />
                 <Route path="edit/:code" element={<CouponEdit />} />
+              </Route>
+            </Route>
+
+            <Route element={<Layout />}>
+              <Route path="/pages">
+                <Route index element={<FlatPageList />} />
+                <Route path="create" element={<FlatPageCreate />} />
+                <Route path="edit/:code" element={<FlatPageUpdate />} />
               </Route>
             </Route>
 
