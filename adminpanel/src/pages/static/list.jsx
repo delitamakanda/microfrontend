@@ -112,8 +112,8 @@ export const FlatPageList = () => {
     setLazyState(event);
   };
 
-  const truncateContentBody = (content) => {
-    return content.length > 200 ? `${content.substr(0, 200)}...` : content;
+  const truncateContentBody = (rowData) => {
+    return rowData.content.length > 200 ? `${rowData.content.substr(0, 200)}...` : rowData.content;
   };
   return (
     <Card className="shadow-1">
@@ -122,6 +122,10 @@ export const FlatPageList = () => {
       </Helmet>
       <DataTable
         value={pages}
+        dataKey="id"
+        showGridlines
+        lazy={true}
+        filterDisplay="row"
         paginator
         rows={lazyState.rows}
         first={lazyState.first}
@@ -132,7 +136,7 @@ export const FlatPageList = () => {
       >
         <Column field="title" header="Title" sortable />
         <Column field="content" header="Content" body={truncateContentBody} />
-        <Column field="action" header="Action" body={actionBodyTemplate} />
+        <Column field="action" header="Action" body={actionBodyTemplate} style={{ minWidth: "12rem", width: "12rem" }} />
       </DataTable>
     </Card>
   );
