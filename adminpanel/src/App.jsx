@@ -22,6 +22,10 @@ import { FlatPageList, FlatPageUpdate } from "./pages/static";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import SplashScreen from "storefrontApp/SplashScreen";
+import "primereact/resources/themes/lara-light-blue/theme.css";
+import "primereact/resources/primereact.css";
+import "primeflex/primeflex.css";
+import "primeicons/primeicons.css";
 import "./App.css";
 
 const App = () => {
