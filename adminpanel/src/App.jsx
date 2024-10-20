@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { ErrorComponent } from "./components/core";
 import { Layout } from "./components/layout";
 import { Routes, Route } from "react-router-dom";
@@ -18,15 +18,11 @@ import {
 } from "./pages/products";
 import { DealList, DealEdit, DealCreate } from "./pages/deals";
 import { CouponList, CouponEdit, CouponCreate } from "./pages/coupons";
-import { FlatPageCreate, FlatPageList, FlatPageUpdate } from "./pages/static";
+import { FlatPageList, FlatPageUpdate } from "./pages/static";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { ConfirmDialog } from "primereact/confirmdialog";
-import "./App.css";
-import "primereact/resources/themes/lara-light-blue/theme.css";
-import "primereact/resources/primereact.css";
-import "primeflex/primeflex.css";
-import "primeicons/primeicons.css";
 import SplashScreen from "storefrontApp/SplashScreen";
+import "./App.css";
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -89,8 +85,7 @@ const App = () => {
             <Route element={<Layout />}>
               <Route path="/pages">
                 <Route index element={<FlatPageList />} />
-                <Route path="create" element={<FlatPageCreate />} />
-                <Route path="edit/:code" element={<FlatPageUpdate />} />
+                <Route path="edit/:id" element={<FlatPageUpdate />} />
               </Route>
             </Route>
 
