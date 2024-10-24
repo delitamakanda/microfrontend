@@ -6,7 +6,6 @@ import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
 import axiosInstance from "storefrontApp/api";
-import { Helmet } from "react-helmet-async";
 import { formatDate } from "../../helpers/utils";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Toast } from "primereact/toast";
@@ -91,9 +90,6 @@ export const DealEdit = () => {
         </div>
       }
     >
-      <Helmet>
-        <title>Dearest. | Edit Deal</title>
-      </Helmet>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-fluid">
           <Controller

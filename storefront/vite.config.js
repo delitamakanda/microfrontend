@@ -18,6 +18,8 @@ export default defineConfig({
         './api': './src/lib/api',
         './ThemeSwitcher': './src/components/ThemeSwitcher',
         './SplashScreen': './src/components/SplashScreen',
+        './useAuth': './src/hooks/useAuth',
+        './AuthProvider': './src/providers/Auth',
       },
       shared: ['react', 'react-dom', 'jotai'],
     })],

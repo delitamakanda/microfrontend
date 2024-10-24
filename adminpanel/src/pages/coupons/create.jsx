@@ -9,7 +9,6 @@ import { InputNumber } from "primereact/inputnumber";
 import { InputSwitch } from "primereact/inputswitch";
 import { Toast } from "primereact/toast";
 import axiosInstance from "storefrontApp/api";
-import { Helmet } from "react-helmet-async";
 
 export const CouponCreate = () => {
   const navigate = useNavigate();
@@ -89,9 +88,6 @@ export const CouponCreate = () => {
         </div>
       }
     >
-      <Helmet>
-        <title>Dearest. | Create coupon</title>
-      </Helmet>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-fluid">
           <Controller

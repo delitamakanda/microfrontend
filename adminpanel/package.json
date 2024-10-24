@@ -1,39 +1,37 @@
 {
-  "name": "adminpanel",
+  "name": "adminpanelv2",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --port 5001 --strictPort",
     "build": "vite build",
-    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint .",
     "preview": "vite preview --port 5001 --strictPort",
-    "serve": "vite serve --port 5001 --strictPort"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "autoprefixer": "^10.4.16",
-    "chart.js": "^4.4.0",
-    "dayjs": "^1.11.10",
-    "postcss": "^8.4.31",
+    "chart.js": "^4.4.5",
+    "dayjs": "^1.11.13",
     "primeflex": "^3.3.1",
-    "primeicons": "^6.0.1",
+    "primeicons": "^7.0.0",
     "primereact": "^10.8.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-helmet-async": "^2.0.1",
-    "react-hook-form": "^7.48.2",
-    "react-router-dom": "^6.19.0",
-    "tailwindcss": "^3.3.5"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.1",
+    "react-router-dom": "^6.27.0"
   },
   "devDependencies": {
-    "@originjs/vite-plugin-federation": "^1.2.2",
-    "@types/react": "^18.0.28",
-    "@types/react-dom": "^18.0.11",
-    "@vitejs/plugin-react": "^4.0.0",
-    "eslint": "^8.38.0",
-    "eslint-plugin-react": "^7.32.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.3.4",
-    "vite": "^4.3.2"
+    "@eslint/js": "^9.13.0",
+    "@originjs/vite-plugin-federation": "^1.3.6",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "eslint": "^9.13.0",
+    "eslint-plugin-react": "^7.37.1",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.13",
+    "globals": "^15.11.0",
+    "vite": "^5.4.9"
   }
 }

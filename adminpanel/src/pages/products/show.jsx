@@ -4,7 +4,6 @@ import { Image } from "primereact/image";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "storefrontApp/api";
-import { Helmet } from "react-helmet-async";
 
 export const ProductShow = () => {
   const navigate = useNavigate();
@@ -51,9 +50,6 @@ export const ProductShow = () => {
         </div>
       }
     >
-      <Helmet>
-        <title>{`Dearest. | ${product?.name}`}</title>
-      </Helmet>
       <h3>{product?.name}</h3>
       <Image src={product?.image_url} alt={product?.name} width="100%" />
       <h3>Price</h3>

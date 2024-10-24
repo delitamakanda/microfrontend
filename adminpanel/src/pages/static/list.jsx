@@ -7,7 +7,6 @@ import { InputText } from "primereact/inputtext";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { confirmDialog } from "primereact/confirmdialog";
-import { Helmet } from "react-helmet-async";
 
 export const FlatPageList = () => {
   const navigate = useNavigate();
@@ -113,13 +112,12 @@ export const FlatPageList = () => {
   };
 
   const truncateContentBody = (rowData) => {
-    return rowData.content.length > 200 ? `${rowData.content.substr(0, 200)}...` : rowData.content;
+    return rowData.content.length > 200
+      ? `${rowData.content.substr(0, 200)}...`
+      : rowData.content;
   };
   return (
     <Card className="shadow-1">
-      <Helmet>
-        <title>Dearest. | Pages</title>
-      </Helmet>
       <DataTable
         value={pages}
         dataKey="id"
@@ -136,7 +134,12 @@ export const FlatPageList = () => {
       >
         <Column field="title" header="Title" sortable />
         <Column field="content" header="Content" body={truncateContentBody} />
-        <Column field="action" header="Action" body={actionBodyTemplate} style={{ minWidth: "12rem", width: "12rem" }} />
+        <Column
+          field="action"
+          header="Action"
+          body={actionBodyTemplate}
+          style={{ minWidth: "12rem", width: "12rem" }}
+        />
       </DataTable>
     </Card>
   );

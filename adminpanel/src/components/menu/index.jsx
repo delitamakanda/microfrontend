@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { TabMenu } from "primereact/tabmenu";
-import { useAuth } from "../../hooks/auth/useAuth";
+import { useAuth } from "storefrontApp/useAuth";
 import { Button } from "primereact/button";
+import { useNavigate } from "react-router-dom";
 
 export const Menu = () => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
   const items = [
     {
       label: "Dashboards",
@@ -52,7 +54,7 @@ export const Menu = () => {
             className="p-menuitem-link"
             text
             severity="secondary"
-            onClick={() => logout()}
+            onClick={disconnectAndSignOut}
           />
         );
       }
@@ -66,6 +68,12 @@ export const Menu = () => {
       );
     },
   }));
+  const disconnectAndSignOut = () => {
+    logout();
+    setTimeout(() => {
+      navigate("/login");
+    }, 500);
+  };
   return (
     <div className="sticky top-0 z-5">
       <TabMenu model={items} />

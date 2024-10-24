@@ -8,7 +8,6 @@ import { classNames } from "primereact/utils";
 import { Toast } from "primereact/toast";
 import { InputTextarea } from "primereact/inputtextarea";
 import axiosInstance from "storefrontApp/api";
-import { Helmet } from "react-helmet-async";
 
 export const DealCreate = () => {
   const navigate = useNavigate();
@@ -83,9 +82,6 @@ export const DealCreate = () => {
         </div>
       }
     >
-      <Helmet>
-        <title>Dearest. | Create deal</title>
-      </Helmet>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-fluid">
           <Controller

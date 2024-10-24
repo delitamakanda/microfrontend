@@ -2,7 +2,6 @@ import { Card } from "primereact/card";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { useEffect } from "react";
-import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "storefrontApp/api";
 import { useState } from "react";
@@ -146,9 +145,6 @@ export const DealList = () => {
         </div>
       }
     >
-      <Helmet>
-        <title>Dearest. | Deals</title>
-      </Helmet>
       <DataTable
         value={deals}
         showGridlines

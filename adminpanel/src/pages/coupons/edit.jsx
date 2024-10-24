@@ -9,7 +9,6 @@ import { classNames } from "primereact/utils";
 import { InputNumber } from "primereact/inputnumber";
 import { InputSwitch } from "primereact/inputswitch";
 import { Toast } from "primereact/toast";
-import { Helmet } from "react-helmet-async";
 import { formatDate } from "../../helpers/utils";
 
 export const CouponEdit = () => {
@@ -85,9 +84,6 @@ export const CouponEdit = () => {
         </div>
       }
     >
-      <Helmet>
-        <title>Dearest. | Edit Coupon</title>
-      </Helmet>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-fluid">
           <Controller

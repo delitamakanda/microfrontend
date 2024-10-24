@@ -1,7 +1,6 @@
 import { Card } from "primereact/card";
 import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
-import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import axiosInstance from "storefrontApp/api";
 import { InputText } from "primereact/inputtext";
@@ -154,9 +153,6 @@ export const CouponList = () => {
         </div>
       }
     >
-      <Helmet>
-        <title>Dearest. | Coupons</title>
-      </Helmet>
       <DataTable
         value={coupons}
         showGridlines

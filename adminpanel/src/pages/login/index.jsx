@@ -2,16 +2,17 @@ import { useState, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Navigate } from "react-router-dom";
 import { Loading } from "../../components/core";
-import { useAuth } from "../../hooks/auth/useAuth";
+import { useAuth } from "storefrontApp/useAuth";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { classNames } from "primereact/utils";
 import { Toast } from "primereact/toast";
-import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
   const [loading, setLoading] = useState(false);
   const { token, login } = useAuth();
+  const navigate = useNavigate();
 
   const toast = useRef(null);
 
@@ -53,6 +54,7 @@ export const Login = () => {
       });
     }
     setLoading(false);
+    navigate("/");
   };
 
   const getFormErrorMessage = (name) => {
@@ -64,9 +66,6 @@ export const Login = () => {
   };
   return (
     <section className="bg-primary-reverse bg-primary-50 dark:bg-gray-900">
-      <Helmet>
-        <title>Dearest. | Login</title>
-      </Helmet>
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a
           href="#"
