@@ -9,9 +9,12 @@ import { classNames } from "primereact/utils";
 import { Toast } from "primereact/toast";
 import { useNavigate } from "react-router-dom";
 
+import logo from "../../assets/logo.png";
+
 export const Login = () => {
   const [loading, setLoading] = useState(false);
-  const { token, login } = useAuth();
+  const [error, setError] = useState(null);
+  const { token, login, user } = useAuth();
   const navigate = useNavigate();
 
   const toast = useRef(null);
@@ -31,30 +34,32 @@ export const Login = () => {
   }
 
   const onSubmit = async ({ username, password }) => {
-    setLoading(true);
-
-    const { data } = await login(username, password);
-    if (data && data.user && !data.user.is_staff) {
-      toast.current.show({
-        severity: "info",
-        summary: "Info",
-        detail: "You are not admin",
-      });
-    } else if (data && data.user && data.user.is_staff) {
-      toast.current.show({
-        severity: "success",
-        summary: "Success",
-        detail: "You are connected",
-      });
-    } else {
-      toast.current.show({
-        severity: "error",
-        summary: "Error",
-        detail: "Invalid username or password",
-      });
+    try {
+      setLoading(true);
+      await login(username, password);
+      if (user && !user.is_staff) {
+        toast.current.show({
+          severity: "info",
+          summary: "Info",
+          detail: "You are not admin",
+        });
+      } else {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: "Invalid username or password",
+        });
+      }
+      setLoading(false);
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
+    } catch (error) {
+      setError(
+        `Failed to login. Please check your credentials. ${error.message}`
+      );
+      setLoading(false);
     }
-    setLoading(false);
-    navigate("/");
   };
 
   const getFormErrorMessage = (name) => {
@@ -65,28 +70,26 @@ export const Login = () => {
     );
   };
   return (
-    <section className="bg-primary-reverse bg-primary-50 dark:bg-gray-900">
+    <section>
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a
           href="#"
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
         >
-          <img
-            className="w-8 h-8 mr-2"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-            alt="logo"
-          />
+          <img className="w-20 h-20 mr-2" src={logo} alt="logo" />
           Dearest.
         </a>
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div className="bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Please use the form to sign-in to Admin Panel
             </h1>
-            <form
-              className="space-y-4 md:space-y-6"
-              onSubmit={handleSubmit(onSubmit)}
-            >
+            {error && (
+              <div className="text-sm text-red-500 dark:text-red-400">
+                {error}
+              </div>
+            )}
+            <form onSubmit={handleSubmit(onSubmit)}>
               <Controller
                 name="username"
                 control={control}
@@ -102,12 +105,9 @@ export const Login = () => {
                     <InputText
                       id={field.name}
                       value={field.value}
-                      className={classNames(
-                        "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500",
-                        {
-                          "p-invalid": fieldState.error,
-                        }
-                      )}
+                      className={classNames("", {
+                        "p-invalid": fieldState.error,
+                      })}
                       onChange={(e) => field.onChange(e.target.value)}
                     />
                     {getFormErrorMessage(field.name)}
@@ -130,12 +130,9 @@ export const Login = () => {
                       id={field.name}
                       value={field.value}
                       type="password"
-                      className={classNames(
-                        "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500",
-                        {
-                          "p-invalid": fieldState.error,
-                        }
-                      )}
+                      className={classNames("", {
+                        "p-invalid": fieldState.error,
+                      })}
                       onChange={(e) => field.onChange(e.target.value)}
                     />
                     {getFormErrorMessage(field.name)}
@@ -145,7 +142,7 @@ export const Login = () => {
               <Button
                 type="submit"
                 label="Sign In"
-                className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                className="p-button font-bold"
                 disabled={loading}
                 loading={loading}
               />

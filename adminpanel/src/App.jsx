@@ -23,7 +23,7 @@ import { FlatPageList, FlatPageUpdate } from "./pages/static";
 import "primereact/resources/primereact.css";
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
-import "primereact/resources/themes/mira/theme.css";
+import "primereact/resources/themes/nano/theme.css";
 
 import { PrimeReactProvider } from "primereact/api";
 import { ConfirmDialog } from "primereact/confirmdialog";

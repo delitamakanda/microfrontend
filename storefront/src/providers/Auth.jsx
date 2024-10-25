@@ -1,11 +1,13 @@
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import axiosInstance from "../lib/api";
 import { AuthContext } from "./AuthContext";
+import { useState } from "react";
 
 // eslint-disable-next-line react/prop-types
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useLocalStorage("token", null);
   const [refresh, setRefresh] = useLocalStorage("refresh", null);
+  const [user, setUser] = useState(null);
 
   const login = async (username, password) => {
     try {
@@ -13,16 +15,17 @@ export const AuthProvider = ({ children }) => {
         username,
         password,
       });
-      const { access, refresh } = response.data;
+
+      const { access, refresh, user } = response.data;
 
       if (response.status === 200) {
         setToken(access);
         setRefresh(refresh);
+        setUser(user);
       }
-      return response;
     } catch (error) {
       console.error(error);
-      return error;
+      throw new Error("Failed to login");
     }
   };
 
@@ -32,11 +35,12 @@ export const AuthProvider = ({ children }) => {
     if (response.status === 200) {
       setToken(null);
       setRefresh(null);
+      setUser(null);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ token, refresh, login, logout }}>
+    <AuthContext.Provider value={{ token, refresh, login, logout, user }}>
       {children}
     </AuthContext.Provider>
   );
