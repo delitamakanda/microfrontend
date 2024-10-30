@@ -7,7 +7,7 @@ import { useState } from "react";
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useLocalStorage("token", null);
   const [refresh, setRefresh] = useLocalStorage("refresh", null);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useLocalStorage("user", null);
 
   const login = async (username, password) => {
     try {

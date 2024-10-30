@@ -14,9 +14,8 @@ import logo from "../../assets/logo.png";
 export const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { token, login, user } = useAuth();
+  const { token, login, user, logout } = useAuth();
   const navigate = useNavigate();
-
   const toast = useRef(null);
 
   const {
@@ -37,19 +36,6 @@ export const Login = () => {
     try {
       setLoading(true);
       await login(username, password);
-      if (user && !user.is_staff) {
-        toast.current.show({
-          severity: "info",
-          summary: "Info",
-          detail: "You are not admin",
-        });
-      } else {
-        toast.current.show({
-          severity: "error",
-          summary: "Error",
-          detail: "Invalid username or password",
-        });
-      }
       setLoading(false);
       setTimeout(() => {
         navigate("/");
