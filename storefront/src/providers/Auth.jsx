@@ -29,6 +29,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const register = async (username, password1, password2, email) => {
+    try {
+      const response = await axiosInstance.post("registration/", {
+        username,
+        password1,
+        password2,
+        email,
+      });
+
+      if (response.status === 201) {
+        const { access, refresh, user } = response.data;
+
+        if (response.status === 201) {
+          setToken(access);
+          setRefresh(refresh);
+          setUser(user);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to register");
+    }
+  }
+
   const logout = async () => {
     const response = await axiosInstance.post("/auth/logout/");
 
@@ -40,7 +64,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, refresh, login, logout, user }}>
+    <AuthContext.Provider value={{ token, refresh, login, logout, user, register }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,4 +1,4 @@
-# Microfrontend implementation
+# Micro frontend implementation
 
 ```bash
 # app 1

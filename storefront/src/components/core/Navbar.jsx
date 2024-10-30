@@ -7,9 +7,14 @@ import { Button } from "primereact/button";
 import { ROUTES } from "../../constants";
 import ThemeSwitcher from "../ThemeSwitcher";
 import { TabMenu } from "primereact/tabmenu";
+import { useAuth } from "../../hooks/useAuth.jsx";
+import { classNames } from "primereact/utils";
+import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   const cartItemsQuantity = useAtomValue(cartItemsQuantityAtom);
+  const { logout, token } = useAuth();
+  const navigate = useNavigate();
 
   const items = [
     {
@@ -41,6 +46,10 @@ export const Navbar = () => {
       );
     },
   }));
+  const handleLogout = () => {
+      logout();
+      navigate(ROUTES.HOME, { replace: true });
+  }
   return (
     <>
       <ThemeSwitcher />
@@ -48,15 +57,24 @@ export const Navbar = () => {
       <Link to={ROUTES.CART}>
         <i className="pi pi-shopping-cart"></i> x {cartItemsQuantity} item(s)
       </Link>
-      <Link to={ROUTES.LOGIN}>
-        <i className="pi pi-sign-in"></i> Sign In
-      </Link>
-      <Link to={ROUTES.SIGNUP}>
-        <i className="pi pi-user-plus"></i> Register
-      </Link>
+        {!token && (<>
+            <Link to={ROUTES.LOGIN}>
+                <i className="pi pi-sign-in"></i> Sign In
+            </Link>
+            <Link to={ROUTES.SIGNUP}>
+    <i className="pi pi-user-plus"></i> Register
+    </Link>
+        </>)}
+        {token && (
+            <>
       <Link to={ROUTES.ORDER}>
         <i className="pi pi-shopping-cart"></i> Orders
       </Link>
+
+          <Button onClick={handleLogout}>
+            <i className="pi pi-power-off"></i> Logout
+          </Button></>
+        )}
       <div className="my-5" />
       <TabMenu
         model={items}
