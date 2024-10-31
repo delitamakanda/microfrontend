@@ -6,20 +6,23 @@ import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
-import { InputTextarea } from "primereact/inputtextarea";
 import { Toast } from "primereact/toast";
 import { Checkbox } from "primereact/checkbox";
+import { Editor } from "primereact/editor";
 
 export const FlatPageUpdate = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
+  const [flatPage, setFlatPage] = useState(null);
+  const contentEditorRef = useRef(null);
 
   const {
     control,
     handleSubmit,
     reset,
+      watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -33,10 +36,13 @@ export const FlatPageUpdate = () => {
     },
   });
 
+  contentEditorRef.current = watch("content", "");
+
   useEffect(() => {
     setLoading(true);
     axiosInstance.get(`/store/flatpage/${id}/`).then((response) => {
       let defaultValues = {};
+      setFlatPage(response.data);
       defaultValues.title = response.data.title;
       defaultValues.content = response.data.content;
       defaultValues.enable_comments = response.data.enable_comments;
@@ -58,11 +64,10 @@ export const FlatPageUpdate = () => {
     await axiosInstance.put(`/store/flatpage/${id}/`, data);
     toast.current.show({
       severity: "success",
-      summary: "Flat Page Updated",
+      summary: `${flatPage?.title} Page Updated`,
       detail: "The flat page has been updated successfully.",
     });
     setTimeout(() => {
-      toast.current.hide();
       setLoading(false);
     }, 3000);
   };
@@ -88,7 +93,7 @@ export const FlatPageUpdate = () => {
               text
               severity="secondary"
             />
-            <span>Update Flat Page</span>
+            <span>Update {flatPage?.title} Page</span>
           </div>
           <Button
             label="Refresh"
@@ -127,20 +132,18 @@ export const FlatPageUpdate = () => {
             render={({ field, fieldState }) => (
               <div className="mb-1">
                 <label htmlFor={field.name}>Content</label>
-                <InputTextarea
-                  id={field.name}
-                  value={field.value}
-                  rows={10}
-                  cols={30}
-                  className={classNames("mb-1 mt-1", {
-                    "p-invalid": fieldState.error,
-                  })}
-                  onChange={(e) => field.onChange(e.target.value)}
-                  autoResize
-                  autoUpdateInput
-                  onInput={(e) => field.onChange(e.target.value)}
-                  placeholder="Enter content here..."
-                />
+                  <Editor
+                    id={field.name}
+                    value={field.value}
+                    ref={contentEditorRef}
+                    onTextChange={(e) => field.onChange(e.htmlValue)}
+                    className={classNames("mb-1 mt-1", {
+                      "p-invalid": fieldState.error,
+                    })}
+                    style={{ 'width': '100%', height: '300px' }}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    placeholder="Enter content here..."
+                  />
                 {getFormErrorMessage("content")}
               </div>
             )}

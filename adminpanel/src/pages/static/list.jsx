@@ -69,6 +69,13 @@ export const FlatPageList = () => {
       <div className="flex justify-content-between">
         <Button
           type="button"
+          icon="pi pi-eye"
+          text
+          className="btn btn-sm btn-info"
+          onClick={() => navigate(`/pages/show/${rowData.id}`)}
+          />
+        <Button
+          type="button"
           icon="pi pi-pencil"
           text
           className="btn btn-sm btn-primary"
@@ -94,6 +101,12 @@ export const FlatPageList = () => {
         className="p-button-secondary"
         onClick={() => setSearch("")}
       />
+      <Button type="button"
+              icon="pi pi-plus"
+              label="Add New"
+              className="p-button-success"
+              onClick={() => navigate(`/pages/create`)}
+        />
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -112,8 +125,9 @@ export const FlatPageList = () => {
   };
 
   const truncateContentBody = (rowData) => {
-    return rowData.content.length > 200
-      ? `${rowData.content.substr(0, 200)}...`
+    // escape html characters
+    return rowData.content.length > 50
+      ? `${rowData.content.substr(0, 50)}...`
       : rowData.content;
   };
   return (

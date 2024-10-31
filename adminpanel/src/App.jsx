@@ -19,7 +19,7 @@ import {
 } from "./pages/products";
 import { DealList, DealEdit, DealCreate } from "./pages/deals";
 import { CouponList, CouponEdit, CouponCreate } from "./pages/coupons";
-import { FlatPageList, FlatPageUpdate } from "./pages/static";
+import { FlatPageList, FlatPageUpdate, FlatPageCreate, FlatPageShow } from "./pages/static";
 import "primereact/resources/primereact.css";
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
@@ -35,7 +35,7 @@ function App() {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 400);
+    }, 350);
   }, []);
 
   return (
@@ -89,6 +89,8 @@ function App() {
                 <Route path="/pages">
                   <Route index element={<FlatPageList />} />
                   <Route path="edit/:id" element={<FlatPageUpdate />} />
+                  <Route path="create" element={<FlatPageCreate />} />
+                  <Route path="show/:id" element={<FlatPageShow />} />
                 </Route>
               </Route>
 
