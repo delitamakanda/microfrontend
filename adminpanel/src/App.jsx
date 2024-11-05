@@ -20,6 +20,7 @@ import {
 import { DealList, DealEdit, DealCreate } from "./pages/deals";
 import { CouponList, CouponEdit, CouponCreate } from "./pages/coupons";
 import { FlatPageList, FlatPageUpdate, FlatPageCreate, FlatPageShow } from "./pages/static";
+import { UserList } from './pages/users';
 import "primereact/resources/primereact.css";
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
@@ -91,6 +92,12 @@ function App() {
                   <Route path="edit/:id" element={<FlatPageUpdate />} />
                   <Route path="create" element={<FlatPageCreate />} />
                   <Route path="show/:id" element={<FlatPageShow />} />
+                </Route>
+              </Route>
+
+              <Route element={<Layout />}>
+                <Route path="/users">
+                  <Route index element={<UserList />} />
                 </Route>
               </Route>
 

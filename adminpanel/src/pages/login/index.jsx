@@ -91,7 +91,7 @@ export const Login = () => {
                     <InputText
                       id={field.name}
                       value={field.value}
-                      className={classNames("", {
+                      className={classNames("block mb-2 border-1 ", {
                         "p-invalid": fieldState.error,
                       })}
                       onChange={(e) => field.onChange(e.target.value)}
@@ -116,7 +116,7 @@ export const Login = () => {
                       id={field.name}
                       value={field.value}
                       type="password"
-                      className={classNames("", {
+                      className={classNames("block mb-2 border-1", {
                         "p-invalid": fieldState.error,
                       })}
                       onChange={(e) => field.onChange(e.target.value)}

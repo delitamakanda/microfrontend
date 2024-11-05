@@ -39,6 +39,11 @@ export const Menu = () => {
       to: "/pages",
     },
     {
+      label: "Users",
+      icon: "pi pi-users",
+      to: "/users",
+    },
+    {
       label: "Logout",
       icon: "pi pi-sign-out",
     },
