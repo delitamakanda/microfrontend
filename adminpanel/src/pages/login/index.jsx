@@ -83,7 +83,7 @@ export const Login = () => {
                 render={({ field, fieldState }) => (
                   <div>
                     <label
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block text-sm/6 font-medium text-gray-900"
                       htmlFor={field.name}
                     >
                       Username
@@ -91,7 +91,7 @@ export const Login = () => {
                     <InputText
                       id={field.name}
                       value={field.value}
-                      className={classNames("block mb-2 border-1 ", {
+                      className={classNames("block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 ", {
                         "p-invalid": fieldState.error,
                       })}
                       onChange={(e) => field.onChange(e.target.value)}
@@ -107,7 +107,7 @@ export const Login = () => {
                 render={({ field, fieldState }) => (
                   <div>
                     <label
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block text-sm/6 font-medium text-gray-900"
                       htmlFor={field.name}
                     >
                       Password
@@ -116,7 +116,7 @@ export const Login = () => {
                       id={field.name}
                       value={field.value}
                       type="password"
-                      className={classNames("block mb-2 border-1", {
+                      className={classNames("block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6", {
                         "p-invalid": fieldState.error,
                       })}
                       onChange={(e) => field.onChange(e.target.value)}
@@ -128,7 +128,7 @@ export const Login = () => {
               <Button
                 type="submit"
                 label="Sign In"
-                className="p-button font-bold"
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 disabled={loading}
                 loading={loading}
               />
