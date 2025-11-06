@@ -1,16 +1,42 @@
-export function separateAmount(amount, separator) {
-    amount = ' ' + amount;
-    separator = separator || ' ';
-    let c = '',
-        d = 0;
-    while (amount.match(/^0[0-9]/)) {
-        amount = amount.substring(1);
+export function separateAmount(amount, separator = ' ') {
+    if (amount === undefined || amount === null) {
+        return '';
     }
-    for (let i = amount.length - 1; i >= 0; i--) {
-        c = (d != 0 && d % 3 == 0) ? amount[i] + separator + c : amount[i] + c;
-        d++;
+
+    const normalized = String(amount).trim();
+    if (normalized.length === 0) {
+        return '';
     }
-    return c;
+
+    const isNegative = normalized.startsWith('-');
+    const unsignedValue = isNegative ? normalized.slice(1) : normalized;
+    const decimalIndex = Math.max(unsignedValue.lastIndexOf('.'), unsignedValue.lastIndexOf(','));
+
+    let fractionSymbol = '';
+    let fractionDigits = '';
+
+    if (decimalIndex !== -1 && decimalIndex < unsignedValue.length - 1) {
+        fractionSymbol = unsignedValue[decimalIndex];
+        fractionDigits = unsignedValue.slice(decimalIndex + 1).replace(/\D/g, '');
+    }
+
+    const integerSource = decimalIndex !== -1 ? unsignedValue.slice(0, decimalIndex) : unsignedValue;
+    const integerDigitsRaw = integerSource.replace(/\D/g, '');
+    const integerDigits = integerDigitsRaw.replace(/^0+(?=\d)/, '');
+
+    if (!integerDigits && !fractionDigits) {
+        return '';
+    }
+
+    const formattedInteger = (integerDigits || '0').replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+
+    if (!fractionDigits) {
+        return isNegative ? `-${formattedInteger}` : formattedInteger;
+    }
+
+    const decimalSeparator = fractionSymbol === ',' ? ',' : '.';
+    const formatted = `${formattedInteger}${decimalSeparator}${fractionDigits}`;
+    return isNegative ? `-${formatted}` : formatted;
 }
 
 export function formatDate(date) {
