@@ -10,7 +10,12 @@ export function separateAmount(amount, separator = ' ') {
 
     const isNegative = normalized.startsWith('-');
     const unsignedValue = isNegative ? normalized.slice(1) : normalized;
-    const decimalIndex = Math.max(unsignedValue.lastIndexOf('.'), unsignedValue.lastIndexOf(','));
+    
+    // Find the rightmost occurrence of either '.' or ',' as the decimal separator.
+    // This handles various locale formats: "1,234.56" (US), "1.234,56" (EU), etc.
+    const dotIndex = unsignedValue.lastIndexOf('.');
+    const commaIndex = unsignedValue.lastIndexOf(',');
+    const decimalIndex = Math.max(dotIndex, commaIndex);
 
     let fractionSymbol = '';
     let fractionDigits = '';

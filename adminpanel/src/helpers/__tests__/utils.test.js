@@ -18,6 +18,29 @@ test('separateAmount preserves negative amounts', () => {
     assert.equal(separateAmount('-9876543', '.'), '-9.876.543');
 });
 
+test('separateAmount handles US format with both separators (1,234.56)', () => {
+    assert.equal(separateAmount('1234.56'), '1 234.56');
+    assert.equal(separateAmount('1,234.56'), '1 234.56');
+});
+
+test('separateAmount handles European format with both separators (1.234,56)', () => {
+    assert.equal(separateAmount('1.234,56'), '1 234,56');
+});
+
+test('separateAmount uses rightmost separator as decimal point', () => {
+    // When both . and , exist, the rightmost one is treated as decimal separator
+    assert.equal(separateAmount('1,234.56'), '1 234.56');
+    assert.equal(separateAmount('1.234,56'), '1 234,56');
+});
+
+test('separateAmount handles string with only comma as decimal', () => {
+    assert.equal(separateAmount('123,45'), '123,45');
+});
+
+test('separateAmount handles string with only dot as decimal', () => {
+    assert.equal(separateAmount('123.45'), '123.45');
+});
+
 test('formatDate returns a yyyy-mm-dd formatted string', () => {
     assert.equal(formatDate('2023-11-05T00:00:00.000Z'), '2023-11-05');
 });
