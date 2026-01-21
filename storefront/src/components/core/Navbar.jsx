@@ -1,15 +1,19 @@
-import "primeicons/primeicons.css";
-
 import { useAtomValue } from "jotai";
 import { cartItemsQuantityAtom } from "../../store";
-import { Link } from "react-router-dom";
-import { Button } from "primereact/button";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants";
 import ThemeSwitcher from "../ThemeSwitcher";
-import { TabMenu } from "primereact/tabmenu";
 import { useAuth } from "../../hooks/useAuth.jsx";
-import { classNames } from "primereact/utils";
-import { useNavigate } from "react-router-dom";
+import { Button } from "../ui/button";
+import {
+  Home,
+  LogIn,
+  LogOut,
+  Package,
+  ShoppingCart,
+  Tags,
+  UserPlus,
+} from "lucide-react";
 
 export const Navbar = () => {
   const cartItemsQuantity = useAtomValue(cartItemsQuantityAtom);
@@ -19,71 +23,102 @@ export const Navbar = () => {
   const items = [
     {
       label: "Home",
-      icon: "pi pi-home",
+      icon: Home,
       to: ROUTES.HOME,
     },
     {
       label: "Products",
-      icon: "pi pi-shopping-cart",
+      icon: Package,
       to: ROUTES.PRODUCTS,
     },
     {
       label: "Categories",
-      icon: "pi pi-tags",
+      icon: Tags,
       to: ROUTES.CATEGORIES,
     },
-  ].map((menuItem) => ({
-    label: menuItem.label,
-    icon: menuItem.icon,
-    template: (item, options) => {
-      return (
-        <Button onClick={options.onClick}>
-          <Link to={menuItem.to} className={options.className}>
-            <i className={menuItem.icon}></i>
-            <span className="ml-2">{item.label}</span>
-          </Link>
-        </Button>
-      );
-    },
-  }));
+  ];
   const handleLogout = () => {
       logout();
       navigate(ROUTES.HOME, { replace: true });
   }
   return (
-    <>
-      <ThemeSwitcher />
-      <h1>Dearest.</h1>
-      <Link to={ROUTES.CART}>
-        <i className="pi pi-shopping-cart"></i> x {cartItemsQuantity} item(s)
-      </Link>
-        {!token && (<>
-            <Link to={ROUTES.LOGIN}>
-                <i className="pi pi-sign-in"></i> Sign In
-            </Link>
-            <Link to={ROUTES.SIGNUP}>
-    <i className="pi pi-user-plus"></i> Register
-    </Link>
-        </>)}
-        {token && (
-            <>
-      <Link to={ROUTES.ORDER}>
-        <i className="pi pi-shopping-cart"></i> Orders
-      </Link>
+    <nav className="space-y-6">
+      <div className="flex flex-col gap-4 rounded-lg border bg-card p-4 shadow-sm md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center gap-3">
+          <ThemeSwitcher />
+          <h1 className="text-2xl font-semibold">Dearest.</h1>
+        </div>
 
-          <Button onClick={handleLogout}>
-            <i className="pi pi-power-off"></i> Logout
-          </Button></>
-        )}
-      <div className="my-5" />
-      <TabMenu
-        model={items}
-        pt={{
-          action: {
-            className: "surface-ground",
-          },
-        }}
-      />
-    </>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            to={ROUTES.CART}
+            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+          >
+            <ShoppingCart className="h-4 w-4" />
+            <span>
+              {cartItemsQuantity} item(s)
+            </span>
+          </Link>
+
+          {!token && (
+            <>
+              <Link
+                to={ROUTES.LOGIN}
+                className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+              >
+                <LogIn className="h-4 w-4" />
+                Sign In
+              </Link>
+              <Link
+                to={ROUTES.SIGNUP}
+                className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+              >
+                <UserPlus className="h-4 w-4" />
+                Register
+              </Link>
+            </>
+          )}
+
+          {token && (
+            <>
+              <Link
+                to={ROUTES.ORDER}
+                className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+              >
+                <Package className="h-4 w-4" />
+                Orders
+              </Link>
+              <Button variant="outline" onClick={handleLogout}>
+                <LogOut className="h-4 w-4" />
+                Logout
+              </Button>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        {items.map((menuItem) => {
+          const Icon = menuItem.icon;
+          return (
+            <NavLink
+              key={menuItem.label}
+              to={menuItem.to}
+              className={({ isActive }) =>
+                [
+                  "inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition-colors",
+                  isActive
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                ].join(" ")
+              }
+            >
+              <Icon className="h-4 w-4" />
+              {menuItem.label}
+            </NavLink>
+          );
+        })}
+      </div>
+    </nav>
   );
 };

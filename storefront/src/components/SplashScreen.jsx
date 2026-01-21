@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react" 
-import { ProgressSpinner } from "primereact/progressspinner"
+import { Spinner } from "./ui/spinner"
 
 const SplashScreen = () => {
     const [isVisible, setVisible] = useState(true);
@@ -14,9 +14,9 @@ const SplashScreen = () => {
     return (
         <>
         {isVisible && (
-            <div className="">
-                <ProgressSpinner />
-                <h1>Loading...</h1>
+            <div className="flex flex-col items-center gap-3 py-10">
+                <Spinner className="h-8 w-8" />
+                <h1 className="text-sm font-medium text-muted-foreground">Loading...</h1>
             </div>
         )}
         </>

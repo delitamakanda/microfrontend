@@ -10,7 +10,7 @@ import { SigninPage, RegisterPage, ForgotPassword } from "./pages/auth";
 import { OrderPage, OrderPageDetail } from "./pages/account";
 import { Post } from "./pages/deal/post";
 import { Suspense } from "react";
-import { ProgressSpinner } from "primereact/progressspinner";
+import { Spinner } from "./components/ui/spinner";
 import { ROUTES } from "./constants";
 import SplashScreen from "./components/SplashScreen";
 
@@ -29,7 +29,7 @@ const App = () => {
     <>
       {isLoading && <SplashScreen />}
       {!isLoading && (
-        <Suspense fallback={<ProgressSpinner />}>
+        <Suspense fallback={<Spinner className="mx-auto my-8" />}>
           <Routes>
             <Route element={<Layout />}>
               <Route path={ROUTES.HOME} element={<HomePage />} />

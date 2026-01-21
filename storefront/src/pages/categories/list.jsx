@@ -1,6 +1,6 @@
 import axiosInstance from '../../lib/api';
 import { useState, useMemo } from 'react';
-import { ProgressSpinner } from 'primereact/progressspinner';
+import { Spinner } from '../../components/ui/spinner';
 import { Link } from 'react-router-dom';
 import { randomColors } from '../../constants'; 
 import './categories.css';
@@ -25,7 +25,7 @@ export const CategoriesPage = () => {
     }, []);
     return (
         <>
-            {loading && <ProgressSpinner />}
+            {loading && <Spinner className="mx-auto my-8" />}
             <div className='category'>
             {!loading && categories?.map((cat) => (
                 <Link key={cat.uuid} to={'/products'}>
