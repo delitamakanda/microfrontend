@@ -1,5 +1,3 @@
-import "primeicons/primeicons.css";
-
 import { useOutlet, Navigate, useLocation } from "react-router-dom";
 
 import { Footer } from "./core/Footer";

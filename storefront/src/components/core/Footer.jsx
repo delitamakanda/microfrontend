@@ -1,9 +1,9 @@
-import { Divider } from "primereact/divider";
 import { useState, useMemo } from "react";
 import { BASE_URL, SITE_TITLE, BLOG_URL, ROUTES } from "../../constants";
 import axiosInstance from "../../lib/api";
 import { capitalizeFirstLetter } from "../../helpers/formatters";
 import { Link } from "react-router-dom";
+import { Separator } from "../ui/separator";
 
 const parseXml = (html) => {
   const parser = new DOMParser();
@@ -42,15 +42,15 @@ export const Footer = () => {
 
   return (
     <>
-      <Divider />
-      <footer className="grid">
+      <Separator />
+      <footer className="grid gap-4 pt-6">
         <div className="grid-auto-flow-row grid-cols-1 gap-2">
           {staticPages.map((item, index) => {
             return (
               <Link
                 key={index}
                 state={item}
-                className="mr-4"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground"
                 to={`${ROUTES.FLATPAGE}/${item.slug}`}
               >
                 {item.title}
@@ -61,12 +61,12 @@ export const Footer = () => {
             href={BLOG_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gray-900 dark:text-gray-100"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground"
           >
             Blog
           </a>
         </div>
-        <p className="text-gray-600 dark:text-gray-400 text-sm">
+        <p className="text-sm text-muted-foreground">
           &copy; {new Date().getFullYear()} {SITE_TITLE}. All rights reserved.
         </p>
       </footer>
