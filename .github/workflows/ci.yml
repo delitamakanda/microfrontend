@@ -1,0 +1,68 @@
+# CI des deux apps fédérées (storefront = remote, adminpanel = hôte).
+# blog/ (Webpack, sans tests) n'est pas couvert.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Les PR ouvertes par l'agent (GITHUB_TOKEN) ne déclenchent pas `pull_request` :
+  # agent-implement.yml lance ce workflow explicitement sur leur branche.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  app:
+    name: ${{ matrix.app }} (tests + build)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [storefront, adminpanel]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # storefront : pnpm 8 (lockfile v6) ; adminpanel : pnpm 9 (lockfile v9).
+      - name: Installer
+        run: bash scripts/agent/install.sh ${{ matrix.app }}
+
+      - name: Tests (node:test)
+        working-directory: ${{ matrix.app }}
+        run: node --test
+
+      - name: Build
+        working-directory: ${{ matrix.app }}
+        run: npx vite build
+
+      - name: Remote fédéré produit
+        if: matrix.app == 'storefront'
+        run: test -f storefront/dist/assets/storefrontEntry.js
+
+  checks:
+    name: Contrat de fédération + ESLint (lignes modifiées)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Installer
+        run: bash scripts/agent/install.sh
+
+      # Le lint complet n'est pas encore propre : seules les lignes modifiées par
+      # rapport à main bloquent. Sur main, seul le contrat de fédération compte.
+      - name: Vérifier
+        env:
+          BASE_REF: origin/${{ github.base_ref || 'main' }}
+        run: node scripts/agent/check-changed.mjs --check

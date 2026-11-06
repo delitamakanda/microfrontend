@@ -1,0 +1,110 @@
+# Boucle de revue : dans une pull request, commente `@claude …` (commentaire
+# général, commentaire de ligne ou revue) pour que l'agent applique tes retours
+# sur la branche de la PR. Seules les personnes ayant accès en écriture au
+# dépôt peuvent déclencher l'agent.
+name: Agent – retours de revue
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+  PYTHON_VERSION: '3.12'
+  BACKEND_REPO: delitamakanda/merch_store
+  PLAYWRIGHT_MCP_VERSION: '0.0.84'
+
+jobs:
+  respond:
+    if: |
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude'))
+    runs-on: ubuntu-latest
+    environment: claude
+    timeout-minutes: 60
+    concurrency:
+      group: agent-review-${{ github.event.issue.number || github.event.pull_request.number }}
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      actions: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Se placer sur la branche de la PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          R: ${{ github.repository }}
+          PR: ${{ github.event.issue.number || github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          read -r head_repo head_ref < <(gh api "repos/$R/pulls/$PR" --jq '"\(.head.repo.full_name) \(.head.ref)"')
+          # Le code de la PR va être installé et exécuté avec les secrets de l'environnement `claude` :
+          # on refuse les PR venant d'un fork.
+          if [ "$head_repo" != "$R" ]; then
+            echo "::error::PR #$PR issue d'un fork ($head_repo) : agent non lancé."
+            exit 1
+          fi
+          git fetch --depth=50 origin "+refs/heads/$head_ref:refs/remotes/origin/$head_ref"
+          git checkout -B "$head_ref" "origin/$head_ref"
+
+      - name: Récupérer l'API (backend)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.BACKEND_REPO }}
+          ref: ${{ vars.AGENT_BACKEND_REF || 'main' }}
+          token: ${{ secrets.AGENT_BACKEND_TOKEN || secrets.AGENT_PROJECT_TOKEN }}
+          path: .agent-out/backend
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: .agent-out/backend/requirements-dev.txt
+
+      - name: Installer les dépendances
+        run: |
+          bash scripts/agent/install.sh
+          python -m pip install --upgrade pip
+          pip install -r .agent-out/backend/requirements-dev.txt
+
+      - name: Installer le navigateur (MCP Playwright)
+        run: |
+          npm install -g "@playwright/mcp@$PLAYWRIGHT_MCP_VERSION"
+          playwright-mcp install-browser --with-deps chromium
+
+      - name: Démarrer la plateforme (API de démo + storefront + admin)
+        run: bash scripts/agent/start-app.sh
+
+      - uses: anthropics/claude-code-action@v1
+        env:
+          BASE_REF: origin/${{ github.event.repository.default_branch || 'main' }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          additional_permissions: |
+            actions: read
+          claude_args: |
+            --model ${{ vars.AGENT_MODEL || 'sonnet' }}
+            --max-turns 80
+            --mcp-config .github/agent/mcp.json
+            --append-system-prompt "Respecte CLAUDE.md et AGENTS.md. Seuls storefront/ et adminpanel/ sont dans ton périmètre (pas blog/). La plateforme tourne déjà : storefront (remote de la fédération) sur http://localhost:3000, servi par vite preview et reconstruit par vite build --watch à chaque modification de storefront/ — après une telle modification, lance bash scripts/agent/wait-storefront.sh puis recharge les pages ; admin (hôte, vite dev, rechargé à chaud) sur http://localhost:5001, qui charge le remote du storefront ; API Django de démo sur http://127.0.0.1:8000/api/ (comptes demo-admin (staff) / demo-customer, mot de passe demo-password-123). Ouvre toujours les fronts via localhost (le CORS de l'API refuse 127.0.0.1:3000 et 127.0.0.1:5001). Vérifie toute modification d'écran dans le navigateur avec les outils mcp__playwright, en desktop et en mobile (390x844), en ne naviguant que vers la plateforme locale ; pour la réponse exacte d'un endpoint, utilise bash scripts/agent/api.sh [--as demo-admin|demo-customer] METHODE /api/.... Le code de l'API est dans .agent-out/backend/ (lecture seule). Avant de pousser, fais passer node scripts/agent/check-changed.mjs --check (ESLint sur les lignes modifiées et contrat de fédération storefrontApp/*), bash scripts/agent/test.sh et bash scripts/agent/build.sh. Ne corrige pas les erreurs préexistantes hors du périmètre de la PR. Si tu modifies ce que le storefront expose, garde l'admin compatible et signale l'ordre de déploiement (storefront d'abord). Signale tout besoin de changement côté API. Ne modifie jamais .github/ ni .agent-out/. Réponds en français."
+            --allowedTools "Skill,Bash(node scripts/agent/check-changed.mjs:*),Bash(bash scripts/agent/test.sh:*),Bash(bash scripts/agent/build.sh:*),Bash(bash scripts/agent/wait-storefront.sh:*),Bash(bash scripts/agent/api.sh:*),mcp__playwright"
+            --disallowedTools "mcp__playwright__browser_run_code_unsafe,mcp__playwright__browser_evaluate,mcp__playwright__browser_file_upload"
