@@ -15,6 +15,7 @@ This repository demonstrates a multi-frontend commerce experience composed of th
 - [Development Tips](#development-tips)
 - [Deployment Notes](#deployment-notes)
 - [Demo Links](#demo-links)
+- [Workflow agentique](#workflow-agentique)
 - [License](#license)
 
 ## Architecture Overview
@@ -130,6 +131,10 @@ Consider extracting these into a shared package (via PNPM workspace) if the code
 1. **Blog** – <https://mellifluous-cocada-015edf.netlify.app/>
 2. **Admin panel** – <https://astonishing-dieffenbachia-7f20d2.netlify.app/>
 3. **Storefront (WIP)** – <https://resplendent-strudel-83725d.netlify.app/>
+
+## Workflow agentique
+
+Les issues servent de specs : un agent Claude (GitHub Actions) les raffine, les implémente une par une contre la plateforme qui tourne (API de démo `merch_store`, storefront et admin fédérés) et ouvre une PR à relire. Voir [docs/agentic-workflow.md](docs/agentic-workflow.md).
 
 ## License
 
