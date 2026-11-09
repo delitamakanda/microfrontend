@@ -4,8 +4,14 @@ import { Paginator } from 'primereact/paginator';
 import { InputText } from 'primereact/inputtext';
 import { Checkbox} from 'primereact/checkbox';
 import axiosInstance from '../../lib/api';
-import { useState, useEffect, useMemo } from'react';
+import { Button } from 'primereact/button';
+import { useState, useEffect } from'react';
+import { useSearchParams } from 'react-router-dom';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { parseCategoryParams, serializeCategoryParams } from '../categories/categoryFilter';
+
+// "All" is a virtual category: it never goes into the URL nor the API query.
+const ALL_CATEGORY ={uuid: '00000000-0000-0000-0000-000000000000', name: 'All'};
 
 export const ProductList = () => {
   const [data, setData] = useState([]);
@@ -19,46 +25,43 @@ export const ProductList = () => {
     page: 1,
     sortField: 'created_at',
     sortOrder: -1,
-    query: '',
   });
   const [categories, setCategories] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState(null);
-
+  const [categoriesReady, setCategoriesReady] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  // The URL is the source of truth: names of the selected categories (empty = All).
+  const selectedNames = parseCategoryParams(searchParams, categories);
+  const query = selectedNames.join(',');
 
   useEffect(() => {
+    if (!categoriesReady) return undefined;
     setLoading(true);
     fetchLazyData();
     const timeout = setTimeout(() => {
       setDebounceSearch(search);
     }, 500);
     return () => clearTimeout(timeout);
-  }, [lazyState, debounceSearch]);
+  }, [lazyState, debounceSearch, query, categoriesReady]);
 
   const fetchLazyData = () => {
     setLoading(true);
-    axiosInstance.get(`store/product/?category_name_in=${encodeURIComponent(lazyState.query)}&q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=${lazyState.sortOrder === -1 ? '-': ''}${lazyState.sortField}`)
+    axiosInstance.get(`store/product/?category_name_in=${encodeURIComponent(query)}&q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=${lazyState.sortOrder === -1 ? '-': ''}${lazyState.sortField}`)
     .then(response => {
-        setData(response.data)
+        if (response?.data) setData(response.data)
         setTimeout(() => {
           setLoading(false)
         }, 100)
       })
+      .catch(() => setLoading(false))
   };
 
-  const fetchCategories = () => {
+  useEffect(() => {
     axiosInstance.get('store/category-list/')
       .then((response) => {
-        if (response.data) {
-          response.data.unshift({uuid: '00000000-0000-0000-0000-000000000000', name: 'All'});
-          setCategories(response.data)
-          setSelectedCategories([response.data[0]])
-          setLoading(false)
-        }
+        setCategories([ALL_CATEGORY, ...(Array.isArray(response?.data) ? response.data : [])])
       })
-  }
-
-  useMemo(() => {
-    fetchCategories();
+      .catch(() => setCategories([ALL_CATEGORY]))
+      .finally(() => setCategoriesReady(true))
   }, [])
 
   const onPageChange = (e) => {
@@ -69,23 +72,23 @@ export const ProductList = () => {
       page: e.page,
       sortField: lazyState.sortField,
       sortOrder: lazyState.sortOrder,
-      query: lazyState.query,
     });
   }
 
-  const onCategoryChange = (e) => {
-    let _selectedCategories = [...selectedCategories];
+  const updateCategories = (names) => {
+    setSearchParams(serializeCategoryParams(names, searchParams), { replace: true });
+    setLazyState({ ...lazyState, first: 0, page: 1 });
+  };
 
-    if (e.checked)
-        _selectedCategories.push(e.value);
-    else
-        _selectedCategories = _selectedCategories.filter(category => category.uuid !== e.value.uuid);
-    setSelectedCategories(_selectedCategories);
-    setLazyState({
-      ...lazyState,
-      query: _selectedCategories.filter(c => c.name !== 'All').map(category => category.name).join(','),
-    })
-};
+  const onCategoryChange = (e) => {
+    if (e.value.name === ALL_CATEGORY.name) {
+      updateCategories([]);
+    } else if (e.checked) {
+      updateCategories([...selectedNames, e.value.name]);
+    } else {
+      updateCategories(selectedNames.filter(name => name !== e.value.name));
+    }
+  };
     
   return (
       <>
@@ -114,7 +117,7 @@ export const ProductList = () => {
               <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
               </div>
               <div key={c.uuid} className="flex align-items-center">
-                <Checkbox inputId={c.uuid} name="category" value={c} onChange={onCategoryChange} checked={selectedCategories.some((item) => item.uuid === c.uuid)}/>
+                <Checkbox inputId={c.uuid} name="category" value={c} onChange={onCategoryChange} checked={c.name === ALL_CATEGORY.name ? selectedNames.length === 0 : selectedNames.includes(c.name)}/>
                 <label htmlFor={c.uuid} className="ml-2">{c?.name}</label>
             </div>
             </div>
@@ -123,7 +126,16 @@ export const ProductList = () => {
         </div>}
       </div>
       <div className="w-full lg:w-8/12">
+      {selectedNames.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 my-3 lg:hidden">
+          <p className="font-semibold">Category: {selectedNames.join(', ')}</p>
+          <Button label="Clear filter" link size="small" onClick={() => updateCategories([])} />
+        </div>
+      )}
       <div className="my-5" />
+      {!isLoading && categoriesReady && data?.results?.length === 0 && (
+        <p className="text-center">No products found</p>
+      )}
       <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
         {data?.results?.map((article, idx) => (
           <ProductCart key={idx} product={article} />
