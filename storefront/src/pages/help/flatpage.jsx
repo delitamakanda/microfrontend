@@ -1,4 +1,6 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
+import { useStaticPages } from "../../hooks/useStaticPages";
+import { slugToTitle } from "../../helpers/formatters";
 
 export const IframeComponent = (props) => {
   const { url, title } = props;
@@ -17,14 +19,26 @@ export const IframeComponent = (props) => {
 };
 
 export const FlatPage = () => {
-  const {
-    state: { url, title },
-  } = useLocation();
+  const { state } = useLocation();
+  const { slug } = useParams();
+  const { pages, loading } = useStaticPages();
+
+  const page = state?.url ? state : pages.find((p) => p.slug === slug);
+  const title = page?.title ?? slugToTitle(slug);
+
+  if (!page) {
+    return (
+      <>
+        <h1>{title}</h1>
+        <p role="status">{loading ? "Loading…" : "Page not found."}</p>
+      </>
+    );
+  }
 
   return (
     <>
       <h1>{title}</h1>
-      <IframeComponent url={url} title={title} />
+      <IframeComponent url={page.url} title={title} />
     </>
   );
 };
