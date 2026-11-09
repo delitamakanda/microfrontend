@@ -12,3 +12,11 @@ export const formatDateTime = (value) => {
 export const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export const slugToTitle = (slug) => {
+    return String(slug ?? '')
+        .split('-')
+        .filter(Boolean)
+        .map(capitalizeFirstLetter)
+        .join(' ');
+};
