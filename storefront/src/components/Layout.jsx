@@ -28,7 +28,7 @@ export const Layout = ({ canAuth }) => {
     <div className="p-5">
       <Navbar />
       <div className="my-5" />
-      {outlet}
+      <main>{outlet}</main>
       <div className="my-5" />
       <Footer />
     </div>
