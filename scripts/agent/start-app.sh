@@ -26,6 +26,7 @@ root=$PWD
 out=$root/.agent-out
 backend="${BACKEND_DIR:-$out/backend}"
 timeout_s="${START_TIMEOUT:-120}"
+storefront_build_timeout_s="${STOREFRONT_BUILD_TIMEOUT:-300}"
 mkdir -p "$out/playwright" "$out/api"
 
 wait_for() { # url nom log
@@ -56,7 +57,7 @@ if [ -n "${GITHUB_ENV:-}" ]; then
 fi
 cd "$root/storefront"
 nohup npx vite build --watch > "$out/storefront-build.log" 2>&1 < /dev/null &
-if ! timeout "$timeout_s" bash -c "until grep -q '^built in' '$out/storefront-build.log'; do sleep 2; done"; then
+if ! timeout "$storefront_build_timeout_s" bash -c "until grep -q 'built in' '$out/storefront-build.log'; do sleep 2; done"; then
   echo "::error::le premier build du storefront a échoué ou n'a pas fini à temps"
   tail -n 50 "$out/storefront-build.log"
   exit 1

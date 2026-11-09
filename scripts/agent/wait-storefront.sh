@@ -12,9 +12,9 @@ log=.agent-out/storefront-build.log
 
 sleep 2 # laisse au watcher le temps de voir la modification
 for _ in $(seq 1 60); do
-  last=$(grep -E '^(build started|built in)|^\[vite[^]]*\]|^(Error|error)\b|failed' "$log" | tail -n 1 || true)
+  last=$(grep -E '(build started|built in)|^\[vite[^]]*\]|^(Error|error)\b|failed' "$log" | tail -n 1 || true)
   case "$last" in
-    "built in"*)
+    *"built in"*)
       if curl -sf http://localhost:3000/assets/storefrontEntry.js >/dev/null; then
         echo "Storefront reconstruit ($last) : recharge les pages."
         exit 0
