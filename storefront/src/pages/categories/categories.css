@@ -22,6 +22,12 @@
   justify-content: center;
 }
 
-.category--name h1 {
+.category--name h2 {
+  font-size: 2em;
   border-bottom: solid 2px;
+}
+
+.category--link:focus-visible {
+  outline: 3px solid #111;
+  outline-offset: 2px;
 }
