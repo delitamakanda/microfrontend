@@ -2,88 +2,93 @@ import "primeicons/primeicons.css";
 
 import { useAtomValue } from "jotai";
 import { cartItemsQuantityAtom } from "../../store";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
-import { ROUTES } from "../../constants";
+import { ROUTES, SITE_TITLE } from "../../constants";
 import ThemeSwitcher from "../ThemeSwitcher";
-import { TabMenu } from "primereact/tabmenu";
 import { useAuth } from "../../hooks/useAuth.jsx";
-import { classNames } from "primereact/utils";
-import { useNavigate } from "react-router-dom";
+import {
+  CART_LINK,
+  MAIN_LINKS,
+  getAccountLinks,
+  getCartLabel,
+  isLinkActive,
+} from "./navLinks";
+
+const linkClass = (active) =>
+  [
+    "inline-flex items-center gap-2 min-h-[44px] px-3 rounded",
+    "hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2",
+    active ? "font-bold underline" : "",
+  ].join(" ");
+
+const renderNavItem = (link, pathname) => {
+  const active = isLinkActive(link.to, pathname);
+  return (
+    <Link
+      key={link.to}
+      to={link.to}
+      className={linkClass(active)}
+      aria-current={active ? "page" : undefined}
+    >
+      <i className={link.icon} aria-hidden="true"></i>
+      <span>{link.label}</span>
+    </Link>
+  );
+};
 
 export const Navbar = () => {
   const cartItemsQuantity = useAtomValue(cartItemsQuantityAtom);
   const { logout, token } = useAuth();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-  const items = [
-    {
-      label: "Home",
-      icon: "pi pi-home",
-      to: ROUTES.HOME,
-    },
-    {
-      label: "Products",
-      icon: "pi pi-shopping-cart",
-      to: ROUTES.PRODUCTS,
-    },
-    {
-      label: "Categories",
-      icon: "pi pi-tags",
-      to: ROUTES.CATEGORIES,
-    },
-  ].map((menuItem) => ({
-    label: menuItem.label,
-    icon: menuItem.icon,
-    template: (item, options) => {
-      return (
-        <Button onClick={options.onClick}>
-          <Link to={menuItem.to} className={options.className}>
-            <i className={menuItem.icon}></i>
-            <span className="ml-2">{item.label}</span>
-          </Link>
-        </Button>
-      );
-    },
-  }));
   const handleLogout = () => {
-      logout();
-      navigate(ROUTES.HOME, { replace: true });
-  }
-  return (
-    <>
-      <ThemeSwitcher />
-      <h1>Dearest.</h1>
-      <Link to={ROUTES.CART}>
-        <i className="pi pi-shopping-cart"></i> x {cartItemsQuantity} item(s)
-      </Link>
-        {!token && (<>
-            <Link to={ROUTES.LOGIN}>
-                <i className="pi pi-sign-in"></i> Sign In
-            </Link>
-            <Link to={ROUTES.SIGNUP}>
-    <i className="pi pi-user-plus"></i> Register
-    </Link>
-        </>)}
-        {token && (
-            <>
-      <Link to={ROUTES.ORDER}>
-        <i className="pi pi-shopping-cart"></i> Orders
-      </Link>
+    logout();
+    navigate(ROUTES.HOME, { replace: true });
+  };
 
-          <Button onClick={handleLogout}>
-            <i className="pi pi-power-off"></i> Logout
-          </Button></>
+  const cartLabel = getCartLabel(cartItemsQuantity);
+
+  return (
+    <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+      <Link
+        to={ROUTES.HOME}
+        className="inline-flex items-center min-h-[44px] text-2xl font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+      >
+        {SITE_TITLE}
+      </Link>
+      <nav aria-label="Main">
+        <ul className="flex flex-wrap items-center gap-1 list-none m-0 p-0">
+          {MAIN_LINKS.map((link) => (
+            <li key={link.to}>{renderNavItem(link, pathname)}</li>
+          ))}
+        </ul>
+      </nav>
+      <div className="flex flex-wrap items-center gap-1">
+        <Link
+          to={CART_LINK.to}
+          className={linkClass(isLinkActive(CART_LINK.to, pathname))}
+          aria-label={cartLabel}
+          aria-current={isLinkActive(CART_LINK.to, pathname) ? "page" : undefined}
+        >
+          <i className={CART_LINK.icon} aria-hidden="true"></i>
+          <span aria-hidden="true">{cartItemsQuantity || 0}</span>
+        </Link>
+        {getAccountLinks(token).map((link) => renderNavItem(link, pathname))}
+        {token && (
+          <Button
+            type="button"
+            onClick={handleLogout}
+            className="min-h-[44px]"
+            icon="pi pi-power-off"
+            label="Logout"
+          />
         )}
-      <div className="my-5" />
-      <TabMenu
-        model={items}
-        pt={{
-          action: {
-            className: "surface-ground",
-          },
-        }}
-      />
-    </>
+        <span className="inline-flex items-center justify-center min-h-[44px] min-w-[44px]">
+          <ThemeSwitcher />
+        </span>
+      </div>
+    </header>
   );
 };
