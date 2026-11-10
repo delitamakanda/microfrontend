@@ -31,6 +31,7 @@ export const ProductList = () => {
   const [debounceSearch, setDebounceSearch] = useState("");
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [lazyState, setLazyState] = useState({
     first: 0,
     rows: 10,
@@ -66,11 +67,22 @@ export const ProductList = () => {
           }`
         )
         .then((response) => {
+          // An older remote resolves to undefined on HTTP errors.
+          if (!response?.data) {
+            setError(true);
+            setLoading(false);
+            return;
+          }
+          setError(false);
           setPageCount(response.data.count);
           setData(response.data);
           setTimeout(() => {
             setLoading(false);
           }, 0);
+        })
+        .catch(() => {
+          setError(true);
+          setLoading(false);
         });
     }, 1000);
   };
@@ -193,6 +205,7 @@ export const ProductList = () => {
         </div>
       }
     >
+      {error && <p role="alert" className="text-red-700">Products could not be loaded.</p>}
       <DataTable
         value={data && data.results}
         lazy={true}

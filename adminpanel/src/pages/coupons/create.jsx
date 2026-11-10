@@ -69,6 +69,14 @@ export const CouponCreate = () => {
           detail: "Coupon created successfully",
         });
         navigate(`/coupons`);
+      })
+      .catch(() => {
+        setLoading(false);
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: "The coupon could not be created",
+        });
       });
   };
 

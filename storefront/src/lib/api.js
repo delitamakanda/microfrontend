@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { API_URL } from '../constants'
+import { API_URL } from '../constants.js'
+import { shouldRefresh } from './refreshPolicy.js';
 
 const axiosInstance = axios.create({
     baseURL: API_URL,
@@ -7,7 +8,6 @@ const axiosInstance = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
-    includeCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(
@@ -23,28 +23,41 @@ axiosInstance.interceptors.request.use(
     }
 );
 
+// One refresh at a time: concurrent 401s share the same request.
+let refreshing = null;
+const refreshToken = () => {
+    if (!refreshing) {
+        refreshing = axiosInstance
+            .post('auth/token/refresh/', {
+                refresh: JSON.parse(window.localStorage.getItem('refresh')),
+            })
+            .then((response) => {
+                const { access } = response.data;
+                window.localStorage.setItem('token', JSON.stringify(access));
+                return access;
+            })
+            .finally(() => {
+                refreshing = null;
+            });
+    }
+    return refreshing;
+};
+
 axiosInstance.interceptors.response.use(
-    (response) => {
-        return response;
-    }, async (error) => {
+    (response) => response,
+    async (error) => {
         const originalConfig = error.config;
-        if (originalConfig.url !== `${API_URL}auth/login/` && error.response) {
-            if (error.response.status === 401 && !originalConfig._retry) {
-                originalConfig._retry = true;
-
-                try {
-                    const response = await axiosInstance.post(`auth/token/refresh/`, {
-                        refresh: JSON.parse(window.localStorage.getItem('refresh')),
-                    })
-
-                    const { access } = response.data;
-                    window.localStorage.setItem('token', JSON.stringify(access));
-                    return axiosInstance(originalConfig);
-                } catch (error) {
-                    return Promise.reject(error);
-                }
-            }
+        if (originalConfig && shouldRefresh({
+            status: error.response?.status,
+            url: originalConfig.url,
+            retried: originalConfig._retry,
+        })) {
+            originalConfig._retry = true;
+            // If the refresh fails, its error is rejected as is.
+            await refreshToken();
+            return axiosInstance(originalConfig);
         }
+        return Promise.reject(error);
     })
 
 export default axiosInstance;

@@ -54,12 +54,17 @@ export const AuthProvider = ({ children }) => {
   }
 
   const logout = async () => {
-    const response = await axiosInstance.post("/auth/logout/");
+    try {
+      const response = await axiosInstance.post("/auth/logout/");
 
-    if (response.status === 200) {
-      setToken(null);
-      setRefresh(null);
-      setUser(null);
+      if (response.status === 200) {
+        setToken(null);
+        setRefresh(null);
+        setUser(null);
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to logout");
     }
   };
 
