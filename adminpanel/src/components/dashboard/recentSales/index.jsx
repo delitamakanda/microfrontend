@@ -14,6 +14,7 @@ export const RecentSales = () => {
     const [ debounceSearch, setDebounceSearch ] = useState('');
     const [data, setData] = useState([]);
     const [isLoading, setLoading ] = useState(false)
+    const [error, setError] = useState(false)
     const [lazyState, setLazyState] = useState({
         first: 0,
         rows: 5,
@@ -42,11 +43,16 @@ export const RecentSales = () => {
         networkTimeout = setTimeout(() => {
             axiosInstance.get(`store/order/?q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=${lazyState.sortOrder === -1 ? '-' : ''}${lazyState.sortField}`)
               .then(response => {
-                    setPageCount(response.data.count)
-                    setData(response.data)
-                    setTimeout(() => {
-                        setLoading(false)
-                    }, 0)
+                    setError(!response?.data)
+                    if (response?.data) {
+                        setPageCount(response.data.count)
+                        setData(response.data)
+                    }
+                    setLoading(false)
+                })
+              .catch(() => {
+                    setError(true)
+                    setLoading(false)
                 })
         }, 1000);
         
@@ -120,6 +126,7 @@ export const RecentSales = () => {
     };
     return (
         <Card className='shadow-l' title="Recent Sales">
+            {error && <p role="alert" className="text-red-700">Recent sales could not be loaded.</p>}
             <DataTable
             value={data && data.results}
             dataKey='uuid'

@@ -14,6 +14,7 @@ export const DealEdit = () => {
   const navigate = useNavigate();
   const { slug } = useParams();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [newSlug, setNewSlug] = useState("");
   const toast = useRef(null);
   const {
@@ -35,6 +36,11 @@ export const DealEdit = () => {
   useEffect(() => {
     setLoading(true);
     axiosInstance.get(`/store/deals/${slug}/`).then((response) => {
+      // An older remote resolves to undefined on HTTP errors.
+      if (!response?.data) {
+        setError(true);
+        return;
+      }
       let defaultValues = {};
       defaultValues.title = response.data.title;
       defaultValues.slug = response.data.slug;
@@ -43,6 +49,9 @@ export const DealEdit = () => {
       defaultValues.start_date = formatDate(response.data.start_date);
       defaultValues.end_date = formatDate(response.data.end_date);
       reset(defaultValues);
+    }).catch(() => {
+      setError(true);
+    }).finally(() => {
       setLoading(false);
     });
   }, []);
@@ -54,8 +63,18 @@ export const DealEdit = () => {
 
   const onSubmit = async (data) => {
     setLoading(true);
-    await axiosInstance.put(`/store/deals/${slug}/`, data);
-    navigate(-1);
+    try {
+      const response = await axiosInstance.put(`/store/deals/${slug}/`, data);
+      if (!response) throw new Error("Unexpected response");
+      navigate(-1);
+    } catch {
+      setLoading(false);
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "The deal could not be saved",
+      });
+    }
   };
 
   const getFormErrorMessage = (name) => {
@@ -90,6 +109,7 @@ export const DealEdit = () => {
         </div>
       }
     >
+      {error && <p role="alert" className="text-red-700">This deal could not be loaded.</p>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-fluid">
           <Controller

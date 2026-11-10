@@ -42,8 +42,11 @@ export const UserList = () => {
                .get(`store/user/?q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}`, {
                 })
                .then((response) => {
-                   setPageCount(response.data.count);
-                   setData(response.data);
+                   // An older remote resolves to undefined on HTTP errors.
+                   if (response?.data) {
+                       setPageCount(response.data.count);
+                       setData(response.data);
+                   }
 
                     setTimeout(() => {
                         setLoading(false);

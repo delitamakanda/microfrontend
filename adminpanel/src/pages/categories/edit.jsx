@@ -15,6 +15,7 @@ export const CategoryEdit = () => {
     },
   } = useLocation();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const {
     control,
@@ -35,10 +36,13 @@ export const CategoryEdit = () => {
 
   const onSubmit = async (data) => {
     setLoading(true);
+    setError(false);
 
-    const response = await axiosInstance.put(`store/category/${uuid}/`, data);
-
-    if (response.status === 200) {
+    try {
+      await axiosInstance.put(`store/category/${uuid}/`, data);
+    } catch {
+      setError(true);
+    } finally {
       setLoading(false);
     }
   };
@@ -79,6 +83,7 @@ export const CategoryEdit = () => {
         </div>
       }
     >
+      {error && <p role="alert" className="text-red-700">The category could not be saved.</p>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-fluid">
           <Controller

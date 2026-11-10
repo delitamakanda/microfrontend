@@ -7,12 +7,18 @@ export const ProductDetail = () => {
     const { id } = useParams();
     const [ data, setData ] = useState(null);
     const [ loading, setLoading ] = useState(true);
-    
+    const [ error, setError ] = useState(false);
+
     useEffect(() => {
         setLoading(true);
+        setError(false);
 
         axiosInstance.get(`store/product/${id}/detail/`).then(res => {
-            setData(res.data);
+            if (res?.data) setData(res.data);
+            else setError(true);
+        }).catch(() => {
+            setError(true);
+        }).finally(() => {
             setLoading(false);
         });
     },[]);
@@ -21,6 +27,7 @@ export const ProductDetail = () => {
         <>
         Product Detail {id}
         {loading && <div>Loading...</div>}
+        {!loading && error && <p role="alert">This product could not be loaded.</p>}
         { data && <ProductCart product={data} /> }
         </>
     )

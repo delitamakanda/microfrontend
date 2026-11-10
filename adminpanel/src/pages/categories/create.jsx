@@ -10,6 +10,7 @@ import axiosInstance from "storefrontApp/api";
 export const CategoryCreate = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const {
     control,
@@ -22,10 +23,13 @@ export const CategoryCreate = () => {
   });
   const onSubmit = async (data) => {
     setLoading(true);
+    setError(false);
 
-    const response = await axiosInstance.post(`store/category/`, data);
-
-    if (response.status === 201) {
+    try {
+      await axiosInstance.post(`store/category/`, data);
+    } catch {
+      setError(true);
+    } finally {
       setLoading(false);
     }
   };
@@ -58,6 +62,7 @@ export const CategoryCreate = () => {
         </div>
       }
     >
+      {error && <p role="alert" className="text-red-700">The category could not be saved.</p>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-fluid">
           {

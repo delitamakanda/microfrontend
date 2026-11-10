@@ -39,17 +39,22 @@ export const DealCreate = () => {
 
   const onSubmit = async (data) => {
     setLoading(true);
-    const response = await axiosInstance.post(
-      "store/deals/create/",
-      JSON.stringify({
-        title: data.title,
-        description: data.description,
-        start_date: data.start_date,
-        end_date: data.end_date,
-        image_url: data.image_url,
-      })
-    );
-    if (response.status === 201) {
+    let response;
+    try {
+      response = await axiosInstance.post(
+        "store/deals/create/",
+        JSON.stringify({
+          title: data.title,
+          description: data.description,
+          start_date: data.start_date,
+          end_date: data.end_date,
+          image_url: data.image_url,
+        })
+      );
+    } catch {
+      response = null;
+    }
+    if (response?.status === 201) {
       setLoading(false);
       toast.current.show({
         severity: "success",

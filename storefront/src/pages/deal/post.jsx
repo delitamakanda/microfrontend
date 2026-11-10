@@ -15,7 +15,7 @@ export const Post = () => {
     axiosInstance
       .get(`store/deals/${slug}/`)
       .then((response) => {
-        if (response.data) {
+        if (response?.data) {
           setLoading(false);
           setPost(response.data);
         }

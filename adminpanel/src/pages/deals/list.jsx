@@ -15,6 +15,7 @@ export const DealList = () => {
   const [search, setSearch] = useState("");
   const [deals, setDeals] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [lazyState, setLazyState] = useState({
     first: 0,
@@ -43,8 +44,19 @@ export const DealList = () => {
           `/store/deals/?start_date=${startDate}&end_date=${endDate}&limit=${lazyState.rows}&offset=${lazyState.first}`
         )
         .then((response) => {
+          // An older remote resolves to undefined on HTTP errors.
+          if (!response?.data) {
+            setError(true);
+            setLoading(false);
+            return;
+          }
+          setError(false);
           setPageCount(response.data.count);
           setDeals(response.data.results);
+          setLoading(false);
+        })
+        .catch(() => {
+          setError(true);
           setLoading(false);
         });
     }, 1000);
@@ -145,6 +157,7 @@ export const DealList = () => {
         </div>
       }
     >
+      {error && <p role="alert" className="text-red-700">Promotions could not be loaded.</p>}
       <DataTable
         value={deals}
         showGridlines

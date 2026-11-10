@@ -16,6 +16,7 @@ export const ProductEdit = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const toast = useRef(null);
@@ -48,6 +49,11 @@ export const ProductEdit = () => {
       axiosInstance.get(`store/category-list/`),
       axiosInstance.get(`store/product/${id}/detail/`),
     ]).then(([categoryList, productDetail]) => {
+      // An older remote resolves to undefined on HTTP errors.
+      if (!categoryList?.data || !productDetail?.data) {
+        setError(true);
+        return;
+      }
       setCategoryOptions(mapCategoriesToOptions(categoryList.data));
       let defaultValues = {};
       defaultValues.name = productDetail?.data?.name;
@@ -64,6 +70,8 @@ export const ProductEdit = () => {
       );
       defaultValues.category = productDetail?.data?.category;
       reset(defaultValues);
+    }).catch(() => {
+      setError(true);
     });
   }, []);
 
@@ -81,25 +89,36 @@ export const ProductEdit = () => {
   const onSubmit = async (data) => {
     setLoading(true);
 
-    const response = await axiosInstance.put(
-      `store/product/${id}/detail/`,
-      JSON.stringify({
-        name: data.name,
-        description: data.description,
-        price: data.price,
-        stock_quantity: data.stock_quantity,
-        image_url: data.image_url,
-        category: selectedCategories.map((cat) => cat.key),
-      })
-    );
+    try {
+      const response = await axiosInstance.put(
+        `store/product/${id}/detail/`,
+        JSON.stringify({
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          stock_quantity: data.stock_quantity,
+          image_url: data.image_url,
+          category: selectedCategories.map((cat) => cat.key),
+        })
+      );
 
-    if (response.status === 200) {
-      setLoading(false);
+      if (response?.status === 200) {
+        toast.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Product updated successfully",
+        });
+      } else {
+        throw new Error("Unexpected response");
+      }
+    } catch {
       toast.current.show({
-        severity: "success",
-        summary: "Success",
-        detail: "Product updated successfully",
+        severity: "error",
+        summary: "Error",
+        detail: "The product could not be saved",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -139,6 +158,7 @@ export const ProductEdit = () => {
         </div>
       }
     >
+      {error && <p role="alert" className="text-red-700">This product could not be loaded.</p>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="formgrid grid">
           <div className="field col">
