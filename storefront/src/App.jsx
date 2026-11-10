@@ -6,6 +6,7 @@ import { Cart, CheckoutPage } from "./pages/cart";
 import { HomePage } from "./pages/home";
 import { FlatPage } from "./pages/help";
 import { CategoriesPage } from "./pages/categories";
+import { NotFoundPage } from "./pages/not-found";
 import { SigninPage, RegisterPage, ForgotPassword } from "./pages/auth";
 import { OrderPage, OrderPageDetail } from "./pages/account";
 import { Post } from "./pages/deal/post";
@@ -69,7 +70,7 @@ const App = () => {
                 path={ROUTES.FORGOT_PASSWORD}
                 element={<ForgotPassword />}
               />
-              <Route path="*" element={<>Error</>} />
+              <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Routes>
         </Suspense>
