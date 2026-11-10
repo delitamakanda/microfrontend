@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Button } from 'primereact/button';
 import { Link } from "react-router-dom";
 import { ROUTES } from '../constants';
