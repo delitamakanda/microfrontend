@@ -25,7 +25,8 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error(error);
-      throw new Error("Failed to login");
+      // `cause` keeps the HTTP status for callers (e.g. the admin login page).
+      throw new Error("Failed to login", { cause: error });
     }
   };
 

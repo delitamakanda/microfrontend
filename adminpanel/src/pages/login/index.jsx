@@ -1,26 +1,28 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Navigate } from "react-router-dom";
-import { Loading } from "../../components/core";
+import { Navigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "storefrontApp/useAuth";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { classNames } from "primereact/utils";
-import { Toast } from "primereact/toast";
-import { useNavigate } from "react-router-dom";
+import { getLoginErrorMessage, getRedirectTarget } from "../../helpers/loginErrors";
 
 import logo from "../../assets/logo.png";
+
+const inputClassName =
+  "block w-full rounded-md border-1 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6";
 
 export const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { token, login, user, logout } = useAuth();
-  const navigate = useNavigate();
-  const toast = useRef(null);
+  const { token, login } = useAuth();
+  const location = useLocation();
 
   const {
     control,
     handleSubmit,
+    resetField,
+    setFocus,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -28,103 +30,83 @@ export const Login = () => {
       password: "",
     },
   });
+
+  // Signed in (now or before): go back to the page the user came from, or `/`.
   if (token) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={getRedirectTarget(location)} replace />;
   }
 
   const onSubmit = async ({ username, password }) => {
+    if (loading) return;
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
       await login(username, password);
+      // The token is now set: the render above redirects immediately.
+    } catch (err) {
+      setError(getLoginErrorMessage(err));
+      resetField("password", { defaultValue: "" });
       setLoading(false);
-      setTimeout(() => {
-        navigate("/");
-      }, 3000);
-    } catch (error) {
-      setError(
-        `Failed to login. Please check your credentials. ${error.message}`
-      );
-      setLoading(false);
+      setFocus("password");
     }
   };
 
-  const getFormErrorMessage = (name) => {
-    return errors[name]?.message ? (
-      <small className="p-error">{errors[name]?.message}</small>
-    ) : (
-      <small className="p-error">&nbsp;</small>
-    );
-  };
+  const renderField = ({ name, label, type, autoComplete }) => (
+    <Controller
+      name={name}
+      control={control}
+      rules={{ required: `${label} is required.` }}
+      render={({ field }) => {
+        const message = errors[name]?.message;
+        const errorId = `${name}-error`;
+        return (
+          <div className="mb-3">
+            <label className="block text-sm/6 font-medium text-gray-900" htmlFor={name}>
+              {label}
+            </label>
+            <InputText
+              id={name}
+              ref={field.ref}
+              name={field.name}
+              value={field.value}
+              type={type}
+              autoComplete={autoComplete}
+              aria-invalid={message ? "true" : "false"}
+              aria-describedby={message ? errorId : undefined}
+              className={classNames(inputClassName, { "p-invalid": message })}
+              onChange={(e) => field.onChange(e.target.value)}
+              onBlur={field.onBlur}
+            />
+            <small id={errorId} className="block p-error" style={{ minHeight: "1.25rem" }}>
+              {message || " "}
+            </small>
+          </div>
+        );
+      }}
+    />
+  );
+
   return (
-    <section>
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <a
-          href="#"
-          className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
+    <main>
+      <div className="flex flex-col items-center justify-center px-3 py-8 mx-auto min-h-screen lg:py-0">
+        <Link
+          to="/"
+          className="flex items-center mb-6 text-2xl font-semibold text-gray-900 no-underline"
         >
-          <img className="w-20 h-20 mr-2" src={logo} alt="logo" />
+          <img className="w-20 h-20 mr-2" src={logo} alt="" />
           Dearest.
-        </a>
-        <div className="bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Please use the form to sign-in to Admin Panel
+        </Link>
+        <div className="w-full bg-white rounded-lg shadow sm:max-w-md">
+          <div className="p-4 space-y-4 sm:p-8">
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+              Sign in to the Admin Panel
             </h1>
-            {error && (
-              <div className="text-sm text-red-500 dark:text-red-400">
-                {error}
-              </div>
-            )}
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Controller
-                name="username"
-                control={control}
-                rules={{ required: "Username is required." }}
-                render={({ field, fieldState }) => (
-                  <div>
-                    <label
-                      className="block text-sm/6 font-medium text-gray-900"
-                      htmlFor={field.name}
-                    >
-                      Username
-                    </label>
-                    <InputText
-                      id={field.name}
-                      value={field.value}
-                      className={classNames("block w-full rounded-md border-1 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 ", {
-                        "p-invalid": fieldState.error,
-                      })}
-                      onChange={(e) => field.onChange(e.target.value)}
-                    />
-                    {getFormErrorMessage(field.name)}
-                  </div>
-                )}
-              />
-              <Controller
-                name="password"
-                control={control}
-                rules={{ required: "Password is required." }}
-                render={({ field, fieldState }) => (
-                  <div>
-                    <label
-                      className="block text-sm/6 font-medium text-gray-900"
-                      htmlFor={field.name}
-                    >
-                      Password
-                    </label>
-                    <InputText
-                      id={field.name}
-                      value={field.value}
-                      type="password"
-                      className={classNames("block w-full rounded-md border-1 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6", {
-                        "p-invalid": fieldState.error,
-                      })}
-                      onChange={(e) => field.onChange(e.target.value)}
-                    />
-                    {getFormErrorMessage(field.name)}
-                  </div>
-                )}
-              />
+            <div role="alert">
+              {error && <p className="m-0 text-sm font-medium text-red-700">{error}</p>}
+            </div>
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
+              {renderField({ name: "username", label: "Username", type: "text", autoComplete: "username" })}
+              {renderField({ name: "password", label: "Password", type: "password", autoComplete: "current-password" })}
               <Button
                 type="submit"
                 label="Sign In"
@@ -133,11 +115,9 @@ export const Login = () => {
                 loading={loading}
               />
             </form>
-            {loading && <Loading />}
-            <Toast ref={toast} />
           </div>
         </div>
       </div>
-    </section>
+    </main>
   );
 };

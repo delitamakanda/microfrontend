@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Menu } from "../../menu";
 import { Breadcrumb } from "../../breadcrumb";
-import { useOutlet, Navigate } from "react-router-dom";
+import { useOutlet, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "storefrontApp/useAuth";
 import { Button } from "primereact/button";
 import { isStaffUser, signOut } from "../../../helpers/session";
@@ -56,8 +56,9 @@ const AccessDenied = ({ user, logout }) => {
 export const Layout = () => {
   const { token, logout, user } = useAuth();
   const outlet = useOutlet();
+  const location = useLocation();
   if (!token) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" replace state={{ from: location }} />;
   }
   if (!isStaffUser(user)) {
     return <AccessDenied user={user} logout={logout} />;
