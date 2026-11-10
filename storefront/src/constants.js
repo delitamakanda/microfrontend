@@ -29,6 +29,14 @@ export const ROUTES = {
 
 export const BLOG_URL = 'https://mellifluous-cocada-015edf.netlify.app/';
 
+// Comptes sociaux de la boutique (URL à confirmer par l'équipe produit).
+export const SOCIAL_LINKS = [
+    { label: 'Instagram', href: 'https://www.instagram.com/', icon: 'pi pi-instagram' },
+    { label: 'Facebook', href: 'https://www.facebook.com/', icon: 'pi pi-facebook' },
+    { label: 'X (Twitter)', href: 'https://x.com/', icon: 'pi pi-twitter' },
+    { label: 'GitHub', href: 'https://github.com/delitamakanda/microfrontend', icon: 'pi pi-github' },
+];
+
 export const randomColors = [
     '#f4d1f1',
     '#d2fbff',
