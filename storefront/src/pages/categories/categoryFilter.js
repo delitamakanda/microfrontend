@@ -29,3 +29,14 @@ export const serializeCategoryParams = (selected = [], searchParams = new URLSea
     selected.forEach((name) => params.append(CATEGORY_PARAM, name));
     return params;
 };
+
+// Query string (without leading `?`) for `store/product/`. Every value is
+// encoded, and an empty selection ("All") sends no `category_name_in`.
+export const buildProductQuery = ({ names = [], search = '', limit = 10, offset = 0, ordering = '' } = {}) => {
+    const parts = [];
+    if (names.length > 0) parts.push(`category_name_in=${names.map(encodeURIComponent).join(',')}`);
+    if (search) parts.push(`q=${encodeURIComponent(search)}`);
+    parts.push(`limit=${encodeURIComponent(limit)}`, `offset=${encodeURIComponent(offset)}`);
+    if (ordering) parts.push(`ordering=${encodeURIComponent(ordering)}`);
+    return parts.join('&');
+};
