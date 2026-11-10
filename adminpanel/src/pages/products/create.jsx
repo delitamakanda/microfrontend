@@ -14,11 +14,15 @@ export const ProductCreate = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     axiosInstance.get(`store/category-list/`).then((response) => {
-      setCategories(response.data);
+      if (response?.data) setCategories(response.data);
+      else setError(true);
+    }).catch(() => {
+      setError(true);
     });
   }, []);
 
@@ -51,24 +55,27 @@ export const ProductCreate = () => {
 
   const onSubmit = async (data) => {
     setLoading(true);
+    setError(false);
 
-    const response = await axiosInstance.post(
-      `store/product/create/`,
-      JSON.stringify({
-        name: data.name,
-        description: data.description,
-        price: data.price,
-        stock_quantity: data.stock_quantity,
-        image_url: data.image_url,
-        category: data.category
-          .replace(/^[^(]*\(/, "")
-          .replace(/\)[^(]*$/, "")
-          .split(/\)[^(]*\(/)
-          .join(/\)/),
-      })
-    );
-
-    if (response.status === 201) {
+    try {
+      await axiosInstance.post(
+        `store/product/create/`,
+        JSON.stringify({
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          stock_quantity: data.stock_quantity,
+          image_url: data.image_url,
+          category: data.category
+            .replace(/^[^(]*\(/, "")
+            .replace(/\)[^(]*$/, "")
+            .split(/\)[^(]*\(/)
+            .join(/\)/),
+        })
+      );
+    } catch {
+      setError(true);
+    } finally {
       setLoading(false);
     }
   };
@@ -89,6 +96,7 @@ export const ProductCreate = () => {
         </div>
       }
     >
+      {error && <p role="alert" className="text-red-700">The product could not be loaded or saved.</p>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-fluid">
           <Controller

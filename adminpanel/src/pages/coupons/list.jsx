@@ -19,6 +19,7 @@ export const CouponList = () => {
   const [debounceSearch, setDebounceSearch] = useState("");
   const [coupons, setCoupons] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [lazyState, setLazyState] = useState({
     first: 0,
@@ -49,8 +50,19 @@ export const CouponList = () => {
           `/store/coupon/?q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}`
         )
         .then((response) => {
+          // An older remote resolves to undefined on HTTP errors.
+          if (!response?.data) {
+            setError(true);
+            setLoading(false);
+            return;
+          }
+          setError(false);
           setPageCount(response.data.count);
           setCoupons(response.data.results);
+          setLoading(false);
+        })
+        .catch(() => {
+          setError(true);
           setLoading(false);
         });
     }, 1000);
@@ -65,6 +77,8 @@ export const CouponList = () => {
       accept: () => {
         axiosInstance.delete(`/store/coupon/${code}/`).then(() => {
           setCoupons(coupons.filter((coupon) => coupon.code !== code));
+        }).catch(() => {
+          setError(true);
         });
       },
     });
@@ -153,6 +167,7 @@ export const CouponList = () => {
         </div>
       }
     >
+      {error && <p role="alert" className="text-red-700">Coupons could not be loaded or updated.</p>}
       <DataTable
         value={coupons}
         showGridlines

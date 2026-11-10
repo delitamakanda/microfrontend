@@ -17,15 +17,21 @@ export const CategoryList = () => {
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      const response = await axiosInstance.get(`store/category-list/`);
-      setTimeout(() => {
+      setError(false);
+      try {
+        const response = await axiosInstance.get(`store/category-list/`);
+        if (Array.isArray(response?.data)) setCategories(response.data);
+        else setError(true);
+      } catch {
+        setError(true);
+      } finally {
         setLoading(false);
-        setCategories(response.data);
-      }, 0);
+      }
     }
     fetchData();
   }, []);
@@ -42,6 +48,8 @@ export const CategoryList = () => {
           setCategories(
             categories.filter((category) => category.uuid !== uuid)
           );
+        }).catch(() => {
+          setError(true);
         });
       },
     });
@@ -120,6 +128,7 @@ export const CategoryList = () => {
         </div>
       }
     >
+      {error && <p role="alert" className="text-red-700">Categories could not be loaded.</p>}
       <DataTable
         value={categories.filter((c) => {
           return c.name.toLowerCase().includes(search.toLowerCase());

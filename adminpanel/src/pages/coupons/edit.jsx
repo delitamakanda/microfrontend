@@ -15,6 +15,7 @@ export const CouponEdit = () => {
   const navigate = useNavigate();
   const { code } = useParams();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const toast = useRef(null);
 
   const {
@@ -35,6 +36,11 @@ export const CouponEdit = () => {
   useEffect(() => {
     setLoading(true);
     axiosInstance.get(`/store/coupon/${code}/`).then((response) => {
+      // An older remote resolves to undefined on HTTP errors.
+      if (!response?.data) {
+        setError(true);
+        return;
+      }
       let defaultValues = {};
       defaultValues.code = response.data.code;
       defaultValues.discount = response.data.discount;
@@ -42,14 +48,27 @@ export const CouponEdit = () => {
       defaultValues.valid_to = formatDate(response.data.valid_to);
       defaultValues.active = response.data.active;
       reset(defaultValues);
+    }).catch(() => {
+      setError(true);
+    }).finally(() => {
       setLoading(false);
     });
   }, []);
 
   const onSubmit = async (data) => {
     setLoading(true);
-    await axiosInstance.put(`/store/coupon/${code}/`, data);
-    navigate(-1);
+    try {
+      const response = await axiosInstance.put(`/store/coupon/${code}/`, data);
+      if (!response) throw new Error("Unexpected response");
+      navigate(-1);
+    } catch {
+      setLoading(false);
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "The coupon could not be saved",
+      });
+    }
   };
 
   const getFormErrorMessage = (name) => {
@@ -84,6 +103,7 @@ export const CouponEdit = () => {
         </div>
       }
     >
+      {error && <p role="alert" className="text-red-700">This coupon could not be loaded.</p>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-fluid">
           <Controller

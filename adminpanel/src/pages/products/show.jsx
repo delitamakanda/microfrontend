@@ -9,6 +9,7 @@ export const ProductShow = () => {
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [isLoading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [category, setCategory] = useState(null);
   const { id } = useParams();
 
@@ -18,14 +19,20 @@ export const ProductShow = () => {
       axiosInstance.get(`store/product/${id}/detail/`),
       axiosInstance.get(`store/category-list/`),
     ]).then(([product, category]) => {
-      console.log(product.data);
-      console.log(category.data);
-      setProduct(product.data);
+      // An older remote resolves to undefined on HTTP errors.
+      if (!product?.data || !category?.data) {
+        setError(true);
+        return;
+      }
+      setError(false);
       const categoryNames = product.data.category.map(
         (uuid) => category.data.find((cat) => cat.uuid === uuid)?.name
       );
       setProduct(product.data);
       setCategory(categoryNames);
+    }).catch(() => {
+      setError(true);
+    }).finally(() => {
       setLoading(false);
     });
   }, [id]);
@@ -50,6 +57,8 @@ export const ProductShow = () => {
         </div>
       }
     >
+      {isLoading && <p>Loading...</p>}
+      {error && <p role="alert" className="text-red-700">This product could not be loaded.</p>}
       <h3>{product?.name}</h3>
       <Image src={product?.image_url} alt={product?.name} width="100%" />
       <h3>Price</h3>

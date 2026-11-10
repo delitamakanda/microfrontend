@@ -16,6 +16,7 @@ const ALL_CATEGORY ={uuid: '00000000-0000-0000-0000-000000000000', name: 'All'};
 export const ProductList = () => {
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [search, setSearch] = useState('');
   const [debounceSearch, setDebounceSearch] = useState('');
   const [lazyState, setLazyState] = useState({
@@ -48,11 +49,15 @@ export const ProductList = () => {
     axiosInstance.get(`store/product/?category_name_in=${encodeURIComponent(query)}&q=${search}&limit=${lazyState.rows}&offset=${lazyState.first}&ordering=${lazyState.sortOrder === -1 ? '-': ''}${lazyState.sortField}`)
     .then(response => {
         if (response?.data) setData(response.data)
+        setError(!response?.data)
         setTimeout(() => {
           setLoading(false)
         }, 100)
       })
-      .catch(() => setLoading(false))
+      .catch(() => {
+        setError(true)
+        setLoading(false)
+      })
   };
 
   useEffect(() => {
@@ -133,7 +138,10 @@ export const ProductList = () => {
         </div>
       )}
       <div className="my-5" />
-      {!isLoading && categoriesReady && data?.results?.length === 0 && (
+      {!isLoading && error && (
+        <p role="alert" className="text-center">Products could not be loaded.</p>
+      )}
+      {!isLoading && !error && categoriesReady && data?.results?.length === 0 && (
         <p className="text-center">No products found</p>
       )}
       <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">

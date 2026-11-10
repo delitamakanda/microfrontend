@@ -19,7 +19,7 @@ export const HomePage = () => {
     axiosInstance
       .get("store/hot-products/")
       .then((response) => {
-        if (response.data) {
+        if (response?.data) {
           setLastProducts(response.data.results);
         }
       })
@@ -27,17 +27,22 @@ export const HomePage = () => {
         console.log(error);
       });
 
-    axiosInstance.get("store/deals/").then((response) => {
-      if (response.data) {
-        setLastNews(
-          response.data.results.filter(
-            (deal) =>
-              new Date(deal.start_date) <= new Date() &&
-              new Date() <= new Date(deal.end_date)
-          )
-        );
-      }
-    });
+    axiosInstance
+      .get("store/deals/")
+      .then((response) => {
+        if (response?.data) {
+          setLastNews(
+            response.data.results.filter(
+              (deal) =>
+                new Date(deal.start_date) <= new Date() &&
+                new Date() <= new Date(deal.end_date)
+            )
+          );
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   const offerTemplate = (news) => {

@@ -13,26 +13,41 @@ export const Dashboard = () => {
     const [dailyRevenues, setDailyRevenues] = useState(null);
     const [dailyOrders, setDailyOrders] = useState(null);
     const [newCustomers, setNewCustomers] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [, setLoading] = useState(false);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         setLoading(true);
+        setError(false);
         Promise.all([
             axiosInstance.get('store/dailyRevenue/'),
             axiosInstance.get('store/dailyOrders/'),
             axiosInstance.get('store/newCustomers/'),
         ]).then(([dailyRevenues, dailyOrders, newCustomers]) => {
+            // An older remote resolves to undefined on HTTP errors.
             if (dailyRevenues && dailyOrders && newCustomers) {
-                setLoading(false);
                 setDailyRevenues(dailyRevenues?.data);
                 setDailyOrders(dailyOrders?.data);
                 setNewCustomers(newCustomers?.data);
+            } else {
+                setError(true);
             }
-        })
+        }).catch(() => {
+            setError(true);
+        }).finally(() => {
+            setLoading(false);
+        });
     }, []);
 
     return (
         <div className='grid'>
+            {error && (
+                <div className='col-12'>
+                    <p role="alert" className="p-3 m-0 border-round surface-card text-red-700">
+                        The dashboard statistics could not be loaded.
+                    </p>
+                </div>
+            )}
             <div className='col-12 lg:col-6 xl:col-4'>
                 <KpiCard title="Weekly Revenue" color="blue-300" total={dailyRevenues?.total ?? 0} trend={dailyRevenues?.trend ?? 0} formatTotal={(value) => `$ ${value}`} icon="pi-dollar" />
             </div>
