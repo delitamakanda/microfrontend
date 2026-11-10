@@ -1,4 +1,5 @@
 import { ProductCart } from '../../components/ProductCart';
+import { ProductRow } from '../../components/ProductRow';
 // import Button from '../../Button'
 import { Paginator } from 'primereact/paginator';
 import { InputText } from 'primereact/inputtext';
@@ -9,6 +10,7 @@ import { useState, useEffect } from'react';
 import { useSearchParams } from 'react-router-dom';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { parseCategoryParams, serializeCategoryParams } from '../categories/categoryFilter';
+import { parseViewParam, serializeViewParam, VIEW_GRID, VIEW_LIST } from './viewMode';
 
 // "All" is a virtual category: it never goes into the URL nor the API query.
 const ALL_CATEGORY ={uuid: '00000000-0000-0000-0000-000000000000', name: 'All'};
@@ -33,6 +35,7 @@ export const ProductList = () => {
   // The URL is the source of truth: names of the selected categories (empty = All).
   const selectedNames = parseCategoryParams(searchParams, categories);
   const query = selectedNames.join(',');
+  const view = parseViewParam(searchParams);
 
   useEffect(() => {
     if (!categoriesReady) return undefined;
@@ -83,6 +86,10 @@ export const ProductList = () => {
   const updateCategories = (names) => {
     setSearchParams(serializeCategoryParams(names, searchParams), { replace: true });
     setLazyState({ ...lazyState, first: 0, page: 1 });
+  };
+
+  const onViewChange = (value) => {
+    setSearchParams(serializeViewParam(value, searchParams), { replace: true });
   };
 
   const onCategoryChange = (e) => {
@@ -144,11 +151,23 @@ export const ProductList = () => {
       {!isLoading && !error && categoriesReady && data?.results?.length === 0 && (
         <p className="text-center">No products found</p>
       )}
-      <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-        {data?.results?.map((article, idx) => (
-          <ProductCart key={idx} product={article} />
-        ))}
+      <div role="group" aria-label="Product view" className="flex flex-wrap justify-end gap-2 mb-4">
+        <Button type="button" icon="pi pi-th-large" label="Grid view" aria-pressed={view === VIEW_GRID} outlined={view !== VIEW_GRID} size="small" onClick={() => onViewChange(VIEW_GRID)} />
+        <Button type="button" icon="pi pi-list" label="List view" aria-pressed={view === VIEW_LIST} outlined={view !== VIEW_LIST} size="small" onClick={() => onViewChange(VIEW_LIST)} />
       </div>
+      {view === VIEW_LIST ? (
+        <ul className="m-0 p-0 list-none">
+          {data?.results?.map((article) => (
+            <ProductRow key={article.uuid} product={article} />
+          ))}
+        </ul>
+      ) : (
+        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+          {data?.results?.map((article) => (
+            <ProductCart key={article.uuid} product={article} />
+          ))}
+        </div>
+      )}
       <Paginator first={lazyState?.first} rows={lazyState?.rows} totalRecords={data?.count} rowsPerPageOptions={[10, 20, 30]} onPageChange={onPageChange} />
       </div>
       </div>

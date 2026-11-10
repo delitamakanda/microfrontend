@@ -1,34 +1,13 @@
-import { useAtom } from "jotai";
-import { cartAtom } from "../store";
 import { Button } from 'primereact/button';
 import { Link } from "react-router-dom";
 import { ROUTES } from '../constants';
 import { UnLazyImage } from '@unlazy/react'
 import { formatPrice } from '../helpers/formatters';
+import { useAddToCart } from '../hooks/useAddToCart';
 
 
 export const ProductCart = ({ product }) => {
-    const [ cartItems, setCartItems] = useAtom(cartAtom);
-    // console.log({ cartItems })
-
-    const addToCart = () => {
-        const currentCartItem = cartItems.find(item => item.product.uuid === product.uuid);
-        if (currentCartItem) {
-            const updatedCartItem =cartItems.map(item => {
-                if (item.product.uuid === product.uuid) {
-                    return {
-                      ...item,
-                        quantity: item.quantity + 1,
-                        total: item.total + parseFloat(product.price)
-                    }
-                }
-                return item;
-            })
-            setCartItems(updatedCartItem);
-            return
-        }
-        setCartItems(prevValue => [...prevValue, {product, quantity: 1, total: parseFloat(product.price)}]);
-    }
+    const addToCart = useAddToCart(product);
 
     return (
         <div className="ui-group">
