@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
     buildCategoryLink,
+    buildProductQuery,
     parseCategoryParams,
     serializeCategoryParams,
 } from '../categoryFilter.js';
@@ -41,4 +42,24 @@ test('serializeCategoryParams repeats the param and removes it for All', () => {
 test('serializeCategoryParams keeps unrelated params', () => {
     const result = serializeCategoryParams(['Shoes'], new URLSearchParams('x=1&category=Old'));
     assert.equal(result.toString(), 'x=1&category=Shoes');
+});
+
+test('buildProductQuery sends no category_name_in for All', () => {
+    assert.equal(buildProductQuery({ names: [], limit: 10, offset: 0, ordering: '-created_at' }), 'limit=10&offset=0&ordering=-created_at');
+});
+
+test('buildProductQuery encodes names and joins them with a literal comma', () => {
+    const query = buildProductQuery({ names: ['Home & Garden', 'Shoes'], limit: 10, offset: 20 });
+    assert.equal(query, 'category_name_in=Home%20%26%20Garden,Shoes&limit=10&offset=20');
+    assert.equal(new URLSearchParams(query).get('category_name_in'), 'Home & Garden,Shoes');
+});
+
+test('buildProductQuery encodes the search term', () => {
+    const params = new URLSearchParams(buildProductQuery({ search: 'a&b=c, d' }));
+    assert.equal(params.get('q'), 'a&b=c, d');
+    assert.equal(params.get('b'), null);
+});
+
+test('buildProductQuery omits an empty search and has sane defaults', () => {
+    assert.equal(buildProductQuery(), 'limit=10&offset=0');
 });
