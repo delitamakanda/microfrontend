@@ -29,29 +29,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Errors are rethrown as is so the caller can read `error.response.data` (field errors).
   const register = async (username, password1, password2, email) => {
-    try {
-      const response = await axiosInstance.post("registration/", {
-        username,
-        password1,
-        password2,
-        email,
-      });
-
-      if (response.status === 201) {
-        const { access, refresh, user } = response.data;
-
-        if (response.status === 201) {
-          setToken(access);
-          setRefresh(refresh);
-          setUser(user);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      throw new Error("Failed to register");
-    }
-  }
+    const response = await axiosInstance.post("registration/", {
+      username,
+      password1,
+      password2,
+      email,
+    });
+    const { access, refresh, user } = response.data;
+    setToken(access);
+    setRefresh(refresh);
+    setUser(user);
+  };
 
   const logout = async () => {
     try {

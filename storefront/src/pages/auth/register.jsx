@@ -1,43 +1,31 @@
-import { useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "primereact/button";
 import { classNames } from "primereact/utils";
 import { InputText } from "primereact/inputtext";
 import { useAuth } from "../../hooks/useAuth";
 import { ROUTES } from "../../constants";
-import { useState, useRef } from "react";
+import { useState } from "react";
+import {
+  FIELDS,
+  parseRegisterError,
+  validateEmail,
+  validatePassword,
+  validatePasswordConfirm,
+  validateUsername,
+} from "./registerValidation";
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
   const { token, register } = useAuth();
   const [error, setError] = useState(null);
 
-  if (token) {
-      return navigate(ROUTES.ORDER, { replace: true });
-  }
-
-
-  const onSubmit = async (data) => {
-   try {
-       await register(data.username, data.password, data.passwordConfirm, data.email);
-   } catch (error) {
-       setError(`Failed to register. Error: ${error.message}`);
-   }
-  };
-
-  const getFormErrorMessage = (name) => {
-    return errors[name] ? (
-      <small className="p-error">{errors[name].message}</small>
-    ) : (
-      <small className="p-error">&nbsp;</small>
-    );
-  };
-
   const {
     handleSubmit,
     control,
-    formState: { errors },
-      watch,
+    getValues,
+    setError: setFieldError,
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       username: "",
@@ -46,124 +34,129 @@ export const RegisterPage = () => {
       passwordConfirm: "",
     },
   });
-    const passwordRef = useRef(null);
-    passwordRef.current = watch("password", "");
+
+  if (token) {
+    return <Navigate to={ROUTES.ORDER} replace />;
+  }
+
+  const onSubmit = async (data) => {
+    setError(null);
+    try {
+      await register(
+        data.username.trim(),
+        data.password,
+        data.passwordConfirm,
+        data.email.trim()
+      );
+      navigate(ROUTES.HOME, { replace: true });
+    } catch (e) {
+      const { fieldErrors, generalError } = parseRegisterError(e);
+      FIELDS.forEach((name) => {
+        if (fieldErrors[name]) {
+          setFieldError(name, { type: "server", message: fieldErrors[name] });
+        }
+      });
+      setError(generalError);
+    }
+  };
+
+  const fields = [
+    {
+      name: "username",
+      label: "Username",
+      autoComplete: "username",
+      rules: { validate: validateUsername },
+    },
+    {
+      name: "email",
+      label: "Email",
+      type: "email",
+      autoComplete: "email",
+      rules: { validate: validateEmail },
+    },
+    {
+      name: "password",
+      label: "Password",
+      type: "password",
+      autoComplete: "new-password",
+      help: "At least 8 characters",
+      rules: { validate: validatePassword },
+    },
+    {
+      name: "passwordConfirm",
+      label: "Confirm password",
+      type: "password",
+      autoComplete: "new-password",
+      rules: {
+        validate: (value) => validatePasswordConfirm(value, getValues("password")),
+      },
+    },
+  ];
 
   return (
     <>
-      <h1>Register Page</h1>
-        {error && <div className="p-error">{error}</div>}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Controller
-          name="username"
-          control={control}
-          rules={{
-              required: {
-                  message: "Username is required.",
-                  value: true,
-                  minLength: 3,
-              }
-          }}
-          render={({ field, fieldState }) => (
-            <div className="mb-1">
-              <label htmlFor={field.name}>Username</label>
-              <InputText
-                id={field.name}
-                value={field.value}
-                onChange={(e) => field.onChange(e.target.value)}
-                className={classNames("mb-1 mt-1", {
-                  "p-invalid": fieldState.error,
-                })}
-              />
-              {getFormErrorMessage(field.name)}
-            </div>
-          )}
-        />
-        <Controller
-          name="email"
-          control={control}
-          rules={{
-            required: {
-                message: "Email is required.",
-                value: true,
-            },
-              pattern: {
-                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                message: "Please enter a valid email address.",
-              },
-              maxLength: {
-                value: 255, message: "Email cannot exceed 50 characters.",
-              }
-          }}
-          render={({ field, fieldState }) => (
-            <div className="mb-1">
-              <label htmlFor={field.name}>Email</label>
-              <InputText
-                id={field.name}
-                value={field.value}
-                onChange={(e) => field.onChange(e.target.value)}
-                className={classNames("mb-1 mt-1", {
-                  "p-invalid": fieldState.error,
-                })}
-              />
-              {getFormErrorMessage(field.name)}
-            </div>
-          )}
-        />
-        <Controller
-          name="password"
-          control={control}
-          rules={{ required: "Password is required.", minLength: {
-              value: 8, message: "Password must be at least 8 characters long.",
-              } }}
-          ref={passwordRef}
-          render={({ field, fieldState }) => (
-            <div className="mb-1">
-              <label htmlFor={field.name}>Password</label>
-              <InputText
-                type="password"
-                id={field.name}
-                value={field.value}
-                onChange={(e) => field.onChange(e.target.value)}
-                className={classNames("mb-1 mt-1", {
-                  "p-invalid": fieldState.error,
-                })}
-              />
-              {getFormErrorMessage(field.name)}
-            </div>
-          )}
-        />
-        <Controller
-          name="passwordConfirm"
-          control={control}
-          ref={passwordRef}
-          rules={{
-            required: "Confirm password is required.", minLength: {
-                value: 8,
-                  message: "Password must be at least 8 characters long.",
-              },
-              validate: value => value === passwordRef.current || "Passwords do not match.",
-          }}
-          render={({ field, fieldState }) => (
-            <div className="mb-1">
-              <label htmlFor={field.name}>Confirm Password</label>
-              <InputText
-                id={field.name}
-                value={field.value}
-                onChange={(e) => field.onChange(e.target.value)}
-                className={classNames("mb-1 mt-1", {
-                  "p-invalid": fieldState.error,
-                })}
-                type="password"
-              />
-              {getFormErrorMessage(field.name)}
-            </div>
-          )}
-        />
+      <h1>Create an account</h1>
+      {error && (
+        <div className="p-error mb-2" role="alert">
+          {error}
+        </div>
+      )}
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        {fields.map(({ name, label, type = "text", autoComplete, help, rules }) => (
+          <Controller
+            key={name}
+            name={name}
+            control={control}
+            rules={rules}
+            render={({ field, fieldState }) => {
+              const describedBy =
+                [help && `${name}-help`, fieldState.error && `${name}-error`]
+                  .filter(Boolean)
+                  .join(" ") || undefined;
+              return (
+                <div className="mb-2">
+                  <label htmlFor={name} className="block">
+                    {label}
+                  </label>
+                  <InputText
+                    id={name}
+                    type={type}
+                    autoComplete={autoComplete}
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    onBlur={field.onBlur}
+                    ref={field.ref}
+                    aria-invalid={fieldState.error ? "true" : "false"}
+                    aria-describedby={describedBy}
+                    className={classNames("mb-1 mt-1 w-full", {
+                      "p-invalid": fieldState.error,
+                    })}
+                  />
+                  {help && (
+                    <small id={`${name}-help`} className="block">
+                      {help}
+                    </small>
+                  )}
+                  <small id={`${name}-error`} className="p-error block" aria-live="polite">
+                    {errors[name]?.message || <>&nbsp;</>}
+                  </small>
+                </div>
+              );
+            }}
+          />
+        ))}
         <div className="flex justify-content-end">
-          <Button label="Register" type="submit" />
+          <Button
+            label="Register"
+            type="submit"
+            loading={isSubmitting}
+            disabled={isSubmitting}
+          />
         </div>
       </form>
+      <p>
+        Already have an account? <Link to={ROUTES.LOGIN}>Sign in</Link>
+      </p>
     </>
   );
 };
