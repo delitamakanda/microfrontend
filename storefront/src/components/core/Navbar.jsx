@@ -1,7 +1,8 @@
 import "primeicons/primeicons.css";
 
 import { useAtomValue } from "jotai";
-import { cartItemsQuantityAtom } from "../../store";
+import { cartItemsQuantityAtom, wishlistCountAtom } from "../../store";
+import { getWishlistLabel } from "../../helpers/wishlist";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { ROUTES, SITE_TITLE } from "../../constants";
@@ -10,6 +11,7 @@ import { useAuth } from "../../hooks/useAuth.jsx";
 import {
   CART_LINK,
   MAIN_LINKS,
+  WISHLIST_LINK,
   getAccountLinks,
   getCartLabel,
   isLinkActive,
@@ -39,6 +41,7 @@ const renderNavItem = (link, pathname) => {
 
 export const Navbar = () => {
   const cartItemsQuantity = useAtomValue(cartItemsQuantityAtom);
+  const wishlistCount = useAtomValue(wishlistCountAtom);
   const { logout, token } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -74,6 +77,15 @@ export const Navbar = () => {
         >
           <i className={CART_LINK.icon} aria-hidden="true"></i>
           <span aria-hidden="true">{cartItemsQuantity || 0}</span>
+        </Link>
+        <Link
+          to={WISHLIST_LINK.to}
+          className={linkClass(isLinkActive(WISHLIST_LINK.to, pathname))}
+          aria-label={getWishlistLabel(wishlistCount)}
+          aria-current={isLinkActive(WISHLIST_LINK.to, pathname) ? "page" : undefined}
+        >
+          <i className={WISHLIST_LINK.icon} aria-hidden="true"></i>
+          <span aria-hidden="true">{wishlistCount || 0}</span>
         </Link>
         {getAccountLinks(token).map((link) => renderNavItem(link, pathname))}
         {token && (

@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createStore } from 'jotai';
-import { getAvailability, addProductToCart } from '../product.js';
+import { getAvailability } from '../product.js';
+import { addProductToCart } from '../cart.js';
 import { cartAtom, cartItemsQuantityAtom } from '../../store.js';
 
 test('getAvailability: out of stock', () => {
