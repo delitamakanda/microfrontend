@@ -18,6 +18,7 @@ export const ROUTES = {
     PRODUCTS: '/products',
     PRODUCT_DETAIL: ':id',
     CART: '/cart',
+    WISHLIST: '/wishlist',
     ORDER: '/order',
     ORDER_DETAIL: ':id',
     CATEGORIES: '/categories',

@@ -4,6 +4,7 @@ import { ROUTES } from '../constants';
 import { UnLazyImage } from '@unlazy/react'
 import { formatPrice } from '../helpers/formatters';
 import { useAddToCart } from '../hooks/useAddToCart';
+import { WishlistButton } from './WishlistButton';
 
 
 export const ProductCart = ({ product }) => {
@@ -18,7 +19,10 @@ export const ProductCart = ({ product }) => {
             <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
             </Link>
             <p className="mt-1 text-lg font-medium text-gray-900">{formatPrice(product.price)}</p>
-            <Button onClick={addToCart}>Add to cart</Button>
+            <div className="flex flex-wrap items-center gap-2">
+                <Button onClick={() => addToCart(1)}>Add to cart</Button>
+                <WishlistButton product={product} compact />
+            </div>
         </div>
     )
 }

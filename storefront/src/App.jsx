@@ -3,6 +3,7 @@ import { Layout } from "./components";
 import { Routes, Route } from "react-router-dom";
 import { ProductList, ProductDetail } from "./pages/products";
 import { Cart, CheckoutPage } from "./pages/cart";
+import { Wishlist } from "./pages/wishlist";
 import { HomePage } from "./pages/home";
 import { FlatPage } from "./pages/help";
 import { CategoriesPage } from "./pages/categories";
@@ -52,6 +53,7 @@ const App = () => {
                 />
               </Route>
               <Route path={ROUTES.CART} element={<Cart />} />
+              <Route path={ROUTES.WISHLIST} element={<Wishlist />} />
             </Route>
             <Route element={<Layout canAuth={true} />}>
               <Route path={ROUTES.ORDER}>

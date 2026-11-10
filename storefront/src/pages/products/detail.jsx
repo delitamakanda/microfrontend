@@ -1,15 +1,18 @@
 import { useParams, Link } from "react-router-dom";
 import axiosInstance from '../../lib/api';
 import { useState, useEffect, useCallback } from "react";
-import { useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
+import { Dropdown } from 'primereact/dropdown';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { UnLazyImage } from '@unlazy/react';
 import { cartAtom } from "../../store";
 import { ROUTES } from '../../constants';
 import { formatPrice } from '../../helpers/formatters';
-import { getAvailability, addProductToCart } from '../../helpers/product';
+import { getAvailability } from '../../helpers/product';
+import { addToCart as addToCartItems, getMaxQuantity } from '../../helpers/cart';
+import { WishlistButton } from '../../components/WishlistButton';
 
 const optionOf = (res, key) => {
     const value = res?.data?.[key];
@@ -20,13 +23,14 @@ const linkClass = "text-indigo-700 underline focus:outline focus:outline-2 focus
 
 export const ProductDetail = () => {
     const { id } = useParams();
-    const setCartItems = useSetAtom(cartAtom);
+    const [ cartItems, setCartItems ] = useAtom(cartAtom);
     const [ product, setProduct ] = useState(null);
     const [ status, setStatus ] = useState('loading'); // loading | ready | notFound | error
     const [ size, setSize ] = useState(null);
     const [ color, setColor ] = useState(null);
     const [ categories, setCategories ] = useState([]);
-    const [ added, setAdded ] = useState(false);
+    const [ quantity, setQuantity ] = useState(1);
+    const [ addResult, setAddResult ] = useState(null); // { added, capped }
     const [ imageFailed, setImageFailed ] = useState(false);
     const [ attempt, setAttempt ] = useState(0);
 
@@ -37,7 +41,8 @@ export const ProductDetail = () => {
         setSize(null);
         setColor(null);
         setCategories([]);
-        setAdded(false);
+        setQuantity(1);
+        setAddResult(null);
         setImageFailed(false);
 
         const safeId = encodeURIComponent(id);
@@ -66,9 +71,10 @@ export const ProductDetail = () => {
     }, [id, attempt]);
 
     const addToCart = useCallback(() => {
-        setCartItems(prev => addProductToCart(prev, product));
-        setAdded(true);
-    }, [product, setCartItems]);
+        const result = addToCartItems(cartItems, product, quantity);
+        setCartItems(result.items);
+        setAddResult({ added: result.added, capped: result.capped });
+    }, [product, quantity, cartItems, setCartItems]);
 
     if (status === 'loading') {
         return (
@@ -100,6 +106,7 @@ export const ProductDetail = () => {
     const categoryNames = (product.category ?? [])
         .map(cid => categories.find(c => c.id === cid || c.uuid === cid)?.name)
         .filter(Boolean);
+    const quantityOptions = Array.from({ length: getMaxQuantity(product) }, (_, i) => i + 1);
     const showImage = product.image_url && !imageFailed;
 
     return (
@@ -139,11 +146,31 @@ export const ProductDetail = () => {
                             {color && (<><dt className="font-medium">Color</dt><dd>{color}</dd></>)}
                         </dl>
                     )}
-                    <Button className="mt-6 w-full md:w-auto" onClick={addToCart} disabled={!availability.canBuy}>
-                        {availability.canBuy ? 'Add to cart' : 'Out of stock'}
-                    </Button>
+                    <div className="mt-6 flex flex-col gap-2">
+                        <label htmlFor="product-quantity" className="font-medium text-gray-900">Quantity</label>
+                        <Dropdown
+                            inputId="product-quantity"
+                            value={quantity}
+                            options={quantityOptions}
+                            onChange={(e) => { setQuantity(e.value); setAddResult(null); }}
+                            disabled={!availability.canBuy}
+                            className="min-h-[44px] w-full sm:w-32"
+                        />
+                    </div>
+                    <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                        <Button className="min-h-[44px] w-full justify-center sm:w-auto" onClick={addToCart} disabled={!availability.canBuy}>
+                            {availability.canBuy ? 'Add to cart' : 'Out of stock'}
+                        </Button>
+                        <WishlistButton product={product} className="w-full justify-center sm:w-auto" />
+                    </div>
                     <p aria-live="polite" className="mt-3 min-h-[1.5rem] text-gray-900">
-                        {added && <>Added to cart. <Link to={ROUTES.CART} className={linkClass}>View cart</Link></>}
+                        {addResult && (
+                            <>
+                                {addResult.capped && 'Maximum quantity reached for this product. '}
+                                {addResult.added > 0 && `Added ${addResult.added} to cart. `}
+                                <Link to={ROUTES.CART} className={linkClass}>View cart</Link>
+                            </>
+                        )}
                     </p>
                 </div>
             </div>

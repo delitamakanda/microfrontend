@@ -17,6 +17,8 @@ export const CUSTOMER_LINKS = [
 
 export const CART_LINK = { to: ROUTES.CART, icon: "pi pi-shopping-cart" };
 
+export const WISHLIST_LINK = { to: ROUTES.WISHLIST, icon: "pi pi-heart" };
+
 export const getAccountLinks = (token) =>
   token ? CUSTOMER_LINKS : GUEST_LINKS;
 

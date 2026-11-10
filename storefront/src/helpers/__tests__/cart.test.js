@@ -4,6 +4,7 @@ import { createStore } from 'jotai';
 import { cartAtom, cartItemsQuantityAtom } from '../../store.js';
 import {
     addProductToCart,
+    addToCart,
     getCartSubtotal,
     getMaxQuantity,
     removeCartItem,
@@ -69,6 +70,58 @@ test('cart edits work with the Jotai cart and the navbar counter', () => {
     assert.equal(store.get(cartItemsQuantityAtom), 5);
     store.set(cartAtom, (items) => removeCartItem(items, 'a'));
     assert.equal(store.get(cartItemsQuantityAtom), 1);
+});
+
+test('addProductToCart adds N units on a new line and recomputes the total', () => {
+    assert.deepEqual(addProductToCart([], product, 3), [{ product, quantity: 3, total: 31.5 }]);
+});
+
+test('addProductToCart adds N units to an existing line', () => {
+    const items = addProductToCart(addProductToCart([], product, 2), product, 3);
+    assert.equal(items.length, 1);
+    assert.equal(items[0].quantity, 5);
+    assert.equal(items[0].total, 52.5);
+});
+
+test('addProductToCart caps the line at the stock', () => {
+    const limited = { ...product, stock_quantity: 3 };
+    const items = addProductToCart(addProductToCart([], limited, 2), limited, 5);
+    assert.equal(items[0].quantity, 3);
+    assert.equal(items[0].total, 31.5);
+});
+
+test('addProductToCart caps at 10 when stock is unknown or large', () => {
+    assert.equal(addProductToCart([], product, 25)[0].quantity, 10);
+    assert.equal(addProductToCart([], { ...product, stock_quantity: 50 }, 25)[0].quantity, 10);
+});
+
+test('addProductToCart ignores invalid quantities', () => {
+    for (const q of [0, -2, NaN, 1.5, 'abc', {}]) {
+        assert.deepEqual(addProductToCart([], product, q), []);
+    }
+    const items = addProductToCart([], product, 2);
+    assert.equal(addProductToCart(items, product, 0), items);
+});
+
+test('addToCart reports added units and whether the cap was hit', () => {
+    const limited = { ...product, stock_quantity: 3 };
+    let res = addToCart([], limited, 2);
+    assert.deepEqual([res.added, res.capped], [2, false]);
+    res = addToCart(res.items, limited, 2);
+    assert.deepEqual([res.added, res.capped], [1, true]);
+    assert.equal(res.items[0].quantity, 3);
+    res = addToCart(res.items, limited, 1);
+    assert.deepEqual([res.added, res.capped], [0, true]);
+    assert.equal(res.items[0].quantity, 3);
+    res = addToCart([], product, 0);
+    assert.deepEqual([res.added, res.capped], [0, false]);
+});
+
+test('addProductToCart does not mutate its input when capping', () => {
+    const items = addProductToCart([], product, 9);
+    const snapshot = JSON.parse(JSON.stringify(items));
+    addProductToCart(items, product, 5);
+    assert.deepEqual(items, snapshot);
 });
 
 test('addProductToCart works with the Jotai cart and does not mutate', () => {

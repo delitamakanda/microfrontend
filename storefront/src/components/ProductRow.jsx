@@ -5,6 +5,7 @@ import { ROUTES } from '../constants';
 import { UnLazyImage } from '@unlazy/react'
 import { formatPrice } from '../helpers/formatters';
 import { useAddToCart } from '../hooks/useAddToCart';
+import { WishlistButton } from './WishlistButton';
 
 export const ProductRow = ({ product }) => {
     const addToCart = useAddToCart(product);
@@ -21,7 +22,10 @@ export const ProductRow = ({ product }) => {
                 <p className="text-sm text-gray-700 line-clamp-2">{product.description}</p>
                 <p className="text-lg font-medium text-gray-900">{formatPrice(product.price)}</p>
                 {product.status && <p className="text-sm font-semibold text-gray-700">{product.status}</p>}
-                <Button onClick={addToCart} className="self-stretch justify-center sm:self-start" aria-label={'Add ' + product.name + ' to cart'}>Add to cart</Button>
+                <div className="flex flex-wrap items-center gap-2">
+                    <Button onClick={() => addToCart(1)} className="flex-1 justify-center sm:flex-none" aria-label={'Add ' + product.name + ' to cart'}>Add to cart</Button>
+                    <WishlistButton product={product} compact />
+                </div>
             </div>
         </li>
     )
