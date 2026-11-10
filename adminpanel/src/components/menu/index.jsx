@@ -3,6 +3,7 @@ import { TabMenu } from "primereact/tabmenu";
 import { useAuth } from "storefrontApp/useAuth";
 import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
+import { signOut } from "../../helpers/session";
 
 export const Menu = () => {
   const { logout } = useAuth();
@@ -73,11 +74,14 @@ export const Menu = () => {
       );
     },
   }));
-  const disconnectAndSignOut = () => {
-    logout();
-    setTimeout(() => {
+  const disconnectAndSignOut = async () => {
+    const ok = await signOut(logout, window.localStorage);
+    if (ok) {
       navigate("/login");
-    }, 500);
+    } else {
+      // The API logout failed: the stored session was cleared, reload to reset the auth state.
+      window.location.assign("/login");
+    }
   };
   return (
     <div className="sticky top-0 z-5">
