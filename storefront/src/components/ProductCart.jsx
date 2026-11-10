@@ -1,17 +1,13 @@
-import { useAtom } from "jotai";
-import { cartAtom } from "../store";
 import { Button } from 'primereact/button';
 import { Link } from "react-router-dom";
 import { ROUTES } from '../constants';
 import { UnLazyImage } from '@unlazy/react'
 import { formatPrice } from '../helpers/formatters';
-import { addProductToCart } from '../helpers/product';
+import { useAddToCart } from '../hooks/useAddToCart';
 
 
 export const ProductCart = ({ product }) => {
-    const [ , setCartItems] = useAtom(cartAtom);
-
-    const addToCart = () => setCartItems(prev => addProductToCart(prev, product));
+    const addToCart = useAddToCart(product);
 
     return (
         <div className="ui-group">
