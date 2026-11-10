@@ -6,3 +6,31 @@ body {
   margin: 0;
   font-family: var(--font-family);
 }
+
+.main-nav__link {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  color: #1f2937;
+  text-decoration: none;
+}
+
+.main-nav__link:hover {
+  background: #e5e7eb;
+}
+
+.main-nav__link:focus-visible {
+  outline: 3px solid #1d4ed8;
+  outline-offset: 2px;
+}
+
+.main-nav__link.is-active {
+  background: #1d4ed8;
+  color: #fff;
+}
+
+.main-nav__user {
+  color: #1f2937;
+  overflow-wrap: anywhere;
+}
