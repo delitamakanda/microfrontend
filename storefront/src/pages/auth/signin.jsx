@@ -1,33 +1,43 @@
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
 import { ROUTES } from "../../constants";
 import { useAuth } from "../../hooks/useAuth";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { getLoginErrorMessage, getRedirectTarget } from "./loginHelpers";
+
+const FIELDS = [
+  {
+    name: "username",
+    label: "Username or email",
+    autoComplete: "username",
+    rules: {
+      validate: (value) => value.trim() !== "" || "Username is required.",
+    },
+  },
+  {
+    name: "password",
+    label: "Password",
+    type: "password",
+    autoComplete: "current-password",
+    rules: { required: "Password is required." },
+  },
+];
 
 export const SigninPage = () => {
   const [error, setError] = useState(null);
+  const errorRef = useRef(null);
   const navigate = useNavigate();
-  const { token, login } = useAuth();
-
-  const onSubmit = async ({ username, password }) => {
-    try {
-      await login(username, password);
-      navigate(ROUTES.ORDER, { replace: true });
-    } catch (error) {
-      // Handle the specific error message here
-      setError(
-        `Failed to login. Please check your credentials. Error: ${error.message}`
-      );
-    }
-  };
+  const location = useLocation();
+  const { login } = useAuth();
 
   const {
     handleSubmit,
     control,
-    formState: { errors },
+    resetField,
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       username: "",
@@ -35,66 +45,81 @@ export const SigninPage = () => {
     },
   });
 
-  if (token) {
-    return navigate(ROUTES.ORDER, { replace: true });
-  }
+  useEffect(() => {
+    if (error) errorRef.current?.focus();
+  }, [error]);
 
-  const getFormErrorMessage = (name) => {
-    return errors[name] ? (
-      <small className="p-error">{errors[name]?.message}</small>
-    ) : (
-      <small className="p-error">&nbsp;</small>
-    );
+  const onSubmit = async ({ username, password }) => {
+    setError(null);
+    try {
+      await login(username.trim(), password);
+      navigate(getRedirectTarget(location.state, ROUTES.ORDER), { replace: true });
+    } catch (e) {
+      resetField("password");
+      setError(getLoginErrorMessage(e));
+    }
   };
 
   return (
-    <>
-      <h1>Signin Page</h1>
-      {error && <div className="p-error">{error}</div>}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Controller
-          name="username"
-          control={control}
-          rules={{ required: "Username is required." }}
-          render={({ field, fieldState }) => (
-            <div className="mb-1">
-              <label htmlFor={field.name}>Username</label>
-              <InputText
-                id={field.name}
-                value={field.value}
-                onChange={(e) => field.onChange(e.target.value)}
-                className={classNames("mb-1 mt-1", {
-                  "p-invalid": fieldState.error,
-                })}
-              />
-              {getFormErrorMessage(field.name)}
-            </div>
-          )}
-        />
-        <Controller
-          name="password"
-          control={control}
-          rules={{ required: "Password is required." }}
-          render={({ field, fieldState }) => (
-            <div className="mb-1">
-              <label htmlFor={field.name}>Password</label>
-              <InputText
-                id={field.name}
-                type="password"
-                value={field.value}
-                onChange={(e) => field.onChange(e.target.value)}
-                className={classNames("mb-1 mt-1", {
-                  "p-invalid": fieldState.error,
-                })}
-              />
-              {getFormErrorMessage(field.name)}
-            </div>
-          )}
-        />
-        <div className="flex justify-content-end">
-          <Button label="Signin" type="submit" />
+    <div className="w-full max-w-md mx-auto">
+      <h1 className="mb-4">Sign in</h1>
+      {error && (
+        <div
+          ref={errorRef}
+          tabIndex={-1}
+          role="alert"
+          className="p-error mb-3 font-semibold"
+        >
+          {error}
         </div>
+      )}
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        {FIELDS.map(({ name, label, type = "text", autoComplete, rules }) => (
+          <Controller
+            key={name}
+            name={name}
+            control={control}
+            rules={rules}
+            render={({ field, fieldState }) => (
+              <div className="mb-3">
+                <label htmlFor={name} className="block">
+                  {label}
+                </label>
+                <InputText
+                  id={name}
+                  type={type}
+                  autoComplete={autoComplete}
+                  value={field.value}
+                  onChange={(e) => field.onChange(e.target.value)}
+                  onBlur={field.onBlur}
+                  ref={field.ref}
+                  aria-invalid={fieldState.error ? "true" : "false"}
+                  aria-describedby={fieldState.error ? `${name}-error` : undefined}
+                  className={classNames("mt-1 w-full min-h-[44px]", {
+                    "p-invalid": fieldState.error,
+                  })}
+                />
+                <small id={`${name}-error`} className="p-error block" aria-live="polite">
+                  {errors[name]?.message || <>&nbsp;</>}
+                </small>
+              </div>
+            )}
+          />
+        ))}
+        <Button
+          label="Sign in"
+          type="submit"
+          className="w-full min-h-[44px]"
+          loading={isSubmitting}
+          disabled={isSubmitting}
+        />
       </form>
-    </>
+      <p className="mt-4">
+        <Link to={ROUTES.FORGOT_PASSWORD}>Forgot your password?</Link>
+      </p>
+      <p className="mt-2">
+        New here? <Link to={ROUTES.SIGNUP}>Create an account</Link>
+      </p>
+    </div>
   );
 };

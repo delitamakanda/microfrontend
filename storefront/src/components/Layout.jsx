@@ -6,6 +6,7 @@ import { Footer } from "./core/Footer";
 import { Navbar } from "./core/Navbar";
 import { useAuth } from "../hooks/useAuth";
 import { ROUTES } from "../constants";
+import { getRedirectTarget } from "../pages/auth/loginHelpers";
 
 export const Layout = ({ canAuth }) => {
   const { token } = useAuth();
@@ -13,7 +14,7 @@ export const Layout = ({ canAuth }) => {
   const location = useLocation();
 
   if (!token && canAuth) {
-    return <Navigate to="/login" />;
+    return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
   }
   if (
     token &&
@@ -21,7 +22,7 @@ export const Layout = ({ canAuth }) => {
       location.pathname === ROUTES.LOGIN ||
       location.pathname === ROUTES.FORGOT_PASSWORD)
   ) {
-    return <Navigate to={ROUTES.ORDER} />;
+    return <Navigate to={getRedirectTarget(location.state, ROUTES.ORDER)} replace />;
   }
 
   return (
